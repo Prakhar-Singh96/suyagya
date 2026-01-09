@@ -279,7 +279,7 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('product_main_image')) {
-                deleteImage($product->main_image);
+                deleteImage($product->product_main_image);
                 $data['product_main_image'] = uploadImage($request, 'product_main_image', 'uploads/products/main/product');
             }
             if ($request->hasFile('og_image')) {
