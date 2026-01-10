@@ -190,7 +190,7 @@
                 <div class="mb-2">
                     {{-- Flag Image (Replace URL if needed) --}}
                     <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg"
-                         alt="India" style="width: 40px; height: auto; border: 1px solid #eee;">
+                         alt="India" style="width: 40px; height: 40px; border: 1px solid #eee;">
                 </div>
                 <h6 class="fw-bold text-dark mb-1">MADE IN INDIA</h6>
                 <small class="text-muted">Proudly Made in India</small>
