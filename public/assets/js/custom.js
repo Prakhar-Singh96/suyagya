@@ -937,11 +937,14 @@ function saveAndContinue() {
     $(btn).text('Saving...').prop('disabled', true);
 
     var phoneInput = $('#chk_mobile').val();
+    // 🔥 NEW: Get Email Value
+    let email = $('#chk_email').val();
 
     $.post("/checkout/save-address-ajax", {
         _token: $('meta[name="csrf-token"]').attr('content'),
         name: $('#chk_name').val(),
         phone: phoneInput,
+        email: email,
         pincode: $('#chk_pincode').val(),
         city: $('#chk_city').val(),
         state: $('#chk_state').val(),

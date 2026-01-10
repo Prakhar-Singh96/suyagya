@@ -333,6 +333,11 @@
                                     placeholder="Name" value="{{ Auth::user()->name ?? '' }}">
                                 <label>Full Name *</label>
                             </div>
+                            <div class="form-floating mb-3">
+                                <input type="email" id="chk_email" class="form-control  rounded-3" placeholder="Email"
+                                    value="{{ Auth::user()->email ?? '' }}">
+                                <label>Email ID (Required for Bill) *</label>
+                            </div>
 
                             <div class="mb-4">
                                 <label class="d-block x-small fw-bold text-muted text-uppercase mb-2">Save As</label>

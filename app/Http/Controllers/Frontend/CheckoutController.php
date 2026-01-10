@@ -8,13 +8,16 @@ use App\Models\Order;
 use Razorpay\Api\Api;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Mail\OrderPlaced;
 use App\Models\OrderItem;
 use App\Models\UserAddress;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PaymentSetting;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -67,6 +70,7 @@ class CheckoutController extends Controller
             'pincode' => 'required',
             'address_line1' => 'required',
             'name' => 'required',
+            'email' => 'required|email'
             //'phone' => 'required'
         ]);
 
@@ -80,10 +84,17 @@ class CheckoutController extends Controller
             $phoneToSave = $user->phone;
         }
 
+        // Hum naye data ko user table me update karenge
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        $user->save();
+
         $address = UserAddress::create([
             'user_id' => $user->id,
             'name' => $request->name,
             'phone' => $phoneToSave, // ✅ Ab yahan sahi number jayega
+            'email' => $request->email,
             'pincode' => $request->pincode,
             'city' => $request->city,
             'state' => $request->state,
@@ -111,7 +122,8 @@ class CheckoutController extends Controller
                 'new_pincode' => 'required',
                 'new_address' => 'required',
                 'new_name' => 'required',
-                'new_phone' => 'required'
+                'new_phone' => 'required',
+                'new_email' => 'required'
             ]);
 
             // Save New Address
@@ -119,6 +131,7 @@ class CheckoutController extends Controller
                 'user_id' => $user->id,
                 'name' => $request->new_name,
                 'phone' => $request->new_phone,
+                'email' => $request->new_email,
                 'pincode' => $request->new_pincode,
                 'city' => $request->new_city,
                 'state' => $request->new_state,
@@ -188,31 +201,31 @@ class CheckoutController extends Controller
         }
 
         if ($request->coupon_code) {
-        $coupon = Coupon::where('code', $request->coupon_code)->where('status', 1)->first();
+            $coupon = Coupon::where('code', $request->coupon_code)->where('status', 1)->first();
 
-        if ($coupon) {
-            // Check Expiry (Optional)
-            if ($coupon->expires_at && Carbon::now()->gt($coupon->expires_at)) {
-                // Expired hai to kuch mat karo ya error return karo
-            } else {
-                $discount = 0;
-
-                if ($coupon->type == 'fixed') {
-                    $discount = $coupon->value;
+            if ($coupon) {
+                // Check Expiry (Optional)
+                if ($coupon->expires_at && Carbon::now()->gt($coupon->expires_at)) {
+                    // Expired hai to kuch mat karo ya error return karo
                 } else {
-                    $discount = ($totalAmount * $coupon->value) / 100;
-                }
+                    $discount = 0;
 
-                // Discount Total se zyada nahi ho sakta
-                if ($discount > $totalAmount) {
-                    $discount = $totalAmount;
-                }
+                    if ($coupon->type == 'fixed') {
+                        $discount = $coupon->value;
+                    } else {
+                        $discount = ($totalAmount * $coupon->value) / 100;
+                    }
 
-                // Final Amount Update
-                $totalAmount = $totalAmount - $discount;
+                    // Discount Total se zyada nahi ho sakta
+                    if ($discount > $totalAmount) {
+                        $discount = $totalAmount;
+                    }
+
+                    // Final Amount Update
+                    $totalAmount = $totalAmount - $discount;
+                }
             }
         }
-    }
 
         // -----------------------------
         // 3. CREATE ORDER IN DATABASE
@@ -289,6 +302,9 @@ class CheckoutController extends Controller
                 Cart::where('user_id', $user->id)->delete();
             }
 
+            // 🔥 MAIL SEND KARO
+            $this->sendOrderEmail($order->id);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Order Placed Successfully via COD!'
@@ -347,6 +363,9 @@ class CheckoutController extends Controller
 
             // 3. Empty Cart (Agar pehle nahi kiya tha)
             Cart::where('user_id', Auth::id())->delete();
+
+            // 🔥 MAIL SEND KARO (Payment Success hone par)
+            $this->sendOrderEmail($order->id);
 
             return response()->json(['status' => true, 'message' => 'Payment Verified']);
         } catch (\Exception $e) {
@@ -435,9 +454,9 @@ class CheckoutController extends Controller
         // 1. सिर्फ वो कूपन लाओ जो Active हैं (Status=1)
         // AUR (Expiry future me ho YA Expiry Null ho)
         $coupons = \App\Models\Coupon::where('status', 1)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereDate('expires_at', '>', Carbon::now())
-                      ->orWhereNull('expires_at');
+                    ->orWhereNull('expires_at');
             })
             ->latest()
             ->get();
@@ -449,5 +468,30 @@ class CheckoutController extends Controller
         });
 
         return response()->json($coupons);
+    }
+
+    // 🔥 HELPER: Send Email to User & Admin
+    public function sendOrderEmail($orderId)
+    {
+        try {
+            $order = Order::with('items')->find($orderId);
+
+            // 1. User Email (Jo address form se aaya)
+            $userEmail = $order->shipping_address['email'];
+
+            // 2. Admin Email (Jaha aapko notification chahiye)
+            // Aap chaho to apni personal gmail daal lo taaki turant pata chale
+            $adminEmail = 'singh.prakhar1996@gmail.com'; // 👈 Yahan apni personal ID dalein
+
+            // Send to User (From: support@suyagya.com)
+            if ($userEmail) {
+                Mail::to($userEmail)->send(new OrderPlaced($order, false));
+            }
+
+            // Send to Admin (From: support@suyagya.com)
+            Mail::to($adminEmail)->send(new OrderPlaced($order, true));
+        } catch (\Exception $e) {
+            \Log::error('Mail Sending Failed: ' . $e->getMessage());
+        }
     }
 }
