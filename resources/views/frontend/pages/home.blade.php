@@ -19,7 +19,8 @@
 
                                 {{-- Image Circle (Updated Class) --}}
                                 <div class="category-circle-wrapper">
-                                    <img src="{{ asset($category->icon_image) }}" alt="{{ $category['icon_alt'] ?? $category['name'] }}">
+                                    <img src="{{ asset($category->icon_image) }}"
+                                        alt="{{ $category['icon_alt'] ?? $category['name'] }}">
                                 </div>
 
                                 {{-- Name --}}
@@ -116,7 +117,9 @@
                                     <i class="{{ $isInWishlist ? 'las la-heart text-danger' : 'lar la-heart' }} fs-5"></i>
                                 </button>
                                 <a href="{{ route('product.detail', $product->slug) }}">
-                                    <img src="{{ asset($product->main_image) }}" alt="{{ $product->main_image_alt ?? $product->name }}" width="600" height="600" loading="lazy">
+                                    <img src="{{ asset($product->main_image) }}"
+                                        alt="{{ $product->main_image_alt ?? $product->name }}" width="600"
+                                        height="600" loading="lazy">
                                 </a>
                             </div>
 
@@ -228,7 +231,9 @@
                                     <i class="{{ $isInWishlist ? 'las la-heart text-danger' : 'lar la-heart' }} fs-5"></i>
                                 </button>
                                 <a href="{{ route('product.detail', $product->slug) }}">
-                                    <img src="{{ asset($product->main_image) }}" alt="{{ $product->main_image_alt ?? $product->name }}" width="600" height="600" loading="lazy">
+                                    <img src="{{ asset($product->main_image) }}"
+                                        alt="{{ $product->main_image_alt ?? $product->name }}" width="600"
+                                        height="600" loading="lazy">
                                 </a>
                             </div>
 
@@ -340,7 +345,9 @@
                                     <i class="{{ $isInWishlist ? 'las la-heart text-danger' : 'lar la-heart' }} fs-5"></i>
                                 </button>
                                 <a href="{{ route('product.detail', $product->slug) }}">
-                                    <img src="{{ asset($product->main_image) }}" alt="{{ $product->main_image_alt ?? $product->name }}" width="600" height="600" loading="lazy">
+                                    <img src="{{ asset($product->main_image) }}"
+                                        alt="{{ $product->main_image_alt ?? $product->name }}" width="600"
+                                        height="600" loading="lazy">
                                 </a>
                             </div>
 
@@ -899,79 +906,76 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
         </div>
     </section>
 
-    {{-- <section class="py-3 blog-section" style="background-color: #f7f1de;">
+    <section class="py-5 blog-section" style="background-color: #f7f1de;">
         <div class="container">
 
-
+            {{-- Heading --}}
             <div class="d-flex justify-content-center mb-5">
-                <div class="fancy-heading-box">
-                    <h2 class="m-0">Blogs</h2>
+                <div class="fancy-heading-box text-center">
+                    <h2 class="m-0 fw-bold" style="font-family: 'Merriweather', serif;">Blogs</h2>
+                    <div class="heading-underline mx-auto mt-2" style="width: 60px; height: 3px; background: #c09867;">
+                    </div>
                 </div>
             </div>
 
-
             <div class="row g-4 justify-content-center">
 
-                @php
-                    // Demo Blog Data - REPLACE IMAGES WITH YOUR OWN
-                    $blogs = [
-                        [
-                            'title' => 'The Divine Power of Lord Shiva',
-                            'tag' => 'Spiritual Knowledge',
-                            // 👇 अपनी शिव जी की इमेज का लिंक यहाँ डालें
-                            'img' => 'https://placehold.co/600x400/E8E8E8/333333?text=Lord+Shiva+Temple',
-                            'desc' =>
-                                'Discover the immense power and symbolism behind Lord Shiva, the destroyer and transformer in the Holy Trinity. Understand his role in the cosmic cycle.',
-                        ],
-                        [
-                            'title' => 'Why We Worship Lord Ganesha First',
-                            'tag' => 'Vedic Rituals',
-                            // 👇 अपनी गणेश जी की इमेज का लिंक यहाँ डालें
-                            'img' => 'https://placehold.co/600x400/E8E8E8/333333?text=Lord+Ganesha+Idol',
-                            'desc' =>
-                                'Understand the significance of invoking Lord Ganesha, the remover of obstacles, before any new beginning to ensure success and prosperity.',
-                        ],
-                        [
-                            'title' => 'The Significance of Navratri & Maa Durga',
-                            'tag' => 'Festivals & Deities',
-                            // 👇 अपनी माँ दुर्गा की इमेज का लिंक यहाँ डालें
-                            'img' => 'https://placehold.co/600x400/E8E8E8/333333?text=Maa+Durga',
-                            'desc' =>
-                                'Explore the nine divine forms of Goddess Durga worshipped during Navratri and their unique spiritual significance in empowering the soul.',
-                        ],
-                    ];
-                @endphp
+                @if ($blogs->count() > 0)
+                    @foreach ($blogs as $blog)
+                        <div class="col-md-6 col-lg-4">
+                            <div class="blog-card h-100 bg-white rounded shadow-sm overflow-hidden border-0 hover-lift">
 
-                @foreach ($blogs as $blog)
-                    <div class="col-md-6 col-lg-4">
-                        <div class="blog-card h-100">
+                                {{-- Image Wrapper --}}
+                                <div class="blog-img-wrapper position-relative overflow-hidden" style="height: 220px;">
+                                    {{-- Optional Tag (Dynamic ya Static) --}}
+                                    <span
+                                        class="blog-tag position-absolute top-0 start-0 m-3 px-3 py-1 bg-white text-dark rounded-pill fw-bold small shadow-sm"
+                                        style="z-index: 10;">
+                                        Knowlege
+                                    </span>
 
+                                    <a href="#" class="d-block h-100 w-100">
+                                        <img src="{{ asset($blog->main_image) }}"
+                                            alt="{{ $blog->img_alt ?? $blog->title }}"
+                                            class="img-fluid w-100 h-100 object-fit-cover transition-zoom">
+                                    </a>
+                                </div>
 
-                            <div class="blog-img-wrapper">
-                                <span class="blog-tag">{{ $blog['tag'] }}</span>
-                                <a href="#" class="d-block h-100">
-                                    <img src="{{ $blog['img'] }}" alt="{{ $blog['title'] }}" class="img-fluid">
-                                </a>
+                                {{-- Content --}}
+                                <div class="blog-content p-4">
+                                    <small class="text-muted mb-2 d-block">
+                                        <i class="las la-calendar me-1"></i> {{ $blog->created_at->format('d M, Y') }}
+                                    </small>
+
+                                    <h3 class="blog-title mb-3" style="font-size: 18px; line-height: 1.4;">
+                                        <a href="#"
+                                            class="text-decoration-none text-dark fw-bold hover-primary">
+                                            {{ Str::limit($blog->title, 55) }}
+                                        </a>
+                                    </h3>
+
+                                    <p class="blog-desc text-muted small mb-4" style="line-height: 1.6;">
+                                        {{ Str::limit(strip_tags($blog->content), 100) }}
+                                    </p>
+
+                                    <a href="#"
+                                        class="read-more-btn text-uppercase fw-bold text-warning text-decoration-none small">
+                                        Read more <i class="las la-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+
                             </div>
-
-
-                            <div class="blog-content">
-                                <h3 class="blog-title">
-                                    <a href="#" class="text-decoration-none text-dark">{{ $blog['title'] }}</a>
-                                </h3>
-                                <p class="blog-desc">{{ $blog['desc'] }}</p>
-                                <a href="#" class="read-more-btn">
-                                    Read more <i class="las la-arrow-right ms-1"></i>
-                                </a>
-                            </div>
-
                         </div>
+                    @endforeach
+                @else
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">No blogs found at the moment.</p>
                     </div>
-                @endforeach
+                @endif
 
             </div>
         </div>
-    </section> --}}
+    </section>
 
     @php
         $faqs = $homeSettings->faq_content ?? [];

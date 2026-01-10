@@ -265,5 +265,29 @@
             </ul>
         </li>
 
+        {{-- 📝 BLOGS MODULE --}}
+        <li class="menu-item {{ request()->is('admin/blogs*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-news"></i> {{-- News Icon --}}
+                <div data-i18n="Blogs">Blogs</div>
+            </a>
+
+            <ul class="menu-sub">
+                {{-- List --}}
+                <li class="menu-item {{ Request::routeIs('admin.blogs.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.blogs.index') }}" class="menu-link">
+                        <div data-i18n="List">All Blogs</div>
+                    </a>
+                </li>
+
+                {{-- Add New --}}
+                <li class="menu-item {{ Request::routeIs('admin.blogs.create') ? 'active' : '' }}">
+                    <a href="{{ route('admin.blogs.create') }}" class="menu-link">
+                        <div data-i18n="Add">Add New</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
     </ul>
 </aside>

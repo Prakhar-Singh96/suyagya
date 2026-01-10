@@ -3205,3 +3205,19 @@ div#heroSlider .bnanner-img {
     font-size: 12px;
 }
 
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+.transition-zoom {
+    transition: transform 0.5s ease;
+}
+.blog-card:hover .transition-zoom {
+    transform: scale(1.05);
+}
+.hover-primary:hover {
+    color: #c09867 !important;
+}

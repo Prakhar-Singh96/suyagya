@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Blog;
 use App\Models\Banner;
 use App\Models\Filter;
 use App\Models\Product;
@@ -56,7 +57,7 @@ class HomeController extends Controller
 
         // 🟢 NEW LOGIC: Specific Category Showcases
         // 1. Find "Spiritual Jewellery" Category (Adjust slug if different)
-        $spiritualCat = Category::where('slug', 'spritual-jewellery')->first();
+        $spiritualCat = Category::where('slug', 'stone-jewellery')->first();
         //dd($spiritualCat);
 
         // 2. Define specific sub-categories slugs you want to show
@@ -94,6 +95,11 @@ class HomeController extends Controller
         // 🟢 Fetch Active Banners
         $banners = Banner::where('status', 1)->orderBy('sort_order', 'asc')->get();
 
+        $blogs = Blog::where('status', 1)
+            ->latest() // Newest first
+            ->take(3)  // Sirf 3 chahiye
+            ->get();
+
         // Fetch Settings
         $homeSettings = HomePageSetting::first();
 
@@ -107,7 +113,8 @@ class HomeController extends Controller
             'videos',
             'showcaseSections',
             'reviews',
-            'homeSettings'
+            'homeSettings',
+            'blogs'
         ));
     }
 }

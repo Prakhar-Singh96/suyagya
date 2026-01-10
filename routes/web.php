@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Admin\BannerController;
@@ -164,6 +165,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/home-page-settings', [HomePageSettingController::class, 'edit'])->name('home.settings');
         Route::post('/home-page-settings', [HomePageSettingController::class, 'update'])->name('home.settings.update');
+        Route::resource('blogs', BlogController::class);
 
         // General FAQs CRUD
         Route::resource('/general-faqs', GeneralFaqController::class);
