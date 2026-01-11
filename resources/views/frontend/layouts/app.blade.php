@@ -19,7 +19,7 @@
     {{-- 🔥 DYNAMIC SEO LOGIC START 🔥 --}}
     @php
         // 1. Default Values (Fallback)
-        $metaTitle = 'Suyagya - Authentic Spiritual Jewelry & Rudraksha';
+        $metaTitle = 'Suyagya - Authentic Stone Jewelry & Rudraksha';
         $metaDesc =
             'Shop genuine Rudraksha, Gemstones, and spiritual jewelry at Suyagya. Certified products with lab reports.';
         $metaKeys = 'rudraksha, gemstones, spiritual jewelry, mala, suyagya';
@@ -137,6 +137,7 @@
         href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 
 
     {{-- 💡 Premium Custom Styles --}}
@@ -201,6 +202,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
