@@ -132,6 +132,18 @@
                         top: 0 !important;
                     }
                 } */
+        /* 🔥 ZOOM STYLES */
+        .product-slider-container {
+            overflow: hidden; /* Bahar na nikle */
+            cursor: zoom-in; /* Cursor change */
+            position: relative;
+        }
+        
+        .product-slider-container img {
+            transition: transform 0.1s ease-out; /* Smooth movement */
+            transform-origin: center center;
+            will-change: transform;
+        }
     </style>
 @endsection
 
@@ -191,35 +203,43 @@
                 <div class="product-images" style="top: 100px; z-index: 1;">
 
                     {{-- 1. MAIN BIG SLIDER --}}
+                    {{-- 1. MAIN BIG SLIDER --}}
                     <div class="product-main-slider mb-3">
-                        {{-- Main Image (Assuming it's always an image) --}}
-                        <div class="product-slider-container">
-                            <img src="{{ asset($product->product_main_image) }}" class="img-fluid w-100 h-100 object-fit-contain"
-                                alt="{{ $product->product_main_image_alt ?? $product->name }}">
+                        
+                        {{-- A. Main Image (First Slide) --}}
+                        <div class="product-slider-container zoom-container">
+                            <a href="{{ asset($product->product_main_image) }}" class="glightbox" data-gallery="product-gallery">
+                                <img src="{{ asset($product->product_main_image) }}" 
+                                     class="img-fluid w-100 h-100 object-fit-contain zoom-img"
+                                     alt="{{ $product->product_main_image_alt ?? $product->name }}">
+                            </a>
                         </div>
-
-                        {{-- Gallery Loop --}}
+                    
+                        {{-- B. Gallery Loop --}}
                         @if ($product->images->count() > 0)
                             @foreach ($product->images as $img)
                                 @php
                                     $extension = pathinfo($img->image, PATHINFO_EXTENSION);
                                     $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'avi', 'webm']);
                                 @endphp
-
-                                <div class="product-slider-container">
+                    
+                                <div class="product-slider-container {{ $isVideo ? '' : 'zoom-container' }}">
                                     @if ($isVideo)
-                                        {{-- 🎥 VIDEO PLAYER (Main Slider) --}}
-                                        <video width="100%" height="100%" controls
-                                            style="object-fit: contain; max-height: 100%;"> {{-- Changed max-height to 100% --}}
-                                            <source src="{{ asset($img->image) }}" type="video/{{ $extension }}">
-                                            Your browser does not support the video tag.
-                                        </video>
+                                        {{-- Video (No Zoom, No Lightbox on click usually, or specific lightbox type) --}}
+                                        <a href="{{ asset($img->image) }}" class="glightbox" data-gallery="product-gallery">
+                                            <video width="100%" height="100%" style="object-fit: contain; max-height: 100%;">
+                                                <source src="{{ asset($img->image) }}" type="video/{{ $extension }}">
+                                            </video>
+                                            {{-- Fake overlay to catch click for lightbox --}}
+                                            <div class="position-absolute top-0 start-0 w-100 h-100"></div>
+                                        </a>
                                     @else
-                                        {{-- 🖼️ IMAGE --}}
-                                        <img src="{{ asset($img->image) }}"
-                                            class="img-fluid w-100 h-100 object-fit-contain"
-                                            alt="{{ $img->alt ?? $product->name . ' - View ' . $loop->iteration }}"
-                                            loading="lazy">
+                                        {{-- Image (Zoom + Lightbox) --}}
+                                        <a href="{{ asset($img->image) }}" class="glightbox" data-gallery="product-gallery">
+                                            <img src="{{ asset($img->image) }}"
+                                                 class="img-fluid w-100 h-100 object-fit-contain zoom-img"
+                                                 alt="{{ $img->alt ?? $product->name }}">
+                                        </a>
                                     @endif
                                 </div>
                             @endforeach
@@ -1120,5 +1140,81 @@
             // Phir EMI calculate karo
             setTimeout(calculateEMI, 100);
         };
+
+        // 1. Initialize Lightbox (Click to Enlarge)
+        const lightbox = GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: true,
+            zoomable: true
+        });
+        
+        // 2. Flipkart Style Hover Zoom Logic
+        // Hum sabhi containers par loop lagayenge (kyunki slider me multiple images hain)
+        const zoomContainers = document.querySelectorAll('.zoom-container');
+        
+        zoomContainers.forEach(container => {
+            const img = container.querySelector('.zoom-img');
+        
+            if (img) {
+                // Mouse Enter/Move
+                container.addEventListener("mousemove", function(e) {
+                    // Container ki position aur size nikalo
+                    const rect = container.getBoundingClientRect();
+                    
+                    // Mouse ki X aur Y position container ke andar
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+        
+                    // Percentage calculate karo
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
+        
+                    // Image ko transform karo
+                    img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                    img.style.transform = "scale(2)"; // 2x Zoom (Change 2 to 2.5 for more zoom)
+                });
+        
+                // Mouse Leave (Reset)
+                container.addEventListener("mouseleave", function() {
+                    img.style.transformOrigin = "center center";
+                    img.style.transform = "scale(1)";
+                });
+            }
+        });
+        
+        // 3. Fix for Slick Slider (Re-init zoom if slick changes DOM)
+        // Agar slick slider swipe hone ke baad zoom band ho jaye, to ye zaroori hai
+        $('.product-main-slider').on('afterChange', function(event, slick, currentSlide){
+            // Re-attach listeners is difficult, but standard CSS hover works best here.
+            // Hamara upar wala JS logic static elements par hai, Slick clone karta hai.
+            // Isliye behtar hai hum 'event delegation' use karein:
+        });
+        
+        // 🔥 BETTER WAY FOR SLICK SLIDER (Event Delegation)
+        // Ye code upar wale `forEach` ko replace karega taaki Slider ke cloned elements par bhi chale
+        $(document).on('mousemove', '.zoom-container', function(e){
+            const container = this;
+            const img = container.querySelector('.zoom-img');
+            if(!img) return;
+        
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+        
+            img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            img.style.transform = "scale(2)";
+        });
+        
+        $(document).on('mouseleave', '.zoom-container', function(e){
+            const img = this.querySelector('.zoom-img');
+            if(img) {
+                img.style.transformOrigin = "center center";
+                img.style.transform = "scale(1)";
+            }
+        });
     </script>
 @endsection
