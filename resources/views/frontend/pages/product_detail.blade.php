@@ -1143,39 +1143,39 @@
 
         // 1. Initialize Lightbox (Click to Enlarge)
         const lightbox = GLightbox({
-            selector: '.glightbox',
-            touchNavigation: true,
-            loop: true,
-            zoomable: true
+            selector: '.glightbox', // Class name to target
+            touchNavigation: true,  // Mobile swipe support
+            loop: true,             // Infinite loop
+            zoomable: true,         // ✅ ZOOM ENABLED (Icon aayega top-right me)
+            draggable: true,        // ✅ DRAG ENABLED (Zoom hone par image move kar sakenge)
+            dragAutoSnap: true,     // Image wapas center me aayegi agar jyada drag kiya
+            openEffect: 'zoom',     // Opening animation
+            closeEffect: 'zoom',    // Closing animation
+            slideEffect: 'slide'    // Slide animation
         });
         
         // 2. Flipkart Style Hover Zoom Logic
         // Hum sabhi containers par loop lagayenge (kyunki slider me multiple images hain)
         const zoomContainers = document.querySelectorAll('.zoom-container');
-        
+
         zoomContainers.forEach(container => {
             const img = container.querySelector('.zoom-img');
-        
+    
             if (img) {
                 // Mouse Enter/Move
                 container.addEventListener("mousemove", function(e) {
-                    // Container ki position aur size nikalo
                     const rect = container.getBoundingClientRect();
-                    
-                    // Mouse ki X aur Y position container ke andar
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-        
-                    // Percentage calculate karo
+    
                     const xPercent = (x / rect.width) * 100;
                     const yPercent = (y / rect.height) * 100;
-        
-                    // Image ko transform karo
+    
                     img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-                    img.style.transform = "scale(2)"; // 2x Zoom (Change 2 to 2.5 for more zoom)
+                    img.style.transform = "scale(2)"; // 2x Zoom on hover
                 });
-        
-                // Mouse Leave (Reset)
+    
+                // Mouse Leave
                 container.addEventListener("mouseleave", function() {
                     img.style.transformOrigin = "center center";
                     img.style.transform = "scale(1)";
@@ -1197,24 +1197,23 @@
             const container = this;
             const img = container.querySelector('.zoom-img');
             if(!img) return;
-        
+    
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
             const xPercent = (x / rect.width) * 100;
             const yPercent = (y / rect.height) * 100;
-        
+    
             img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
             img.style.transform = "scale(2)";
         });
-        
+    
         $(document).on('mouseleave', '.zoom-container', function(e){
             const img = this.querySelector('.zoom-img');
             if(img) {
                 img.style.transformOrigin = "center center";
                 img.style.transform = "scale(1)";
-            }
-        });
+        }
     </script>
 @endsection
