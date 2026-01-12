@@ -85,7 +85,7 @@ class ProductController extends Controller
             // 1. Product Detail Image (600x600)
             if ($request->hasFile('product_main_image')) {
                 $file = $request->file('product_main_image');
-                $data['product_main_image'] = $this->uploadAndResize($file, 'uploads/products/main/product', 600, 600);
+                $data['product_main_image'] = $this->uploadAndResize($file, 'uploads/products/main/product', 1080, 1080);
 
                 // 🚀 AUTO OG GENERATION: Agar OG image upload nahi ki, to isiko use karein
                 if (!$request->hasFile('og_image')) {
@@ -96,7 +96,7 @@ class ProductController extends Controller
 
             // 2. Listing/Home Image (310x310)
             if ($request->hasFile('main_image')) {
-                $data['main_image'] = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 310, 310);
+                $data['main_image'] = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 600, 600);
             }
 
             // 3. Manual OG Image (1200x630) - Agar user ne alag se upload ki
@@ -266,7 +266,7 @@ class ProductController extends Controller
                 }
 
                 $file = $request->file('product_main_image');
-                $data['product_main_image'] = $this->uploadAndResize($file, 'uploads/products/main/product', 600, 600);
+                $data['product_main_image'] = $this->uploadAndResize($file, 'uploads/products/main/product', 1080, 1080);
 
                 // 🚀 AUTO OG UPDATE: Agar naya main image dala hai, aur OG explicitly nahi dala
                 if (!$request->hasFile('og_image')) {
@@ -284,7 +284,7 @@ class ProductController extends Controller
                 if($product->main_image && File::exists(public_path($product->main_image))) {
                     File::delete(public_path($product->main_image));
                 }
-                $data['main_image'] = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 310, 310);
+                $data['main_image'] = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 600, 600);
             }
 
             // 3. OG Image Manual Update (1200x630)
