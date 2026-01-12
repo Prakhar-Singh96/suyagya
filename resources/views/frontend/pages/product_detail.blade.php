@@ -1209,11 +1209,12 @@
             img.style.transform = "scale(2)";
         });
     
-        $(document).on('mouseleave', '.zoom-container', function(e){
-            const img = this.querySelector('.zoom-img');
-            if(img) {
-                img.style.transformOrigin = "center center";
-                img.style.transform = "scale(1)";
+       $(document).on('mouseleave', '.zoom-container', function(e){
+        const img = this.querySelector('.zoom-img');
+        if(img) {
+            img.style.transformOrigin = "center center";
+            img.style.transform = "scale(1)";
         }
+    });
     </script>
 @endsection
