@@ -934,7 +934,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                                         Knowlege
                                     </span>
 
-                                    <a href="#" class="d-block h-100 w-100">
+                                    <a href="{{ route('blogs.show', $blog->slug) }}" class="d-block h-100 w-100">
                                         <img src="{{ asset($blog->main_image) }}"
                                             alt="{{ $blog->img_alt ?? $blog->title }}"
                                             class="img-fluid w-100 h-100 object-fit-cover transition-zoom">
@@ -948,7 +948,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                                     </small>
 
                                     <h3 class="blog-title mb-3" style="font-size: 18px; line-height: 1.4;">
-                                        <a href="#"
+                                        <a href="{{ route('blogs.show', $blog->slug) }}"
                                             class="text-decoration-none text-dark fw-bold hover-primary">
                                             {{ Str::limit($blog->title, 55) }}
                                         </a>
@@ -958,7 +958,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                                         {{ Str::limit(strip_tags($blog->content), 100) }}
                                     </p>
 
-                                    <a href="#"
+                                    <a href="{{ route('blogs.show', $blog->slug) }}"
                                         class="read-more-btn text-uppercase fw-bold text-warning text-decoration-none small">
                                         Read more <i class="las la-arrow-right ms-1"></i>
                                     </a>

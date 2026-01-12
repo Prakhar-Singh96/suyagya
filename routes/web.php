@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\FilterValueController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Frontend\Auth\OtpController;
+use App\Http\Controllers\Frontend\BlogPageController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -97,6 +98,9 @@ Route::get('/wishlist/fetch', [WishlistController::class, 'fetchWishlist'])->nam
 Route::get('/faqs', [FaqController::class, 'index'])->name('frontend.faq');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+// Blog Routes
+Route::get('/blogs', [BlogPageController::class, 'index'])->name('blogs.index');
+Route::get('/blog/{slug}', [BlogPageController::class, 'show'])->name('blogs.show');
 
 // --- AUTHENTICATED USER ROUTES ---
 Route::middleware(['auth'])->group(function () {
