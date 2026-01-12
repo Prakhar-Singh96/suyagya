@@ -138,7 +138,7 @@
             cursor: zoom-in; /* Cursor change */
             position: relative;
         }
-        
+
         .product-slider-container img {
             transition: transform 0.1s ease-out; /* Smooth movement */
             transform-origin: center center;
@@ -200,21 +200,21 @@
 
             {{-- 🖼️ LEFT SIDE: IMAGE GALLERY --}}
             <div class="col-lg-6 mb-4">
-                <div class="product-images" style="top: 100px; z-index: 1;">
+                <div class="product-images" style="position: sticky; top: 20px; z-index: 10;">
 
                     {{-- 1. MAIN BIG SLIDER --}}
                     {{-- 1. MAIN BIG SLIDER --}}
                     <div class="product-main-slider mb-3">
-                        
+
                         {{-- A. Main Image (First Slide) --}}
                         <div class="product-slider-container zoom-container">
                             <a href="{{ asset($product->product_main_image) }}" class="glightbox" data-gallery="product-gallery">
-                                <img src="{{ asset($product->product_main_image) }}" 
+                                <img src="{{ asset($product->product_main_image) }}"
                                      class="img-fluid w-100 h-100 object-fit-contain zoom-img"
                                      alt="{{ $product->product_main_image_alt ?? $product->name }}">
                             </a>
                         </div>
-                    
+
                         {{-- B. Gallery Loop --}}
                         @if ($product->images->count() > 0)
                             @foreach ($product->images as $img)
@@ -222,7 +222,7 @@
                                     $extension = pathinfo($img->image, PATHINFO_EXTENSION);
                                     $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'avi', 'webm']);
                                 @endphp
-                    
+
                                 <div class="product-slider-container {{ $isVideo ? '' : 'zoom-container' }}">
                                     @if ($isVideo)
                                         {{-- Video (No Zoom, No Lightbox on click usually, or specific lightbox type) --}}
@@ -1153,28 +1153,28 @@
             closeEffect: 'zoom',    // Closing animation
             slideEffect: 'slide'    // Slide animation
         });
-        
+
         // 2. Flipkart Style Hover Zoom Logic
         // Hum sabhi containers par loop lagayenge (kyunki slider me multiple images hain)
         const zoomContainers = document.querySelectorAll('.zoom-container');
 
         zoomContainers.forEach(container => {
             const img = container.querySelector('.zoom-img');
-    
+
             if (img) {
                 // Mouse Enter/Move
                 container.addEventListener("mousemove", function(e) {
                     const rect = container.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-    
+
                     const xPercent = (x / rect.width) * 100;
                     const yPercent = (y / rect.height) * 100;
-    
+
                     img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
                     img.style.transform = "scale(2)"; // 2x Zoom on hover
                 });
-    
+
                 // Mouse Leave
                 container.addEventListener("mouseleave", function() {
                     img.style.transformOrigin = "center center";
@@ -1182,7 +1182,7 @@
                 });
             }
         });
-        
+
         // 3. Fix for Slick Slider (Re-init zoom if slick changes DOM)
         // Agar slick slider swipe hone ke baad zoom band ho jaye, to ye zaroori hai
         $('.product-main-slider').on('afterChange', function(event, slick, currentSlide){
@@ -1190,25 +1190,25 @@
             // Hamara upar wala JS logic static elements par hai, Slick clone karta hai.
             // Isliye behtar hai hum 'event delegation' use karein:
         });
-        
+
         // 🔥 BETTER WAY FOR SLICK SLIDER (Event Delegation)
         // Ye code upar wale `forEach` ko replace karega taaki Slider ke cloned elements par bhi chale
         $(document).on('mousemove', '.zoom-container', function(e){
             const container = this;
             const img = container.querySelector('.zoom-img');
             if(!img) return;
-    
+
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             const xPercent = (x / rect.width) * 100;
             const yPercent = (y / rect.height) * 100;
-    
+
             img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
             img.style.transform = "scale(2)";
         });
-    
+
        $(document).on('mouseleave', '.zoom-container', function(e){
         const img = this.querySelector('.zoom-img');
         if(img) {
