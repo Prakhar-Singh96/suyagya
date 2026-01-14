@@ -16,6 +16,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\GameController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
+use App\Http\Controllers\Frontend\SitemapController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -253,18 +254,11 @@ Route::get('/run-seeder', function () {
     return 'Seeder Run Successfully! Admin created.';
 });
 
-// 🚀 SEO: Manual Sitemap Generator Route
-Route::get('/update-sitemap', function () {
-    // 🔒 Security Check: Ye key change kar lena
-    if (request('key') != 'suyagya_seo_secret_2025') {
-        abort(403, 'Unauthorized access!');
-    }
+// 1. मेन इंडेक्स फाइल
+Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
 
-    // 🛠️ Command Run
-    try {
-        \Illuminate\Support\Facades\Artisan::call('sitemap:generate');
-        return '✅ Sitemap Generated Successfully! Check public/sitemap.xml';
-    } catch (\Exception $e) {
-        return '❌ Error: ' . $e->getMessage();
-    }
-});
+// 2. अलग-अलग हिस्से
+Route::get('sitemap/pages.xml', [SitemapController::class, 'pages'])->name('sitemap.pages');
+Route::get('sitemap/collections.xml', [SitemapController::class, 'collections'])->name('sitemap.collections');
+Route::get('sitemap/categories.xml', [SitemapController::class, 'categories'])->name('sitemap.categories');
+Route::get('sitemap/products.xml', [SitemapController::class, 'products'])->name('sitemap.products');
