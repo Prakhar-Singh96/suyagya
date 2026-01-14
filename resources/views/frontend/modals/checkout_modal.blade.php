@@ -411,7 +411,7 @@
 
                                 <span class="fw-bold d-block small">UPI / Cards / Netbanking</span>
 
-                                <small class="text-success x-small fw-bold">Extra 10% OFF</small>
+                                {{-- <small class="text-success x-small fw-bold">Extra 10% OFF</small> --}}
 
                             </div>
 
