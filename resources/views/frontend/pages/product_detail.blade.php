@@ -1041,7 +1041,7 @@
             if (container) container.innerHTML = '';
 
             // Widget sirf tab dikhayein jab price ek limit se zyada ho (Optional, e.g. > 100)
-            if(currentPrice < 100) return;
+            if(currentPrice < 1100) return;
 
             const widgetConfig = {
                 "key": rzpKey,
