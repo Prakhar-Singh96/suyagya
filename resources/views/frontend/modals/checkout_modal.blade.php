@@ -108,9 +108,17 @@
 
                         {{-- Coupon Discount (Hidden initially) --}}
 
+                        {{-- 🔥 NEW ROW FOR GAMING DISCOUNT (Auto Applied) --}}
+                        <div class="d-flex justify-content-between mb-1 small text-primary fw-bold"
+                            id="row_gaming_discount" style="display:none;">
+                            <span><i class="las la-gamepad"></i> Game Reward</span>
+                            <span id="bill_gaming_discount">- ₹0</span>
+                        </div>
+
+                        {{-- 2. Admin Coupon Discount (Manual) --}}
                         <div id="row_coupon_discount" style="display: none;">
                             <div class="d-flex justify-content-between mb-1 small text-success">
-                                <span>Coupon Discount</span>
+                                <span>Coupon Discount <i class="las la-tag"></i></span>
                                 <span id="bill_coupon_discount">- ₹0</span>
                             </div>
                         </div>
@@ -334,8 +342,8 @@
                                 <label>Full Name *</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="email" id="chk_email" class="form-control  rounded-3" placeholder="Email"
-                                    value="{{ Auth::user()->email ?? '' }}">
+                                <input type="email" id="chk_email" class="form-control  rounded-3"
+                                    placeholder="Email" value="{{ Auth::user()->email ?? '' }}">
                                 <label>Email ID (Required for Bill) *</label>
                             </div>
 
@@ -385,6 +393,10 @@
 
                         <input type="hidden" name="address_id" id="final_address_id">
 
+                        {{-- 🔥 NEW HIDDEN INPUT FOR GAMING COUPON --}}
+                        <input type="hidden" name="gaming_coupon_code" id="final_gaming_coupon_code">
+
+                        {{-- Existing Coupon Input (For Admin Coupons) --}}
                         <input type="hidden" name="coupon_code" id="final_coupon_code">
 
 

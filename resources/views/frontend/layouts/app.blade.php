@@ -10,7 +10,10 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6ECDBEM0VJ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
         gtag('js', new Date());
         gtag('config', 'G-6ECDBEM0VJ');
     </script>
@@ -45,7 +48,6 @@
                 $ogImage = asset('og-images/default-og.jpg');
             }
         }
-
 
         // 3. Agar CATEGORY Page hai
         elseif (Route::is('products.category') && !empty($category)) {
@@ -188,6 +190,32 @@
         </div>
 
     </div>
+
+    {{-- 🎉 GAMIFICATION MODAL --}}
+
+    @if(Request::is('/') && Cookie::get('lucky_draw_played') === null)
+
+        @include('frontend.modals.game_modal') {{-- Ya jo apka modal code hai --}}
+
+    @endif
+
+    <style>
+        .jump-anim {
+            animation: jump 1.5s infinite;
+        }
+
+        @keyframes jump {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
 
     {{-- ⚙️ SCRIPTS --}}
     {{-- 1. jQuery (Must be first) --}}
@@ -414,6 +442,113 @@
         }
     </style>
     {{-- ❌ WHATSAPP FLOATING BUTTON END --}}
+    <script>
+        $(document).ready(function() {
+
+            @auth
+                // Check karo ki kya Database me koi Active Coupon hai?
+                let dbHasActiveCoupon = {{ \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
+
+                // Agar Database me coupon NAHI hai, lekin LocalStorage me hai...
+                if (!dbHasActiveCoupon) {
+                    // ...to LocalStorage ko saaf kar do!
+                    if(localStorage.getItem('gaming_coupon_amount')) {
+                        localStorage.removeItem('gaming_coupon_amount');
+                        localStorage.removeItem('gaming_coupon_code');
+                        console.log("🧹 Sync: Database empty, removed fake coupon from browser.");
+                    }
+                }
+            @endauth
+
+            // 1. PHP Check
+            let userAlreadyPlayed =
+                {{ Auth::check() && \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
+
+            // 2. LocalStorage Check
+            let shouldOpenGame = localStorage.getItem('openGameAfterLogin');
+
+            if (shouldOpenGame === 'true') {
+                @auth
+                $('#gameModal').modal('show');
+                localStorage.removeItem('openGameAfterLogin');
+            @endauth
+        } else {
+            // Normal Visit
+            if (!userAlreadyPlayed) {
+                setTimeout(() => {
+                    $('#gameModal').modal('show');
+                }, 3000);
+            }
+        }
+        });
+
+        // 2. Guest Logic (Same)
+        function playGuest() {
+            $('#guest-view .chit-card i').addClass('d-none'); // Hide icon
+            $('#guest-result').removeClass('d-none');
+            setTimeout(() => {
+                $('#guest-msg').removeClass('d-none');
+            }, 600);
+        }
+
+        function openLoginForGame() {
+            $('#gameModal').modal('hide');
+            localStorage.setItem('openGameAfterLogin', 'true');
+            $('#login_modal').modal('show');
+        }
+
+        // 3. User Logic (Updated for Parchi)
+        let playing = false;
+
+        function playUser(element) {
+            if (playing) return;
+            playing = true;
+
+            // Click visual effect
+            $(element).css('transform', 'scale(0.9)');
+
+            $.ajax({
+                url: "{{ route('game.play') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(res) {
+                    if (res.status === 'success' || res.status === 'already_played') {
+
+                        // 1. Hide Icon, Show Result
+                        $(element).find('.chit-icon').addClass('d-none');
+                        $(element).find('.prize-amt').text('₹' + res.amount);
+                        $(element).find('.chit-result').removeClass('d-none');
+
+                        // Card Highlight (Opened State)
+                        $(element).css({
+                            'transform': 'scale(1.1)',
+                            'border': '2px solid #28a745',
+                            'background': '#e8f5e9'
+                        });
+
+                        // 2. Save Data
+                        localStorage.setItem('gaming_coupon_amount', res.amount);
+                        localStorage.setItem('gaming_coupon_code', res.code);
+
+                        // 3. Show Big Message
+                        setTimeout(() => {
+                            $('#final-amt').text(res.amount);
+                            $('#win-msg').removeClass('d-none');
+
+                            setTimeout(() => {
+                                $('#gameModal').modal('hide');
+                            }, 2500);
+                        }, 600);
+
+                        // 4. Disable others
+                        $('.chit-card').not(element).css('opacity', 0.3).attr('onclick', '');
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

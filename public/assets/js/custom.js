@@ -501,7 +501,7 @@ function initiateCartCheckout() {
     // 1. Close Side Drawer
     var sideCartEl = document.getElementById('sideCart');
     var sideCart = bootstrap.Offcanvas.getInstance(sideCartEl);
-    if(sideCart) sideCart.hide();
+    if (sideCart) sideCart.hide();
 
     // 2. Get Values from Side Cart HTML
     // Text Example: "₹ 1,000"
@@ -537,10 +537,101 @@ function addToCartFromDetail(btn) {
 // Layout file ke <head> me ye zaroor ho: <meta name="is-logged-in" content="{{ Auth::check() ? '1' : '0' }}">
 
 // 🛒 1. OPEN CHECKOUT MODAL
+// function openDirectCheckout(btn) {
+//     // ... (Data collection logic - same as before) ...
+//     var prodId = $(btn).data('id');
+//     var qty = $('#qty_input').val() || 1;
+//     var priceText = $('#display_price').text().replace(/,/g, '');
+//     var price = parseFloat(priceText);
+//     var mrpText = $('#display_mrp').text().replace(/,/g, '');
+//     var mrp = parseFloat(mrpText) || price;
+
+//     var img = $('.product-main-slider .slick-current img').attr('src');
+//     if (!img) img = $('.product-main-slider img').first().attr('src');
+//     var title = $('h1.font-heading').text().trim();
+
+//     currentCartTotal = price * qty;
+//     var totalMrp = mrp * qty;
+//     var productDiscount = totalMrp - currentCartTotal;
+//     currentProductId = prodId;
+
+//     // UI Updates
+//     $('#summ_img').attr('src', img);
+//     $('#summ_name').text(title);
+//     $('#summ_qty').text('Qty: ' + qty);
+//     $('#summ_total').text('₹' + currentCartTotal.toLocaleString('en-IN'));
+
+//     // --- Price Breakdown Logic ---
+//     if (productDiscount > 0) {
+//         $('#summ_mrp_display').text('₹' + totalMrp.toLocaleString('en-IN')).show();
+
+//         // 🔥 FIX: Simple .show() use karein
+//         $('#row_mrp_total').show();
+//         $('#bill_mrp').text('₹' + totalMrp.toLocaleString('en-IN'));
+
+//         // 🔥 FIX: Simple .show() use karein
+//         $('#row_product_discount').show();
+//         $('#bill_product_discount').text('- ₹' + productDiscount.toLocaleString('en-IN'));
+//     } else {
+//         $('#summ_mrp_display').hide();
+//         $('#row_mrp_total').hide();
+//         $('#row_product_discount').hide();
+//     }
+
+//     // Totals
+//     $('#bill_subtotal').text('₹' + currentCartTotal.toLocaleString('en-IN'));
+//     $('#bill_final_total').text('₹' + currentCartTotal.toLocaleString('en-IN'));
+//     $('#btn_pay_amount').text('₹' + currentCartTotal.toLocaleString('en-IN'));
+
+//     // ✅ FORCE RESET COUPON UI
+//     $('#row_coupon_discount').hide();
+//     $('#bill_coupon_discount').text('- ₹0');
+
+//     $('#coupon_applied_box').hide();
+//     $('#coupon_input_group').show();
+//     $('#coupon_code').val('');
+//     $('#coupon_msg').hide();
+//     $('#coupon_list_box').hide();
+
+//     // Hidden Inputs
+//     $('#final_buy_mode').val('direct');
+//     $('#final_product_id').val(prodId);
+//     $('#final_quantity').val(qty);
+//     $('#final_is_siddh').val($('#input_is_siddh').val());
+//     $('#final_coupon_code').val('');
+
+//     // Open Modal (jQuery)
+//     $('#checkoutModal').modal('show');
+
+//     // ... Login check logic (same as before) ...
+//     const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
+//     if (isLoggedIn) {
+//         $.get("/checkout/get-user-data", function(data) {
+//              if (data.has_address) {
+//                  $('#saved_address_list').html(data.html).show();
+//                  $('#new_address_form').hide();
+//              } else {
+//                  $('#saved_address_list').hide();
+//                  $('#new_address_form').show();
+//              }
+//              $('#user_phone_display').text(data.user_phone);
+//              showStep('address');
+//         });
+//     } else {
+//         showStep('login');
+//     }
+// }
+
+// 🛒 1. OPEN DIRECT CHECKOUT (Buy Now Button) - Updated
+// 🛒 1. OPEN DIRECT CHECKOUT (Buy Now Button) - Fixed Calculation
+// 🛒 1. OPEN DIRECT CHECKOUT (Buy Now Button) - Fixed Calculation
 function openDirectCheckout(btn) {
-    // ... (Data collection logic - same as before) ...
+    // 1. Data Collection
     var prodId = $(btn).data('id');
     var qty = $('#qty_input').val() || 1;
+    var isSiddh = $('#input_is_siddh').val();
+
+    // 2. Price Calculation
     var priceText = $('#display_price').text().replace(/,/g, '');
     var price = parseFloat(priceText);
     var mrpText = $('#display_mrp').text().replace(/,/g, '');
@@ -550,26 +641,44 @@ function openDirectCheckout(btn) {
     if (!img) img = $('.product-main-slider img').first().attr('src');
     var title = $('h1.font-heading').text().trim();
 
+    // 3. Set Global Variables
     currentCartTotal = price * qty;
-    var totalMrp = mrp * qty;
-    var productDiscount = totalMrp - currentCartTotal;
     currentProductId = prodId;
 
-    // UI Updates
+    // 🔥 RESET ALL DISCOUNTS
+    appliedCouponCode = null;
+    appliedGamingCode = null;
+    window.appliedGamingAmount = 0;
+
+    var totalMrp = mrp * qty;
+    var productDiscount = totalMrp - currentCartTotal;
+
+    // 4. 🔥 LOAD GAME WINNINGS
+    let gameAmt = localStorage.getItem('gaming_coupon_amount');
+    let gameCode = localStorage.getItem('gaming_coupon_code');
+
+    if (gameAmt && gameCode) {
+        window.appliedGamingAmount = parseFloat(gameAmt);
+        appliedGamingCode = gameCode;
+        console.log("Game Coupon Applied:", window.appliedGamingAmount);
+    }
+
+    // 5. UI Updates
     $('#summ_img').attr('src', img);
     $('#summ_name').text(title);
     $('#summ_qty').text('Qty: ' + qty);
-    $('#summ_total').text('₹' + currentCartTotal.toLocaleString('en-IN'));
 
-    // --- Price Breakdown Logic ---
+    let fmtBase = currentCartTotal.toLocaleString('en-IN');
+    let fmtMrp = totalMrp.toLocaleString('en-IN');
+
+    $('#summ_total').text('₹' + fmtBase);
+    $('#bill_subtotal').text('₹' + fmtBase);
+
+    // 6. Handle Product Discount Rows
     if (productDiscount > 0) {
-        $('#summ_mrp_display').text('₹' + totalMrp.toLocaleString('en-IN')).show();
-
-        // 🔥 FIX: Simple .show() use karein
+        $('#summ_mrp_display').text('₹' + fmtMrp).show();
         $('#row_mrp_total').show();
-        $('#bill_mrp').text('₹' + totalMrp.toLocaleString('en-IN'));
-
-        // 🔥 FIX: Simple .show() use karein
+        $('#bill_mrp').text('₹' + fmtMrp);
         $('#row_product_discount').show();
         $('#bill_product_discount').text('- ₹' + productDiscount.toLocaleString('en-IN'));
     } else {
@@ -578,44 +687,58 @@ function openDirectCheckout(btn) {
         $('#row_product_discount').hide();
     }
 
-    // Totals
-    $('#bill_subtotal').text('₹' + currentCartTotal.toLocaleString('en-IN'));
-    $('#bill_final_total').text('₹' + currentCartTotal.toLocaleString('en-IN'));
-    $('#btn_pay_amount').text('₹' + currentCartTotal.toLocaleString('en-IN'));
+    // 7. 🔥 SHOW/HIDE GAMING ROW
+    if (window.appliedGamingAmount > 0) {
+        if ($('#row_gaming_discount').length === 0) {
+            $('<div id="row_gaming_discount" class="d-flex justify-content-between mb-1 small text-primary fw-bold"><span><i class="las la-gamepad"></i> Game Reward</span><span id="bill_gaming_discount">- ₹0</span></div>').insertBefore('#row_coupon_discount');
+        }
+        $('#row_gaming_discount').show();
+        $('#bill_gaming_discount').text('- ₹' + window.appliedGamingAmount);
+    } else {
+        $('#row_gaming_discount').hide();
+    }
 
-    // ✅ FORCE RESET COUPON UI
+    // 8. Reset Admin Coupon UI
     $('#row_coupon_discount').hide();
     $('#bill_coupon_discount').text('- ₹0');
-
     $('#coupon_applied_box').hide();
     $('#coupon_input_group').show();
     $('#coupon_code').val('');
     $('#coupon_msg').hide();
     $('#coupon_list_box').hide();
 
-    // Hidden Inputs
+    // 9. Hidden Inputs
     $('#final_buy_mode').val('direct');
     $('#final_product_id').val(prodId);
     $('#final_quantity').val(qty);
-    $('#final_is_siddh').val($('#input_is_siddh').val());
+    $('#final_is_siddh').val(isSiddh);
     $('#final_coupon_code').val('');
 
-    // Open Modal (jQuery)
+    // 🔥 Inject Gaming Input
+    if ($('#final_gaming_coupon_code').length === 0) {
+        $('<input type="hidden" name="gaming_coupon_code" id="final_gaming_coupon_code">').appendTo('#finalPaymentForm');
+    }
+    $('#final_gaming_coupon_code').val(appliedGamingCode);
+
+    // 10. 🔥 CALCULATE TOTAL
+    calculateFinalTotal();
+
+    // 11. Open Modal
     $('#checkoutModal').modal('show');
 
-    // ... Login check logic (same as before) ...
+    // 12. Login Logic
     const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
     if (isLoggedIn) {
-        $.get("/checkout/get-user-data", function(data) {
-             if (data.has_address) {
-                 $('#saved_address_list').html(data.html).show();
-                 $('#new_address_form').hide();
-             } else {
-                 $('#saved_address_list').hide();
-                 $('#new_address_form').show();
-             }
-             $('#user_phone_display').text(data.user_phone);
-             showStep('address');
+        $.get("/checkout/get-user-data", function (data) {
+            if (data.has_address) {
+                $('#saved_address_list').html(data.html).show();
+                $('#new_address_form').hide();
+            } else {
+                $('#saved_address_list').hide();
+                $('#new_address_form').show();
+            }
+            $('#user_phone_display').text(data.user_phone);
+            showStep('address');
         });
     } else {
         showStep('login');
@@ -1070,13 +1193,16 @@ function getAreaPart(fullAddr) {
 }
 
 // 💳 PROCESS PAYMENT (Place Order)
+// 💳 PROCESS PAYMENT (Place Order)
 function processPayment() {
     var btn = $('#btn_place_order');
     btn.prop('disabled', true).text('Processing...');
-    // ✅ Hidden input me coupon code set karo
-    $('#final_coupon_code').val(appliedCouponCode);
 
-    // Form Data Collect
+    // 1. Hidden inputs update (Optional, but good for sync)
+    $('#final_coupon_code').val(appliedCouponCode);
+    $('#final_gaming_coupon_code').val(appliedGamingCode);
+
+    // 2. Form Data Collect
     var formData = {
         _token: $('meta[name="csrf-token"]').attr('content'),
         payment_method: $('input[name="payment_method"]:checked').val(),
@@ -1085,8 +1211,10 @@ function processPayment() {
         quantity: $('#final_quantity').val(),
         is_siddh: $('#final_is_siddh').val(),
         address_id: $('#final_address_id').val(),
-        // ✅ Send Coupon Code
-        coupon_code: appliedCouponCode
+
+        // ✅ Send BOTH Coupon Codes
+        coupon_code: appliedCouponCode,          // Admin Coupon
+        gaming_coupon_code: appliedGamingCode    // 🔥 Game Coupon (Ye add kiya hai)
     };
 
     $.post("/checkout/place-order", formData, function (res) {
@@ -1095,7 +1223,7 @@ function processPayment() {
             // 🟣 OPEN RAZORPAY MODAL
             var options = {
                 "key": res.key,
-                "amount": res.amount,
+                "amount": res.amount, // Backend se ab sahi (discounted) amount aayega
                 "currency": "INR",
                 "name": res.name,
                 "description": res.description,
@@ -1109,8 +1237,34 @@ function processPayment() {
                 "theme": { "color": "#ff6f00" },
                 "modal": {
                     "ondismiss": function () {
-                        btn.prop('disabled', false).text('Place Order');
-                        alert('Payment Cancelled');
+                        console.log('Razorpay Modal Closed. Starting Cancel Process...');
+
+                        // Disable button again
+                        btn.prop('disabled', true).text('Cancelling...');
+
+                        // 🔥 Updated Code with Error Handling
+                        $.ajax({
+                            url: "/checkout/cancel-order",
+                            type: "POST",
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                order_id: res.order_id
+                            },
+                            success: function (response) {
+                                console.log('Server Response:', response);
+                                window.location.href = "/orders";
+                            },
+                            error: function (xhr, status, error) {
+                                // 🔥 Agar error aya to yahan dikhega
+                                console.error("Cancel Failed:", error);
+                                console.error("Response:", xhr.responseText);
+
+                                alert("Error cancelling order: " + xhr.status + " " + error);
+
+                                // Error ke baad bhi redirect kar do taaki user phase na rahe
+                                window.location.href = "/orders";
+                            }
+                        });
                     }
                 }
             };
@@ -1119,7 +1273,7 @@ function processPayment() {
 
         } else if (res.status === 'success') {
             // 🟢 COD Success
-            window.location.href = "/orders"; // Redirect to Orders Page
+            window.location.href = "/orders";
         } else {
             alert(res.message);
             btn.prop('disabled', false).text('Place Order');
@@ -1134,9 +1288,28 @@ function processPayment() {
 // 🔐 VERIFY PAYMENT ON SERVER
 function verifyServerPayment(paymentData, localOrderId) {
 
-    // Debugging ke liye (Console check karein)
     console.log("Verifying Payment:", paymentData, localOrderId);
 
+    // 1. 🔥 UI UPDATE: Modal ka content badal kar SUCCESS dikha do
+    // Isse user ko turant pata chal jayega ki payment ho gayi hai
+    let successHtml = `
+        <div class="modal-body text-center py-5">
+            <div class="mb-3">
+                <i class="las la-check-circle text-success" style="font-size: 6rem; animation: zoomIn 0.5s;"></i>
+            </div>
+            <h2 class="fw-bold text-success">Payment Successful!</h2>
+            <p class="text-muted mb-4">Please wait, we are confirming your order...</p>
+
+            <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+
+    // Checkout Modal ke andar ka HTML replace kar do
+    $('#checkoutModal .modal-content').html(successHtml);
+
+    // 2. Backend Call (Background me chalega)
     $.post("/checkout/verify-payment", {
         _token: $('meta[name="csrf-token"]').attr('content'),
         razorpay_payment_id: paymentData.razorpay_payment_id,
@@ -1145,15 +1318,18 @@ function verifyServerPayment(paymentData, localOrderId) {
         order_id: localOrderId
     }, function (res) {
         if (res.status) {
-            alert('Payment Successful!'); // Optional
-            window.location.href = "/orders";
+            // ✅ Success - Redirect Logic
+            setTimeout(function () {
+                window.location.replace("/orders");
+            }, 1000); // 1 sec dikha kar redirect kar do
         } else {
-            // Yahan server ka asli error dikhayein
+            // Error handling
             alert(res.message);
-            console.error(res.message);
+            window.location.reload();
         }
     }).fail(function (xhr) {
         alert('Verification Server Error: ' + xhr.responseText);
+        window.location.reload();
     });
 }
 
@@ -1215,6 +1391,10 @@ function filterReviews(productId) {
 let currentCartTotal = 0;
 let currentProductId = 0;
 let appliedCouponCode = null;
+
+// 🔥 NEW VARIABLES FOR GAMING COUPON
+let appliedGamingCode = null;
+let appliedGamingAmount = 0;
 
 // 1. Fetch Coupons (View All Click)
 function fetchCoupons() {
@@ -1302,6 +1482,196 @@ function applyCoupon() {
 
 // 🔥 IMPORTANT: Jab Modal Open ho tab ye value set karein
 // Ye function aapke 'Buy Now' button par call hona chahiye
+// function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
+//     console.log("Opening Cart Checkout...", price, mrpTotal, discountTotal);
+
+//     // 1. Set Global Total
+//     if (typeof price === 'string') price = parseFloat(price.replace(/[^\d.]/g, ''));
+//     currentCartTotal = price;
+
+//     // 2. Format Values
+//     let formattedPrice = currentCartTotal.toLocaleString('en-IN');
+//     let formattedMrp = mrpTotal.toLocaleString('en-IN');
+//     let formattedDisc = discountTotal.toLocaleString('en-IN');
+
+//     // 3. Header & Images
+//     $('#summ_name').text('Cart Checkout');
+//     $('#summ_qty').text($('#side_cart_count').text() + ' Items');
+//     $('#summ_img').attr('src', 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png'); // Cart Icon
+
+//     // 4. Update Prices
+//     $('#summ_total').text('₹' + formattedPrice);       // Top Right
+//     $('#bill_subtotal').text('₹' + formattedPrice);    // Subtotal Row
+//     $('#bill_final_total').text('₹' + formattedPrice); // Final Total Row
+//     $('#btn_pay_amount').text('₹' + formattedPrice);   // Button
+
+//     // 5. 🔥 HANDLE MRP & DISCOUNT ROWS (The Fix)
+//     if (discountTotal > 0) {
+//         // Show Breakdown with values
+//         $('#row_mrp_total').show();
+//         $('#bill_mrp').text('₹' + formattedMrp);
+
+//         $('#row_product_discount').show();
+//         $('#bill_product_discount').text('- ₹' + formattedDisc);
+
+//         // Optional: Top MRP Strikethrough
+//         $('#summ_mrp_display').text('₹' + formattedMrp).show();
+//     } else {
+//         // Hide if no discount
+//         $('#row_mrp_total').hide();
+//         $('#row_product_discount').hide();
+//         $('#summ_mrp_display').hide();
+//     }
+
+//     // 6. 🔥 FORCE RESET COUPON UI (Important)
+//     $('#row_coupon_discount').css('display', 'none');
+//     $('#bill_coupon_discount').text('- ₹0');
+
+//     $('#coupon_applied_wrapper').hide();
+//     $('#coupon_applied_box').hide();
+//     $('#coupon_input_group').show();
+//     $('#coupon_code').val('');
+//     $('#coupon_msg').hide();
+//     $('#coupon_list_box').hide();
+
+//     // 7. Hidden Inputs
+//     $('#final_buy_mode').val('cart'); // Mode is Cart
+//     $('#final_coupon_code').val('');
+
+//     // 8. Open Modal
+//     $('#checkoutModal').modal('show');
+
+//     // Login Check Logic
+//     const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
+//     if (isLoggedIn) {
+//         $.get("/checkout/get-user-data", function(data) {
+//              if (data.has_address) {
+//                  $('#saved_address_list').html(data.html).show();
+//                  $('#new_address_form').hide();
+//              } else {
+//                  $('#saved_address_list').hide();
+//                  $('#new_address_form').show();
+//              }
+//              $('#user_phone_display').text(data.user_phone);
+//              showStep('address');
+//         });
+//     } else {
+//         showStep('login');
+//     }
+// }
+
+// 🛒 OPEN CHECKOUT MODAL (Updated with Gaming Logic)
+// 🛒 1. OPEN CHECKOUT MODAL (With Gaming Logic)
+// function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
+//     console.log("Opening Cart Checkout...", price, mrpTotal, discountTotal);
+
+//     // 1. Set Global Total
+//     if (typeof price === 'string') price = parseFloat(price.replace(/[^\d.]/g, ''));
+//     currentCartTotal = price;
+
+//     // 2. 🔥 RESET COUPON VARIABLES
+//     appliedCouponCode = null; // Admin Coupon Reset
+//     appliedGamingCode = null; // Game Coupon Reset
+//     appliedGamingAmount = 0;  // Game Amount Reset
+
+//     // 3. 🔥 CHECK LOCAL STORAGE (Yahan se value aayegi)
+//     let gameAmt = localStorage.getItem('gaming_coupon_amount');
+//     let gameCode = localStorage.getItem('gaming_coupon_code');
+
+//     // Debugging ke liye (Console me check karein)
+//     console.log("Game Data Found:", gameAmt, gameCode);
+
+//     if (gameAmt && gameCode) {
+//         appliedGamingAmount = parseFloat(gameAmt);
+//         appliedGamingCode = gameCode;
+//     }
+
+//     // 4. Format Base Values
+//     let formattedPrice = currentCartTotal.toLocaleString('en-IN');
+//     let formattedMrp = mrpTotal.toLocaleString('en-IN');
+//     let formattedDisc = discountTotal.toLocaleString('en-IN');
+
+//     // 5. Header & Images
+//     $('#summ_name').text('Cart Checkout');
+//     $('#summ_qty').text($('#side_cart_count').text() + ' Items');
+//     $('#summ_img').attr('src', 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png');
+
+//     // 6. Update Subtotal
+//     $('#summ_total').text('₹' + formattedPrice);
+//     $('#bill_subtotal').text('₹' + formattedPrice);
+
+//     // 7. Product Discount Rows
+//     if (discountTotal > 0) {
+//         $('#row_mrp_total').show();
+//         $('#bill_mrp').text('₹' + formattedMrp);
+//         $('#row_product_discount').show();
+//         $('#bill_product_discount').text('- ₹' + formattedDisc);
+//         $('#summ_mrp_display').text('₹' + formattedMrp).show();
+//     } else {
+//         $('#row_mrp_total').hide();
+//         $('#row_product_discount').hide();
+//         $('#summ_mrp_display').hide();
+//     }
+
+//     // 8. 🔥 SHOW GAMING DISCOUNT ROW (Yahan ₹0 ki jagah asli amount aayega)
+//     if (appliedGamingAmount > 0) {
+//         $('#row_gaming_discount').show(); // Row dikhao
+//         $('#bill_gaming_discount').text('- ₹' + appliedGamingAmount); // Amount update karo
+//     } else {
+//         $('#row_gaming_discount').hide(); // Agar nahi jeeta to chupao
+//     }
+
+//     // 9. Reset Admin Coupon UI
+//     $('#row_coupon_discount').hide();
+//     $('#bill_coupon_discount').text('- ₹0');
+//     $('#coupon_applied_wrapper').hide();
+//     $('#coupon_applied_box').hide();
+//     $('#coupon_input_group').show();
+//     $('#coupon_code').val('');
+//     $('#coupon_msg').hide();
+//     $('#coupon_list_box').hide();
+
+//     // 10. 🔥 CALCULATE FINAL PAYABLE
+//     let finalPayable = currentCartTotal - appliedGamingAmount;
+//     if (finalPayable < 0) finalPayable = 0;
+
+//     // 11. Update Final Amount UI
+//     $('#bill_final_total').text('₹' + finalPayable.toLocaleString('en-IN'));
+//     $('#btn_pay_amount').text('₹' + finalPayable.toLocaleString('en-IN'));
+
+//     // 12. Set Hidden Inputs (Backend ke liye)
+//     $('#final_buy_mode').val('cart');
+//     $('#final_coupon_code').val('');
+
+//     // 🔥 Gaming Coupon Hidden Input (Form me inject karo)
+//     if ($('#final_gaming_coupon_code').length === 0) {
+//         $('<input type="hidden" name="gaming_coupon_code" id="final_gaming_coupon_code">').appendTo('#finalPaymentForm');
+//     }
+//     $('#final_gaming_coupon_code').val(appliedGamingCode);
+
+//     // 13. Open Modal
+//     $('#checkoutModal').modal('show');
+
+//     // 14. Login Check
+//     const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
+//     if (isLoggedIn) {
+//         $.get("/checkout/get-user-data", function(data) {
+//              if (data.has_address) {
+//                  $('#saved_address_list').html(data.html).show();
+//                  $('#new_address_form').hide();
+//              } else {
+//                  $('#saved_address_list').hide();
+//                  $('#new_address_form').show();
+//              }
+//              $('#user_phone_display').text(data.user_phone);
+//              showStep('address');
+//         });
+//     } else {
+//         showStep('login');
+//     }
+// }
+
+// 🛒 1. OPEN CHECKOUT MODAL (Updated for Cart + Game Logic)
 function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
     console.log("Opening Cart Checkout...", price, mrpTotal, discountTotal);
 
@@ -1309,44 +1679,63 @@ function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
     if (typeof price === 'string') price = parseFloat(price.replace(/[^\d.]/g, ''));
     currentCartTotal = price;
 
-    // 2. Format Values
+    // 2. 🔥 RESET GLOBAL VARIABLES (Critical Step)
+    appliedCouponCode = null;       // Admin Coupon Reset
+    appliedGamingCode = null;       // Game Coupon Reset
+    window.appliedGamingAmount = 0; // Game Amount Reset (Window scope)
+
+    // 3. 🔥 CHECK LOCAL STORAGE
+    let gameAmt = localStorage.getItem('gaming_coupon_amount');
+    let gameCode = localStorage.getItem('gaming_coupon_code');
+
+    if (gameAmt && gameCode) {
+        window.appliedGamingAmount = parseFloat(gameAmt); // Global set karo
+        appliedGamingCode = gameCode;
+        console.log("Cart Checkout - Game Data Found:", window.appliedGamingAmount);
+    }
+
+    // 4. Format Base Values
     let formattedPrice = currentCartTotal.toLocaleString('en-IN');
     let formattedMrp = mrpTotal.toLocaleString('en-IN');
     let formattedDisc = discountTotal.toLocaleString('en-IN');
 
-    // 3. Header & Images
+    // 5. Header & Images
     $('#summ_name').text('Cart Checkout');
     $('#summ_qty').text($('#side_cart_count').text() + ' Items');
     $('#summ_img').attr('src', 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png'); // Cart Icon
 
-    // 4. Update Prices
-    $('#summ_total').text('₹' + formattedPrice);       // Top Right
-    $('#bill_subtotal').text('₹' + formattedPrice);    // Subtotal Row
-    $('#bill_final_total').text('₹' + formattedPrice); // Final Total Row
-    $('#btn_pay_amount').text('₹' + formattedPrice);   // Button
+    // 6. Update Subtotal (Base Price)
+    $('#summ_total').text('₹' + formattedPrice);
+    $('#bill_subtotal').text('₹' + formattedPrice);
 
-    // 5. 🔥 HANDLE MRP & DISCOUNT ROWS (The Fix)
+    // 7. Product Discount Rows (MRP vs Selling Price)
     if (discountTotal > 0) {
-        // Show Breakdown with values
         $('#row_mrp_total').show();
         $('#bill_mrp').text('₹' + formattedMrp);
-
         $('#row_product_discount').show();
         $('#bill_product_discount').text('- ₹' + formattedDisc);
-
-        // Optional: Top MRP Strikethrough
         $('#summ_mrp_display').text('₹' + formattedMrp).show();
     } else {
-        // Hide if no discount
         $('#row_mrp_total').hide();
         $('#row_product_discount').hide();
         $('#summ_mrp_display').hide();
     }
 
-    // 6. 🔥 FORCE RESET COUPON UI (Important)
-    $('#row_coupon_discount').css('display', 'none');
-    $('#bill_coupon_discount').text('- ₹0');
+    // 8. 🔥 SHOW GAMING DISCOUNT ROW
+    if (window.appliedGamingAmount > 0) {
+        // Inject Row if missing
+        if ($('#row_gaming_discount').length === 0) {
+            $('<div id="row_gaming_discount" class="d-flex justify-content-between mb-1 small text-primary fw-bold"><span><i class="las la-gamepad"></i> Game Reward</span><span id="bill_gaming_discount">- ₹0</span></div>').insertBefore('#row_coupon_discount');
+        }
+        $('#row_gaming_discount').show();
+        $('#bill_gaming_discount').text('- ₹' + window.appliedGamingAmount);
+    } else {
+        $('#row_gaming_discount').hide();
+    }
 
+    // 9. Reset Admin Coupon UI
+    $('#row_coupon_discount').hide();
+    $('#bill_coupon_discount').text('- ₹0');
     $('#coupon_applied_wrapper').hide();
     $('#coupon_applied_box').hide();
     $('#coupon_input_group').show();
@@ -1354,26 +1743,36 @@ function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
     $('#coupon_msg').hide();
     $('#coupon_list_box').hide();
 
-    // 7. Hidden Inputs
-    $('#final_buy_mode').val('cart'); // Mode is Cart
+    // 10. Hidden Inputs (Backend ke liye)
+    $('#final_buy_mode').val('cart');
     $('#final_coupon_code').val('');
 
-    // 8. Open Modal
+    // 🔥 Inject Gaming Coupon Hidden Input
+    if ($('#final_gaming_coupon_code').length === 0) {
+        $('<input type="hidden" name="gaming_coupon_code" id="final_gaming_coupon_code">').appendTo('#finalPaymentForm');
+    }
+    $('#final_gaming_coupon_code').val(appliedGamingCode);
+
+    // 11. 🔥 FINAL CALCULATION (Use Master Function)
+    // Ye line sabse zaruri hai taki 'To Pay' update ho jaye
+    calculateFinalTotal();
+
+    // 12. Open Modal
     $('#checkoutModal').modal('show');
 
-    // Login Check Logic
+    // 13. Login Logic
     const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
     if (isLoggedIn) {
-        $.get("/checkout/get-user-data", function(data) {
-             if (data.has_address) {
-                 $('#saved_address_list').html(data.html).show();
-                 $('#new_address_form').hide();
-             } else {
-                 $('#saved_address_list').hide();
-                 $('#new_address_form').show();
-             }
-             $('#user_phone_display').text(data.user_phone);
-             showStep('address');
+        $.get("/checkout/get-user-data", function (data) {
+            if (data.has_address) {
+                $('#saved_address_list').html(data.html).show();
+                $('#new_address_form').hide();
+            } else {
+                $('#saved_address_list').hide();
+                $('#new_address_form').show();
+            }
+            $('#user_phone_display').text(data.user_phone);
+            showStep('address');
         });
     } else {
         showStep('login');
@@ -1431,61 +1830,61 @@ function applyCouponDirect(code) {
     $('#coupon_msg').hide();
     $('#coupon_code').val(code);
 
-    $.post(window.appRoutes.applyCoupon, {
+    // Ensure route is correct
+    // If using Blade: let url = "{{ route('apply.coupon') }}";
+    // If external JS: let url = "/checkout/apply-coupon";
+    let url = window.appRoutes ? window.appRoutes.applyCoupon : "/checkout/apply-coupon";
+
+    $.post(url, {
         code: code,
         cart_total: currentCartTotal,
-        _token: window.csrfToken
-    }, function(res) {
+        _token: $('meta[name="csrf-token"]').attr('content') // Ensure this selector is correct
+    }, function (res) {
         if (res.status) {
-            // Success UI
+            // UI Show
             $('#coupon_input_group').hide();
             $('#coupon_list_box').slideUp();
-
-            $('#saved_amount_text').text('₹' + res.discount);
             $('#coupon_applied_box').fadeIn();
-
-            // 🔥 FIX: Sirf fadeIn() use karein (css flex hata diya)
-            // Kyunki ab HTML me wrapper hai, to simple show/fadeIn sahi kaam karega
             $('#row_coupon_discount').fadeIn();
 
+            // 1. Text Update (For calculator to read)
+            $('#saved_amount_text').text('₹' + res.discount);
             $('#bill_coupon_discount').text('- ₹' + res.discount);
 
-            // Update Final Pay
-            $('#bill_final_total').text('₹' + res.new_total);
-            $('#btn_pay_amount').text('₹' + res.new_total);
-
-            // Store State
+            // 2. Set Variables
             appliedCouponCode = code;
             $('#final_coupon_code').val(code);
+
+            // 3. 🔥 RECALCULATE (Game + Admin)
+            calculateFinalTotal();
+
+            $('#coupon_msg').text(res.message).addClass('text-success').show();
         } else {
             $('#coupon_msg').text(res.message).addClass('text-danger').show();
         }
-    }).fail(function() {
+    }).fail(function () {
         $('#coupon_msg').text('Error applying coupon').show();
     });
 }
 
 // // 2. Remove Coupon Logic
 function removeCoupon() {
-    // 1. Hide Green Box
+    // 1. UI Reset
     $('#coupon_applied_box').hide();
-
-    // 2. Show Input
     $('#coupon_input_group').fadeIn();
     $('#coupon_code').val('');
     $('#coupon_msg').hide();
-
-    // 3. ✅ HIDE SUMMARY ROW (Ab ye 100% kaam karega wrapper ki wajah se)
     $('#row_coupon_discount').hide();
 
-    // 4. Reset Price
-    let formattedTotal = currentCartTotal.toLocaleString('en-IN');
-    $('#bill_final_total').text('₹' + formattedTotal);
-    $('#btn_pay_amount').text('₹' + formattedTotal);
+    // 2. Text Reset (Crucial for calculator)
+    $('#saved_amount_text').text('₹0');
 
-    // 5. Clear Data
+    // 3. Reset Variables
     appliedCouponCode = null;
     $('#final_coupon_code').val('');
+
+    // 4. 🔥 RECALCULATE (Only Game remains)
+    calculateFinalTotal();
 }
 
 function toggleWishlist(productId, btnElement) {
@@ -1496,7 +1895,7 @@ function toggleWishlist(productId, btnElement) {
             product_id: productId,
             _token: $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(response) {
+        success: function (response) {
             if (response.status) {
                 var icon = $(btnElement).find('i');
 
@@ -1515,7 +1914,7 @@ function toggleWishlist(productId, btnElement) {
 
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.log('Error:', xhr.responseText);
         }
     });
@@ -1528,7 +1927,7 @@ function showToast(message) {
     // 2. Message Body dhundo (Jahan text likha hai)
     var toastBody = document.getElementById('toast-message');
 
-    if(toastEl && toastBody) {
+    if (toastEl && toastBody) {
         // ✅ Ye line Controller se aaye message ko HTML me daal degi
         toastBody.innerText = message;
 
@@ -1553,7 +1952,7 @@ function openWishlistModal() {
     $.ajax({
         url: '/wishlist/fetch',
         type: 'GET',
-        success: function(response) {
+        success: function (response) {
             $('#wishlist-loader').hide();
 
             if (response.empty) {
@@ -1562,7 +1961,7 @@ function openWishlistModal() {
                 $('#wishlist-content').html(response.html).removeClass('d-none');
             }
         },
-        error: function() {
+        error: function () {
             $('#wishlist-loader').hide();
             alert('Could not load wishlist.');
         }
@@ -1575,7 +1974,7 @@ function removeFromWishlist(productId) {
     toggleWishlist(productId, null); // 'null' kyunki button element ki zarurat nahi yahan
 
     // UI se remove karein with fade effect
-    $('.wishlist-item-' + productId).fadeOut(300, function() {
+    $('.wishlist-item-' + productId).fadeOut(300, function () {
         $(this).remove();
         // Agar sab remove ho gaya to empty state dikhao
         if ($('#wishlist-content').children().length <= 1) { // 1 because this one is removing
@@ -1596,7 +1995,7 @@ function moveToCart(productId) {
     }
 
     // 2. Thoda wait karein (300ms) taaki animation smooth lage, phir Cart mein add karein
-    setTimeout(function() {
+    setTimeout(function () {
         // Add to Cart Logic (Existing)
         var dummyBtn = document.createElement('button');
         addToCart(productId, 1, 0, dummyBtn);
@@ -1615,5 +2014,35 @@ function moveToCart(productId) {
         $('#wishlist-empty').removeClass('d-none');
     }
 }
+
+// 🔢 CALCULATE FINAL TOTAL (Central Logic)
+function calculateFinalTotal() {
+    // 1. Get Admin Discount (Read from UI)
+    let adminDiscount = 0;
+
+    // Check if Admin Coupon box is visible
+    if ($('#coupon_applied_box').is(':visible')) {
+        // Text ex: "₹ 125" -> Remove non-digits -> 125
+        let text = $('#saved_amount_text').text().replace(/[^\d.]/g, '');
+        adminDiscount = parseFloat(text) || 0;
+    }
+
+    // 2. Get Game Discount (From Global Variable)
+    let gameDiscount = window.appliedGamingAmount || 0;
+
+    // 3. Calculate Final
+    let totalDiscount = gameDiscount + adminDiscount;
+    let finalPayable = currentCartTotal - totalDiscount;
+
+    // Safety Check
+    if (finalPayable < 0) finalPayable = 0;
+
+    // 4. Update UI
+    let fmtTotal = finalPayable.toLocaleString('en-IN');
+    $('#bill_final_total').text('₹' + fmtTotal);
+    $('#btn_pay_amount').text('₹' + fmtTotal);
+}
+
+
 
 

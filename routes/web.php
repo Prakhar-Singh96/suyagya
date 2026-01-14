@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\FaqController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\GameController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\UserController;
@@ -91,6 +92,9 @@ Route::post('/track-order', [TrackingController::class, 'track'])->name('track.o
 Route::post('/apply-coupon', [CheckoutController::class, 'applyCoupon'])->name('apply.coupon');
 Route::get('/get-coupons', [CheckoutController::class, 'getCoupons'])->name('get.coupons'); // Coupon List ke liye
 
+// Game coupon Route
+Route::post('/play-sticker-game', [GameController::class, 'playGame'])->name('game.play');
+
 
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
 Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
@@ -114,7 +118,9 @@ Route::middleware(['auth'])->group(function () {
     // 🟢 New Route for Order Details
     Route::get('/orders/{id}', [App\Http\Controllers\Frontend\UserController::class, 'orderDetails'])->name('user.order_details');
 
-    Route::get('/profile', [App\Http\Controllers\Frontend\UserController::class, 'profile'])->name('user.profile');
+    // Route::get('/profile', [App\Http\Controllers\Frontend\UserController::class, 'profile'])->name('user.profile');
+
+    Route::post('/checkout/cancel-order', [CheckoutController::class, 'cancelOrder'])->name('checkout.cancel');
 
     // 3. Checkout Actions
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');

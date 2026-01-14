@@ -115,32 +115,35 @@
 
         /* Mobile Adjustments */
         /* @media (max-width: 768px) {
-                    .product-slider-container {
-                        height: 455px !important;
-                        aspect-ratio: 1 / 1;
-                        width: 100%;
-                    }
+                                        .product-slider-container {
+                                            height: 455px !important;
+                                            aspect-ratio: 1 / 1;
+                                            width: 100%;
+                                        }
 
-                    .product-slider-container img,
-                    .product-slider-container video {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                    }
+                                        .product-slider-container img,
+                                        .product-slider-container video {
+                                            width: 100%;
+                                            height: 100%;
+                                            object-fit: cover;
+                                        }
 
-                    .product-images {
-                        top: 0 !important;
-                    }
-                } */
+                                        .product-images {
+                                            top: 0 !important;
+                                        }
+                                    } */
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
-            overflow: hidden; /* Bahar na nikle */
-            cursor: zoom-in; /* Cursor change */
+            overflow: hidden;
+            /* Bahar na nikle */
+            cursor: zoom-in;
+            /* Cursor change */
             position: relative;
         }
 
         .product-slider-container img {
-            transition: transform 0.1s ease-out; /* Smooth movement */
+            transition: transform 0.1s ease-out;
+            /* Smooth movement */
             transform-origin: center center;
             will-change: transform;
         }
@@ -208,10 +211,11 @@
 
                         {{-- A. Main Image (First Slide) --}}
                         <div class="product-slider-container zoom-container">
-                            <a href="{{ asset($product->product_main_image) }}" class="glightbox" data-gallery="product-gallery">
+                            <a href="{{ asset($product->product_main_image) }}" class="glightbox"
+                                data-gallery="product-gallery">
                                 <img src="{{ asset($product->product_main_image) }}"
-                                     class="img-fluid w-100 h-100 object-fit-contain zoom-img"
-                                     alt="{{ $product->product_main_image_alt ?? $product->name }}">
+                                    class="img-fluid w-100 h-100 object-fit-contain zoom-img"
+                                    alt="{{ $product->product_main_image_alt ?? $product->name }}">
                             </a>
                         </div>
 
@@ -226,8 +230,10 @@
                                 <div class="product-slider-container {{ $isVideo ? '' : 'zoom-container' }}">
                                     @if ($isVideo)
                                         {{-- Video (No Zoom, No Lightbox on click usually, or specific lightbox type) --}}
-                                        <a href="{{ asset($img->image) }}" class="glightbox" data-gallery="product-gallery">
-                                            <video width="100%" height="100%" style="object-fit: contain; max-height: 100%;">
+                                        <a href="{{ asset($img->image) }}" class="glightbox"
+                                            data-gallery="product-gallery">
+                                            <video width="100%" height="100%"
+                                                style="object-fit: contain; max-height: 100%;">
                                                 <source src="{{ asset($img->image) }}" type="video/{{ $extension }}">
                                             </video>
                                             {{-- Fake overlay to catch click for lightbox --}}
@@ -235,10 +241,11 @@
                                         </a>
                                     @else
                                         {{-- Image (Zoom + Lightbox) --}}
-                                        <a href="{{ asset($img->image) }}" class="glightbox" data-gallery="product-gallery">
+                                        <a href="{{ asset($img->image) }}" class="glightbox"
+                                            data-gallery="product-gallery">
                                             <img src="{{ asset($img->image) }}"
-                                                 class="img-fluid w-100 h-100 object-fit-contain zoom-img"
-                                                 alt="{{ $img->alt ?? $product->name }}">
+                                                class="img-fluid w-100 h-100 object-fit-contain zoom-img"
+                                                alt="{{ $img->alt ?? $product->name }}">
                                         </a>
                                     @endif
                                 </div>
@@ -436,12 +443,15 @@
 
 
                 {{-- EMI Widget --}}
-                @if ($product->emi_available && $product->price > 1100)
-                    <div class="emi-box border rounded p-2 mb-4 d-flex align-items-center bg-white"
-                        style="max-width: 400px;">
+                @if ($product->emi_available)
+                    {{-- Logic: Box html me rahega, lekin display logic JS sambhalega ya inline CSS --}}
+                    <div class="emi-box border rounded p-2 mb-4 align-items-center bg-white"
+                        style="max-width: 400px; display: {{ $product->price > 1100 ? 'flex' : 'none' }};">
+
                         <span class="badge bg-success me-2" style="font-size: 10px;">NEW</span>
                         <div class="flex-grow-1" style="font-size: 13px;">
-                            or <strong>₹<span id="emi_amount"></span>/month</strong> (3 months)
+                            or <strong>₹<span id="emi_amount">{{ ceil($product->price / 3) }}</span>/month</strong> (3
+                            months)
                             <span class="badge bg-warning text-dark ms-1" style="font-size: 10px;">0% Interest</span>
                             <div class="text-muted" style="font-size: 11px;">UPI & Cards Accepted | No Extra Cost</div>
                         </div>
@@ -501,6 +511,173 @@
                         </div>
                     </div>
                 @endif
+
+                {{-- 🏷️ RAZORPAY & BANK OFFERS SECTION --}}
+                {{-- 🏷️ RAZORPAY & BANK OFFERS SECTION --}}
+                <div class="offers-box mb-4 p-3 border rounded"
+                    style="background-color: #fcf8f5; font-family: 'Merriweather', serif;">
+
+                    <h6 class="fw-bold text-dark mb-3"
+                        style="font-size: 16px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
+                        <img src="https://razorpay.com/favicon.png" width="18" class="me-2"
+                            style="vertical-align: sub;">
+                        Best Offers for You
+                    </h6>
+
+                    <div class="d-flex flex-column gap-3">
+
+                        {{-- 1. Tata Neu UPI --}}
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <i class="las la-credit-card text-primary mt-1 me-2 fs-5"></i>
+                                    <div style="line-height: 1.5;">
+                                        <strong class="text-dark d-block" style="font-size: 14px;">Tata NeuCard UPI
+                                            Offer</strong>
+                                        <span class="text-muted small">Upto 1.5% savings with NeuCard UPI txns.</span>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0)" onclick="$('#tc_neu_upi').slideToggle()"
+                                    class="fw-bold text-primary small text-decoration-none"
+                                    style="white-space: nowrap;">T&C</a>
+                            </div>
+                            <div id="tc_neu_upi" class="mt-2 p-2 bg-white border rounded text-muted"
+                                style="display:none; font-size: 12px; line-height: 1.6;">
+                                <strong>Terms and Conditions:</strong><br>
+                                (1) 1.5% back as NeuCoins with Tata Neu HDFC Bank Infinity credit card on CC on UPI
+                                transactions done using Tata Neu App.<br>
+                                (2) 1% back with Plus credit card on Tata Neu App.<br>
+                                (3) 0.5% back with Infinity card on 3rd party apps (PhonePe, GPay etc).<br>
+                                (4) 0.25% back with Plus card on 3rd party apps.<br>
+                                (5) 1 NeuCoin = ₹1 redeemable on TATA Brands.<br>
+                                (6) Capped to 500 NeuCoins per month.<br>
+                                Exclusions: Fuel, Cash Advances, EMI, Rental, Govt, Education payments via 3rd party apps.
+                            </div>
+                        </div>
+
+                        {{-- 2. Tata Neu EMI/Non-EMI --}}
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <i class="las la-credit-card text-primary mt-1 me-2 fs-5"></i>
+                                    <div style="line-height: 1.5;">
+                                        <strong class="text-dark d-block" style="font-size: 14px;">Tata NeuCard EMI
+                                            Offer</strong>
+                                        <span class="text-muted small">Upto 1.5% savings with NeuCard on EMI/non-EMI
+                                            txns.</span>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0)" onclick="$('#tc_neu_emi').slideToggle()"
+                                    class="fw-bold text-primary small text-decoration-none"
+                                    style="white-space: nowrap;">T&C</a>
+                            </div>
+                            <div id="tc_neu_emi" class="mt-2 p-2 bg-white border rounded text-muted"
+                                style="display:none; font-size: 12px; line-height: 1.6;">
+                                <strong>Terms and Conditions:</strong><br>
+                                1. 1.5% back as NeuCoins with Tata Neu Infinity credit card on EMI/non-EMI spends.<br>
+                                2. 1% back with Tata Neu Plus credit card.<br>
+                                3. 1 NeuCoin = ₹1 redeemable on TATA Brands.<br>
+                                4. Governed by Fair Usage Policy (hdfcbank.com).<br>
+                                Exclusions: Fuel, Wallet loads, Cash Advances, Rental, Govt, Education payments via 3rd
+                                party apps.
+                            </div>
+                        </div>
+
+                        {{-- 3. Navi UPI --}}
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <i class="las la-wallet text-success mt-1 me-2 fs-5"></i>
+                                    <div style="line-height: 1.5;">
+                                        <strong class="text-dark d-block" style="font-size: 14px;">Navi UPI
+                                            Cashback</strong>
+                                        <span class="text-muted small">Win up to ₹100 cashback on every transaction on Navi
+                                            UPI.</span>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0)" onclick="$('#tc_navi').slideToggle()"
+                                    class="fw-bold text-primary small text-decoration-none"
+                                    style="white-space: nowrap;">T&C</a>
+                            </div>
+                            <div id="tc_navi" class="mt-2 p-2 bg-white border rounded text-muted"
+                                style="display:none; font-size: 12px; line-height: 1.6;">
+                                - Offer valid on payment via Navi UPI.<br>
+                                - Rewards will be credited to Navi account and can be redeemed to cash.<br>
+                                - Reward issuance is solely at Navi's discretion.
+                            </div>
+                        </div>
+
+                        {{-- 4. Amazon Pay --}}
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <i class="lab la-amazon text-warning mt-1 me-2 fs-5"></i>
+                                    <div style="line-height: 1.5;">
+                                        <strong class="text-dark d-block" style="font-size: 14px;">Amazon Pay
+                                            Balance</strong>
+                                        <span class="text-muted small">Win upto ₹300 back across 4 transactions.</span>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0)" onclick="$('#tc_amazon').slideToggle()"
+                                    class="fw-bold text-primary small text-decoration-none"
+                                    style="white-space: nowrap;">T&C</a>
+                            </div>
+                            <div id="tc_amazon" class="mt-2 p-2 bg-white border rounded text-muted"
+                                style="display:none; font-size: 12px; line-height: 1.6;">
+                                1) Min Order Value: ₹100.<br>
+                                2) Assured cashback upto ₹75 on each transaction (max 4 times).<br>
+                                3) Cashback given as Scratch Card in Amazon Pay Rewards section within 24 hours.<br>
+                                4) Scratch card valid till end of this month.
+                            </div>
+                        </div>
+
+                        {{-- 5. CRED UPI --}}
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <i class="las la-shield-alt text-dark mt-1 me-2 fs-5"></i>
+                                    <div style="line-height: 1.5;">
+                                        <strong class="text-dark d-block" style="font-size: 14px;">CRED UPI Offer</strong>
+                                        <span class="text-muted small">Win assured cashback upto ₹50 via CRED UPI.</span>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0)" onclick="$('#tc_cred').slideToggle()"
+                                    class="fw-bold text-primary small text-decoration-none"
+                                    style="white-space: nowrap;">T&C</a>
+                            </div>
+                            <div id="tc_cred" class="mt-2 p-2 bg-white border rounded text-muted"
+                                style="display:none; font-size: 12px; line-height: 1.6;">
+                                - Cashback will be available on CRED app to claim within 7 days of transaction.<br>
+                                - Other T&C may apply.
+                            </div>
+                        </div>
+
+                        {{-- 6. No Cost EMI --}}
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <div class="d-flex align-items-start">
+                                    <i class="las la-percentage text-danger mt-1 me-2 fs-5"></i>
+                                    <div style="line-height: 1.5;">
+                                        <strong class="text-dark d-block" style="font-size: 14px;">No Cost EMI</strong>
+                                        <span class="text-muted small">0% Interest on UPI & Cards Accepted | No Extra
+                                            Cost.</span>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0)" onclick="$('#tc_no_cost').slideToggle()"
+                                    class="fw-bold text-primary small text-decoration-none"
+                                    style="white-space: nowrap;">T&C</a>
+                            </div>
+                            <div id="tc_no_cost" class="mt-2 p-2 bg-white border rounded text-muted"
+                                style="display:none; font-size: 12px; line-height: 1.6;">
+                                1. The interest charged by the bank will be given as an upfront discount on the payment
+                                page, making it effectively No Cost EMI.<br>
+                                2. This offer is valid only on selected Bank Credit Cards.<br>
+                                3. Banks may charge a nominal processing fee.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
                 {{-- 🚚 DELIVERY CHECKER --}}
                 <div class="delivery-check-box mb-3">
@@ -1010,10 +1187,14 @@
                 if (discContainer) discContainer.classList.add('d-none');
             }
 
-            // Trigger Siddh Recalc
+            // Trigger Siddh Recalc (This handles Siddh + EMI together)
             const siddhCheck = document.getElementById('siddh_check');
             if (siddhCheck && siddhCheck.checked) {
+                // Trigger change event to re-calculate Siddh Price + EMI
                 siddhCheck.dispatchEvent(new Event('change'));
+            } else {
+                // 🔥 Direct EMI Update if Siddh is NOT checked
+                calculateEMI(price);
             }
         }
 
@@ -1144,14 +1325,14 @@
         // 1. Initialize Lightbox (Click to Enlarge)
         const lightbox = GLightbox({
             selector: '.glightbox', // Class name to target
-            touchNavigation: true,  // Mobile swipe support
-            loop: true,             // Infinite loop
-            zoomable: true,         // ✅ ZOOM ENABLED (Icon aayega top-right me)
-            draggable: true,        // ✅ DRAG ENABLED (Zoom hone par image move kar sakenge)
-            dragAutoSnap: true,     // Image wapas center me aayegi agar jyada drag kiya
-            openEffect: 'zoom',     // Opening animation
-            closeEffect: 'zoom',    // Closing animation
-            slideEffect: 'slide'    // Slide animation
+            touchNavigation: true, // Mobile swipe support
+            loop: true, // Infinite loop
+            zoomable: true, // ✅ ZOOM ENABLED (Icon aayega top-right me)
+            draggable: true, // ✅ DRAG ENABLED (Zoom hone par image move kar sakenge)
+            dragAutoSnap: true, // Image wapas center me aayegi agar jyada drag kiya
+            openEffect: 'zoom', // Opening animation
+            closeEffect: 'zoom', // Closing animation
+            slideEffect: 'slide' // Slide animation
         });
 
         // 2. Flipkart Style Hover Zoom Logic
@@ -1185,7 +1366,7 @@
 
         // 3. Fix for Slick Slider (Re-init zoom if slick changes DOM)
         // Agar slick slider swipe hone ke baad zoom band ho jaye, to ye zaroori hai
-        $('.product-main-slider').on('afterChange', function(event, slick, currentSlide){
+        $('.product-main-slider').on('afterChange', function(event, slick, currentSlide) {
             // Re-attach listeners is difficult, but standard CSS hover works best here.
             // Hamara upar wala JS logic static elements par hai, Slick clone karta hai.
             // Isliye behtar hai hum 'event delegation' use karein:
@@ -1193,10 +1374,10 @@
 
         // 🔥 BETTER WAY FOR SLICK SLIDER (Event Delegation)
         // Ye code upar wale `forEach` ko replace karega taaki Slider ke cloned elements par bhi chale
-        $(document).on('mousemove', '.zoom-container', function(e){
+        $(document).on('mousemove', '.zoom-container', function(e) {
             const container = this;
             const img = container.querySelector('.zoom-img');
-            if(!img) return;
+            if (!img) return;
 
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -1209,12 +1390,12 @@
             img.style.transform = "scale(2)";
         });
 
-       $(document).on('mouseleave', '.zoom-container', function(e){
-        const img = this.querySelector('.zoom-img');
-        if(img) {
-            img.style.transformOrigin = "center center";
-            img.style.transform = "scale(1)";
-        }
-    });
+        $(document).on('mouseleave', '.zoom-container', function(e) {
+            const img = this.querySelector('.zoom-img');
+            if (img) {
+                img.style.transformOrigin = "center center";
+                img.style.transform = "scale(1)";
+            }
+        });
     </script>
 @endsection

@@ -35,7 +35,31 @@ class CheckoutController extends Controller
             return redirect()->route('products.search_listing')->with('error', 'Your cart is empty.');
         }
 
-        return view('frontend.pages.checkout', compact('addresses', 'cartItems'));
+        // ============================================================
+        // 🎮 GAMING COUPON LOGIC START
+        // ============================================================
+
+        $luckyCoupon = \App\Models\UserCoupon::where('user_id', $userId)
+            ->where('is_used', 0) // Jo use nahi hua
+            ->latest()
+            ->first();
+
+        $autoApplyDiscount = 0;
+        $autoCouponCode = null;
+
+        if ($luckyCoupon) {
+            $autoApplyDiscount = $luckyCoupon->amount;
+            $autoCouponCode = $luckyCoupon->code;
+
+            // Frontend par message dikhane ke liye flash session set karein
+            // Note: View me 'session("success")' check karna padega
+            if (!session()->has('coupon_applied')) {
+                session()->flash('success', '🎉 Congratulations! Your game reward of ₹' . $autoApplyDiscount . ' OFF has been applied.');
+                session()->flash('coupon_applied', true); // Prevent duplicate messages on refresh
+            }
+        }
+
+        return view('frontend.pages.checkout', compact('addresses', 'cartItems', 'autoApplyDiscount', 'autoCouponCode'));
     }
 
     public function saveAddress(Request $request)
@@ -106,6 +130,7 @@ class CheckoutController extends Controller
     }
 
     // 🔥 MAIN ORDER LOGIC (Handles Both Cart & Direct Buy)
+    // 🔥 MAIN ORDER LOGIC (Handles Both Cart & Direct Buy)
     public function placeOrder(Request $request)
     {
         $user = Auth::user();
@@ -116,8 +141,6 @@ class CheckoutController extends Controller
         $addressId = $request->address_id;
 
         if ($request->new_address_flag == '1' || !$addressId) {
-
-            // Validation
             $request->validate([
                 'new_pincode' => 'required',
                 'new_address' => 'required',
@@ -126,7 +149,6 @@ class CheckoutController extends Controller
                 'new_email' => 'required'
             ]);
 
-            // Save New Address
             $newAddress = UserAddress::create([
                 'user_id' => $user->id,
                 'name' => $request->new_name,
@@ -136,7 +158,7 @@ class CheckoutController extends Controller
                 'city' => $request->new_city,
                 'state' => $request->new_state,
                 'address_line1' => $request->new_address,
-                'type' => $request->addr_type ?? 'home' // Default Home if null
+                'type' => $request->addr_type ?? 'home'
             ]);
 
             $finalAddress = $newAddress;
@@ -151,29 +173,26 @@ class CheckoutController extends Controller
         $totalAmount = 0;
 
         if ($request->buy_mode == 'direct') {
-            // 🔥 DIRECT BUY LOGIC
             $product = Product::findOrFail($request->product_id);
             $qty = $request->quantity;
-            $isSiddh = $request->is_siddh ?? 0; // Default 0
+            $isSiddh = $request->is_siddh ?? 0;
 
-            // Price Calculation
-            $price = $product->price;
+            //$price = $product->price;
+            $price = round($product->price);
             if ($isSiddh == 1) {
                 $price += $product->siddh_price;
             }
 
             $totalAmount = $price * $qty;
 
-            // Prepare Data
             $orderItemsData[] = [
                 'product_id' => $product->id,
                 'product_name' => $product->name,
                 'quantity' => $qty,
                 'price' => $price,
-                'is_siddh' => $isSiddh // ✅ Database Column ke hisab se
+                'is_siddh' => $isSiddh
             ];
         } else {
-            // 🛒 CART BUY LOGIC
             $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
 
             if ($cartItems->isEmpty()) {
@@ -181,7 +200,8 @@ class CheckoutController extends Controller
             }
 
             foreach ($cartItems as $item) {
-                $price = $item->product->price;
+                //$price = $item->product->price;
+                $price = round($item->product->price);
                 $isSiddh = $item->is_siddh;
 
                 if ($isSiddh == 1) {
@@ -195,37 +215,62 @@ class CheckoutController extends Controller
                     'product_name' => $item->product->name,
                     'quantity' => $item->quantity,
                     'price' => $price,
-                    'is_siddh' => $isSiddh // ✅ Database Column ke hisab se
+                    'is_siddh' => $isSiddh
                 ];
             }
         }
 
+        // -----------------------------
+        // A. APPLY ADMIN COUPON (Manual)
+        // -----------------------------
         if ($request->coupon_code) {
             $coupon = Coupon::where('code', $request->coupon_code)->where('status', 1)->first();
 
             if ($coupon) {
-                // Check Expiry (Optional)
-                if ($coupon->expires_at && Carbon::now()->gt($coupon->expires_at)) {
-                    // Expired hai to kuch mat karo ya error return karo
-                } else {
+                // Check Expiry
+                if (!($coupon->expires_at && Carbon::now()->gt($coupon->expires_at))) {
                     $discount = 0;
-
                     if ($coupon->type == 'fixed') {
                         $discount = $coupon->value;
                     } else {
                         $discount = ($totalAmount * $coupon->value) / 100;
                     }
 
-                    // Discount Total se zyada nahi ho sakta
                     if ($discount > $totalAmount) {
                         $discount = $totalAmount;
                     }
-
-                    // Final Amount Update
                     $totalAmount = $totalAmount - $discount;
                 }
             }
         }
+
+        // ============================================================
+        // 🔥 B. APPLY GAMING COUPON (Automatic) -> YE CODE ADD KIA HAI
+        // ============================================================
+        $usedGameCouponId = null; // Store ID to mark used later for COD
+
+        if ($request->gaming_coupon_code) {
+            $luckyCoupon = \App\Models\UserCoupon::where('code', $request->gaming_coupon_code)
+                ->where('user_id', Auth::id())
+                ->where('is_used', 0)
+                ->first();
+
+            if ($luckyCoupon) {
+                $gameDiscount = $luckyCoupon->amount;
+
+                // Total amount minus karo (Ensure negative na ho)
+                if ($gameDiscount > $totalAmount) {
+                    $gameDiscount = $totalAmount;
+                }
+
+                $totalAmount -= $gameDiscount;
+
+                // ID store karlo taaki COD me isko 'used' mark kar sakein
+                $usedGameCouponId = $luckyCoupon->id;
+            }
+        }
+        // ============================================================
+
 
         // -----------------------------
         // 3. CREATE ORDER IN DATABASE
@@ -233,8 +278,8 @@ class CheckoutController extends Controller
         $order = Order::create([
             'order_number' => 'ORD-' . strtoupper(Str::random(10)),
             'user_id' => $user->id,
-            'shipping_address' => $finalAddress->toArray(), // ✅ Array pass karein, Model Cast handle karega
-            'total_amount' => $totalAmount,
+            'shipping_address' => $finalAddress->toArray(),
+            'total_amount' => $totalAmount, // ✅ Final amount after both discounts
             'payment_method' => $request->payment_method,
             'status' => 'pending',
             'payment_status' => 'pending'
@@ -244,18 +289,16 @@ class CheckoutController extends Controller
         // 4. SAVE ORDER ITEMS
         // -----------------------------
         foreach ($orderItemsData as $itemData) {
-            // $order->items() relation use karke save karein
             $order->items()->create($itemData);
         }
 
         // -----------------------------
-        // 5. PAYMENT HANDLING (Razorpay vs COD)
+        // 5. PAYMENT HANDLING
         // -----------------------------
 
         // ✅ RAZORPAY LOGIC
         if ($request->payment_method == 'RAZORPAY') {
 
-            // 1. Get Keys from Admin Settings Table
             $paymentSetting = PaymentSetting::first();
 
             if (!$paymentSetting || !$paymentSetting->key_id) {
@@ -265,18 +308,17 @@ class CheckoutController extends Controller
             $apiKey = $paymentSetting->key_id;
             $apiSecret = $paymentSetting->key_secret;
 
-            // 2. Initialize Razorpay API
             $api = new Api($apiKey, $apiSecret);
 
-            // 3. Create Razorpay Order
+            $finalAmountInPaise = (int) round($totalAmount * 100);
+
             $rzpOrder = $api->order->create([
                 'receipt'         => (string) $order->id,
-                'amount'          => $totalAmount * 100, // Amount in Paise
+                'amount'          => $finalAmountInPaise,
                 'currency'        => 'INR',
                 'payment_capture' => 1
             ]);
 
-            // 4. Return JSON for Frontend Popup
             return response()->json([
                 'status' => 'razorpay',
                 'key' => $apiKey,
@@ -285,11 +327,11 @@ class CheckoutController extends Controller
                 'name' => 'Suyagya Store',
                 'description' => 'Order #' . $order->order_number,
                 'image' => asset('assets/img/logo.png'),
-                'order_id' => $order->id,        // Local DB ID
-                'rzp_order_id' => $rzpOrder['id'], // Razorpay Order ID
+                'order_id' => $order->id,
+                'rzp_order_id' => $rzpOrder['id'],
                 'prefill' => [
                     'name' => $user->name,
-                    'email' => $user->email, // Email agar null hai to handle karein
+                    'email' => $user->email,
                     'contact' => $user->phone
                 ]
             ]);
@@ -297,12 +339,17 @@ class CheckoutController extends Controller
 
         // ✅ COD LOGIC
         else {
-            // Cart Clear karein agar Cart Mode tha
+            // Cart Clear
             if ($request->buy_mode == 'cart') {
                 Cart::where('user_id', $user->id)->delete();
             }
 
-            // 🔥 MAIL SEND KARO
+            // 🔥 GAMING COUPON MARK USED (Only for COD here)
+            // Razorpay ke liye verifyPayment me mark hoga
+            if ($usedGameCouponId) {
+                \App\Models\UserCoupon::where('id', $usedGameCouponId)->update(['is_used' => 1]);
+            }
+
             $this->sendOrderEmail($order->id);
 
             return response()->json([
@@ -363,6 +410,17 @@ class CheckoutController extends Controller
 
             // 3. Empty Cart (Agar pehle nahi kiya tha)
             Cart::where('user_id', Auth::id())->delete();
+
+            // -----------------------------
+            // 🔥 MARK GAMING COUPON USED
+            // -----------------------------
+            $luckyCoupon = \App\Models\UserCoupon::where('user_id', Auth::id())
+                ->where('is_used', 0)
+                ->first();
+
+            if ($luckyCoupon) {
+                $luckyCoupon->update(['is_used' => 1]);
+            }
 
             // 🔥 MAIL SEND KARO (Payment Success hone par)
             $this->sendOrderEmail($order->id);
@@ -481,7 +539,7 @@ class CheckoutController extends Controller
 
             // 2. Admin Email (Jaha aapko notification chahiye)
             // Aap chaho to apni personal gmail daal lo taaki turant pata chale
-            $adminEmail = 'singh.prakhar1996@gmail.com'; // 👈 Yahan apni personal ID dalein
+            $adminEmail = 'ram@rammittal.com'; // 👈 Yahan apni personal ID dalein
 
             // Send to User (From: support@suyagya.com)
             if ($userEmail) {
@@ -493,5 +551,24 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             \Log::error('Mail Sending Failed: ' . $e->getMessage());
         }
+    }
+
+    public function cancelOrder(Request $request)
+    {
+
+        $order = Order::find($request->order_id);
+
+        if ($order && $order->payment_status == 'pending') {
+            $order->status = 'cancelled';
+            $order->payment_status = 'failed';
+            $order->save();
+
+            \Log::info('Order Successfully Cancelled'); // Success Log
+
+            return response()->json(['status' => true, 'message' => 'Order Cancelled']);
+        }
+
+        \Log::warning('Order Cancel Condition Failed'); // Fail Log
+        return response()->json(['status' => false]);
     }
 }
