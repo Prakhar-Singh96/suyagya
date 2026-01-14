@@ -22,7 +22,7 @@
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapse{{ $uid }}"
                                 aria-expanded="false"
-                                aria-controls="collapse{{ $uid }}">
+                                aria-controls="collapse{{ $uid }}" style="margin-left: 10px;">
                             {{ $q }}
                         </button>
                     </h2>

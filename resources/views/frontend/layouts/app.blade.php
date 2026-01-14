@@ -147,6 +147,8 @@
         href="{{ asset('assets/css/custom.css') }}?v={{ filemtime(public_path('assets/css/custom.css')) }}">
 
     @yield('styles')
+
+    <script src="https://cdn.razorpay.com/widgets/affordability/affordability.js"></script>
 </head>
 
 {{-- 🎨 Body uses the creamy background set in custom.css --}}

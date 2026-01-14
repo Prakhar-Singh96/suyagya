@@ -443,8 +443,8 @@
 
 
                 {{-- EMI Widget --}}
-                @if ($product->emi_available)
-                    {{-- Logic: Box html me rahega, lekin display logic JS sambhalega ya inline CSS --}}
+                {{-- @if ($product->emi_available)
+
                     <div class="emi-box border rounded p-2 mb-4 align-items-center bg-white"
                         style="max-width: 400px; display: {{ $product->price > 1100 ? 'flex' : 'none' }};">
 
@@ -456,7 +456,9 @@
                             <div class="text-muted" style="font-size: 11px;">UPI & Cards Accepted | No Extra Cost</div>
                         </div>
                     </div>
-                @endif
+                @endif --}}
+
+                <div id="razorpay-affordability-widget"> </div>
 
                 {{-- Siddh Checkbox --}}
                 @if ($product->is_siddh_enabled)
@@ -1028,6 +1030,43 @@
 
 @section('scripts')
     <script>
+       // --- 🟢 RAZORPAY WIDGET CONFIGURATION ---
+        const rzpKey = "rzp_live_S0zZ2YEhXKBKxb"; // Aapki Live Key
+
+        // 1. Widget Render Function (Yehi Main Hai)
+        function renderRazorpayWidget(currentPrice) {
+            const container = document.getElementById('razorpay-affordability-widget');
+
+            // Container saaf karein taaki duplicate na bane
+            if (container) container.innerHTML = '';
+
+            // Widget sirf tab dikhayein jab price ek limit se zyada ho (Optional, e.g. > 100)
+            if(currentPrice < 100) return;
+
+            const widgetConfig = {
+                "key": rzpKey,
+                "amount": Math.round(currentPrice * 100), // Convert to Paise
+            };
+
+            try {
+                const rzpAffordabilitySuite = new RazorpayAffordabilitySuite(widgetConfig);
+                rzpAffordabilitySuite.render();
+            } catch (e) {
+                console.error("Razorpay Widget Error:", e);
+            }
+        }
+
+        // 2. Page Load Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start Price uthao
+            let startPrice = parseFloat("{{ $product->price }}");
+
+            // Widget chalao
+            renderRazorpayWidget(startPrice);
+
+            // Gemstone Logic Initialize
+            if (document.getElementById('gem_data')) findGemPrice();
+        });
         // 1. Slider Setup (Fixed)
         $('.product-main-slider').slick({
             slidesToShow: 1,
@@ -1187,15 +1226,19 @@
                 if (discContainer) discContainer.classList.add('d-none');
             }
 
-            // Trigger Siddh Recalc (This handles Siddh + EMI together)
-            const siddhCheck = document.getElementById('siddh_check');
-            if (siddhCheck && siddhCheck.checked) {
-                // Trigger change event to re-calculate Siddh Price + EMI
-                siddhCheck.dispatchEvent(new Event('change'));
-            } else {
-                // 🔥 Direct EMI Update if Siddh is NOT checked
-                calculateEMI(price);
-            }
+            // // Trigger Siddh Recalc (This handles Siddh + EMI together)
+            // const siddhCheck = document.getElementById('siddh_check');
+            // if (siddhCheck && siddhCheck.checked) {
+            //     // Trigger change event to re-calculate Siddh Price + EMI
+            //     siddhCheck.dispatchEvent(new Event('change'));
+            // } else {
+            //     // 🔥 Direct EMI Update if Siddh is NOT checked
+            //     calculateEMI(price);
+            // }
+
+            // B. 🔥 RAZORPAY WIDGET UPDATE
+            // Nayi price ke saath widget dubara banayein
+            renderRazorpayWidget(price);
         }
 
         // Initialize
@@ -1224,8 +1267,7 @@
                 // 1. Update the Price Display
                 displayPrice.innerText = finalPrice.toLocaleString('en-IN');
 
-                // 2. Recalculate EMI with the new price (Use setTimeout to ensure DOM is ready)
-                setTimeout(calculateEMI, 50);
+                renderRazorpayWidget(price);
             });
         }
 
@@ -1274,39 +1316,39 @@
             calculateEMI(); // Page load hote hi calculate karein
         });
 
-        function calculateEMI() {
-            // 1. Current Price uthao
-            let priceElement = document.getElementById('display_price');
-            if (!priceElement) return;
+        // function calculateEMI() {
+        //     // 1. Current Price uthao
+        //     let priceElement = document.getElementById('display_price');
+        //     if (!priceElement) return;
 
-            // Comma hata kar number banao (e.g. "1,499" -> 1499)
-            let currentPrice = parseFloat(priceElement.innerText.replace(/,/g, ''));
+        //     // Comma hata kar number banao (e.g. "1,499" -> 1499)
+        //     let currentPrice = parseFloat(priceElement.innerText.replace(/,/g, ''));
 
-            // 2. Minimum Amount Check (Razorpay EMI usually starts from ₹3000 or ₹5000, check your setting)
-            // Agar product sasta hai (e.g. ₹500), to EMI box hide kar do
-            let emiContainer = document.querySelector('.emi-box');
+        //     // 2. Minimum Amount Check (Razorpay EMI usually starts from ₹3000 or ₹5000, check your setting)
+        //     // Agar product sasta hai (e.g. ₹500), to EMI box hide kar do
+        //     let emiContainer = document.querySelector('.emi-box');
 
-            if (currentPrice < 1100) {
-                // Agar price 3000 se kam hai to EMI box chupao (Optional logic)
-                if (emiContainer) emiContainer.style.display = 'none';
-                return;
-            } else {
-                if (emiContainer) emiContainer.style.display = 'flex';
-            }
+        //     if (currentPrice < 1100) {
+        //         // Agar price 3000 se kam hai to EMI box chupao (Optional logic)
+        //         if (emiContainer) emiContainer.style.display = 'none';
+        //         return;
+        //     } else {
+        //         if (emiContainer) emiContainer.style.display = 'flex';
+        //     }
 
-            // 3. Calculation (Price / 3 Months)
-            // Math.ceil() use kiya taaki points na aayen (e.g. 499.33 -> 500)
-            let emi3Months = Math.ceil(currentPrice / 3);
+        //     // 3. Calculation (Price / 3 Months)
+        //     // Math.ceil() use kiya taaki points na aayen (e.g. 499.33 -> 500)
+        //     let emi3Months = Math.ceil(currentPrice / 3);
 
-            // 4. Update HTML
-            let emiText = document.getElementById('emi_amount'); // Apne HTML me ye ID add karna mat bhulna inside emi-box
-            if (emiText) {
-                emiText.innerText = emi3Months.toLocaleString('en-IN');
-            } else {
-                // Fallback: Agar ID nahi mili to console me batao
-                console.warn('Element with id "emi_amount" not found inside EMI box.');
-            }
-        }
+        //     // 4. Update HTML
+        //     let emiText = document.getElementById('emi_amount'); // Apne HTML me ye ID add karna mat bhulna inside emi-box
+        //     if (emiText) {
+        //         emiText.innerText = emi3Months.toLocaleString('en-IN');
+        //     } else {
+        //         // Fallback: Agar ID nahi mili to console me batao
+        //         console.warn('Element with id "emi_amount" not found inside EMI box.');
+        //     }
+        // }
 
         // 🔄 Jab bhi Price update ho (Variant/Siddh change), EMI bhi update karo
         // Hum purane 'updatePrices' function ko "Hook" kar rahe hain
