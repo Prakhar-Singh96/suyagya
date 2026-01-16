@@ -17,6 +17,10 @@ class CheckForRedirects
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // ✅ FIX: अगर Migration वाला रूट है, तो चेक मत करो और आगे जाने दो
+        if ($request->is('run-migration') || $request->is('run-migration*')) {
+            return $next($request);
+        }
         // URL को साफ करें (slash / को handle करें)
         $path = '/' . trim($request->path(), '/');
 
