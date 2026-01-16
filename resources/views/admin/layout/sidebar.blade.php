@@ -289,5 +289,13 @@
             </ul>
         </li>
 
+        <li class="menu-item {{ request()->routeIs('admin.redirects.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.redirects.index') }}" class="menu-link">
+                {{-- Sneat Theme ka Icon --}}
+                <i class="menu-icon tf-icons bx bx-link"></i>
+                <div>Redirects (Fix Links)</div>
+            </a>
+        </li>
+
     </ul>
 </aside>

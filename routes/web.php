@@ -16,14 +16,15 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\GameController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
-use App\Http\Controllers\Frontend\SitemapController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\LogisticController;
+use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Admin\GeneralFaqController;
+use App\Http\Controllers\Frontend\SitemapController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\FilterValueController;
 use App\Http\Controllers\Admin\SubCategoryController;
@@ -180,6 +181,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // General FAQs CRUD
         Route::resource('/general-faqs', GeneralFaqController::class);
+
+        Route::get('/redirects', [RedirectController::class, 'index'])->name('redirects.index');
+        Route::post('/redirects/store', [RedirectController::class, 'store'])->name('redirects.store');
+        Route::delete('/redirects/{id}', [RedirectController::class, 'destroy'])->name('redirects.destroy');
 
         // Admin Middleware Group ke andar
         Route::group(['prefix' => 'logistic', 'as' => 'logistic.'], function () {
