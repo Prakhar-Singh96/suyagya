@@ -550,7 +550,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                                         alt="Black Stone">
                                     <div class="fav-content">
                                         <h3>Spritual Stone Jewellery</h3>
-                                        <a href="{{ url('category/spritual-jewellery') }}" class="btn btn-fav-shop">Shop
+                                        <a href="{{ url('category/stone-jewellery') }}" class="btn btn-fav-shop">Shop
                                             now</a>
                                     </div>
                                 </div>
@@ -588,7 +588,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                                 alt="Rose Product">
                             <div class="fav-content">
                                 <h3>Ganesh Shankh Collection</h3>
-                                <a href="{{ url('category/pooja-items-/shankh') }}" class="btn btn-fav-shop">Shop now</a>
+                                <a href="{{ url('category/pooja-items/shankh') }}" class="btn btn-fav-shop">Shop now</a>
                             </div>
                         </div>
                     </div>

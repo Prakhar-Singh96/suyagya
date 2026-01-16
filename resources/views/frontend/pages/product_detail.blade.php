@@ -115,23 +115,23 @@
 
         /* Mobile Adjustments */
         /* @media (max-width: 768px) {
-                                        .product-slider-container {
-                                            height: 455px !important;
-                                            aspect-ratio: 1 / 1;
-                                            width: 100%;
-                                        }
+                                            .product-slider-container {
+                                                height: 455px !important;
+                                                aspect-ratio: 1 / 1;
+                                                width: 100%;
+                                            }
 
-                                        .product-slider-container img,
-                                        .product-slider-container video {
-                                            width: 100%;
-                                            height: 100%;
-                                            object-fit: cover;
-                                        }
+                                            .product-slider-container img,
+                                            .product-slider-container video {
+                                                width: 100%;
+                                                height: 100%;
+                                                object-fit: cover;
+                                            }
 
-                                        .product-images {
-                                            top: 0 !important;
-                                        }
-                                    } */
+                                            .product-images {
+                                                top: 0 !important;
+                                            }
+                                        } */
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
             overflow: hidden;
@@ -355,61 +355,92 @@
 
                 @if ($product->is_gemstone && $product->gemstoneVariants->count() > 0)
 
+                    {{-- 🔥 SMART PHP: Check what actually exists --}}
+                    @php
+                        $gemVariants = $product->gemstoneVariants;
+                        $availTypes = $gemVariants->pluck('type')->unique()->toArray();
+                        $availMats = $gemVariants->pluck('material')->unique()->filter()->toArray();
+
+                        // Default Selection (Pick the first available variant)
+                        $firstVar = $gemVariants->first();
+                        $defType = $firstVar->type;
+                        $defRatti = $firstVar->ratti_size;
+                        $defMat = $firstVar->material ?? 'silver';
+                    @endphp
+
                     {{-- Hidden Data --}}
-                    <div id="gem_data" style="display:none;">{{ json_encode($product->gemstoneVariants) }}</div>
-                    <input type="hidden" name="variant_id" id="selected_variant_id" value="">
+                    <div id="gem_data" style="display:none;">{{ json_encode($gemVariants) }}</div>
+                    <input type="hidden" name="variant_id" id="selected_variant_id" value="{{ $firstVar->id }}">
 
                     <div class="gem-config-container">
 
-                        {{-- 1. TYPE --}}
-                        <div class="gem-option-group">
-                            <span class="gem-option-title">Type</span>
-                            <div class="gem-btn-wrapper">
-                                <div class="gem-btn active gem-type-btn" onclick="updateGemState('type', 'loose', this)">
-                                    <i class="las la-gem"></i> Gemstone
-                                </div>
-                                <div class="gem-btn gem-type-btn" onclick="updateGemState('type', 'ring', this)">
-                                    <i class="las la-ring"></i> Ring
-                                </div>
-                                <div class="gem-btn gem-type-btn" onclick="updateGemState('type', 'pendant', this)">
-                                    <i class="las la-medal"></i> Pendant
+                        {{-- 1. TYPE SELECTOR (Show only available types) --}}
+                        @if (count($availTypes) > 1)
+                            <div class="gem-option-group">
+                                <span class="gem-option-title">Type</span>
+                                <div class="gem-btn-wrapper">
+                                    @if (in_array('loose', $availTypes))
+                                        <div class="gem-btn {{ $defType == 'loose' ? 'active' : '' }} gem-type-btn"
+                                            onclick="updateGemState('type', 'loose', this)">
+                                            <i class="las la-gem"></i> Gemstone
+                                        </div>
+                                    @endif
+                                    @if (in_array('ring', $availTypes))
+                                        <div class="gem-btn {{ $defType == 'ring' ? 'active' : '' }} gem-type-btn"
+                                            onclick="updateGemState('type', 'ring', this)">
+                                            <i class="las la-ring"></i> Ring
+                                        </div>
+                                    @endif
+                                    @if (in_array('pendant', $availTypes))
+                                        <div class="gem-btn {{ $defType == 'pendant' ? 'active' : '' }} gem-type-btn"
+                                            onclick="updateGemState('type', 'pendant', this)">
+                                            <i class="las la-medal"></i> Pendant
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                        </div>
-                        <input type="hidden" id="sel_type" value="loose">
+                        @endif
+                        <input type="hidden" id="sel_type" value="{{ $defType }}">
 
-                        {{-- 2. SIZE (RATTI) --}}
+                        {{-- 2. SIZE (RATTI) - Fixed to show ALL available sizes --}}
                         <div class="gem-option-group">
-                            <span class="gem-option-title">Size</span>
+                            <span class="gem-option-title">Size (Ratti)</span>
                             <div class="gem-btn-wrapper" id="ratti_group">
-                                @foreach ($product->gemstoneVariants->where('type', 'loose')->unique('ratti_size') as $idx => $gv)
-                                    <div class="gem-btn gem-ratti-btn {{ $idx === 0 ? 'active' : '' }}"
+                                {{-- 🔥 FIX: Removed 'where type loose'. Now shows unique sizes from ALL variants --}}
+                                @foreach ($gemVariants->unique('ratti_size')->sortBy('ratti_size') as $gv)
+                                    <div class="gem-btn gem-ratti-btn {{ (string) $gv->ratti_size == (string) $defRatti ? 'active' : '' }}"
                                         onclick="updateGemState('ratti', '{{ $gv->ratti_size }}', this)">
                                         {{ $gv->ratti_size }} Ratti
                                     </div>
                                 @endforeach
                             </div>
                         </div>
-                        <input type="hidden" id="sel_ratti"
-                            value="{{ $product->gemstoneVariants->where('type', 'loose')->first()->ratti_size ?? '' }}">
+                        <input type="hidden" id="sel_ratti" value="{{ $defRatti }}">
 
-                        {{-- 3. MATERIAL (Hidden initially) --}}
-                        <div class="gem-option-group" id="material_section" style="display:none;">
+                        {{-- 3. MATERIAL (Dynamic Visibility) --}}
+                        <div class="gem-option-group" id="material_section"
+                            style="display: {{ $defType == 'loose' ? 'none' : 'block' }};">
                             <span class="gem-option-title">Material</span>
                             <div class="gem-btn-wrapper">
-                                <div class="gem-btn active gem-mat-btn"
-                                    onclick="updateGemState('material', 'silver', this)">
-                                    <span class="mat-color bg-silver"></span> Silver
-                                </div>
-                                <div class="gem-btn gem-mat-btn" onclick="updateGemState('material', 'panchdhatu', this)">
-                                    <span class="mat-color bg-panch"></span> Panchdhatu
-                                </div>
+                                @if (in_array('silver', $availMats))
+                                    <div class="gem-btn {{ $defMat == 'silver' ? 'active' : '' }} gem-mat-btn"
+                                        onclick="updateGemState('material', 'silver', this)">
+                                        <span class="mat-color bg-silver"></span> Silver
+                                    </div>
+                                @endif
+                                @if (in_array('panchdhatu', $availMats))
+                                    <div class="gem-btn {{ $defMat == 'panchdhatu' ? 'active' : '' }} gem-mat-btn"
+                                        onclick="updateGemState('material', 'panchdhatu', this)">
+                                        <span class="mat-color bg-panch"></span> Panchdhatu
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        <input type="hidden" id="sel_mat" value="silver">
+                        <input type="hidden" id="sel_mat" value="{{ $defMat }}">
 
-                        {{-- 4. RING SIZE (Hidden initially) --}}
-                        <div class="gem-option-group" id="ring_size_section" style="display:none;">
+                        {{-- 4. RING SIZE (Only show if Type is Ring) --}}
+                        <div class="gem-option-group" id="ring_size_section"
+                            style="display: {{ $defType == 'ring' ? 'block' : 'none' }};">
                             <span class="gem-option-title">Ring Size</span>
                             <div class="d-flex align-items-center">
                                 <select class="form-select w-auto" name="ring_size" style="min-width: 200px;">
@@ -419,13 +450,13 @@
                                     @endfor
                                     <option value="adjustable">Free/Adjustable</option>
                                 </select>
-                                <a href="#" class="small text-primary text-decoration-underline ms-3">Size Chart</a>
+                                <a href="{{route('ring.size.guide')}}" class="small text-primary text-decoration-underline ms-3">Size Chart</a>
                             </div>
                         </div>
 
                     </div>
                 @elseif ($product->variants->count() > 0)
-                    {{-- ⚖️ STANDARD WEIGHT DROPDOWN --}}
+                    {{-- STANDARD WEIGHT DROPDOWN (No Change) --}}
                     <div class="mb-4 bg-light p-2 rounded border" style="max-width: 250px;">
                         <label class="fw-bold small mb-1 d-block text-dark">Select Weight:</label>
                         <select class="form-select form-select-sm border-secondary fw-bold text-dark" id="variant_select"
@@ -1030,7 +1061,7 @@
 
 @section('scripts')
     <script>
-       // --- 🟢 RAZORPAY WIDGET CONFIGURATION ---
+        // --- 🟢 RAZORPAY WIDGET CONFIGURATION ---
         const rzpKey = "rzp_live_S0zZ2YEhXKBKxb"; // Aapki Live Key
 
         // 1. Widget Render Function (Yehi Main Hai)
@@ -1041,7 +1072,7 @@
             if (container) container.innerHTML = '';
 
             // Widget sirf tab dikhayein jab price ek limit se zyada ho (Optional, e.g. > 100)
-            if(currentPrice < 1100) return;
+            if (currentPrice < 1100) return;
 
             const widgetConfig = {
                 "key": rzpKey,

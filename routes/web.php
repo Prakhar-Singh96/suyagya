@@ -267,3 +267,5 @@ Route::get('sitemap/pages.xml', [SitemapController::class, 'pages'])->name('site
 Route::get('sitemap/collections.xml', [SitemapController::class, 'collections'])->name('sitemap.collections');
 Route::get('sitemap/categories.xml', [SitemapController::class, 'categories'])->name('sitemap.categories');
 Route::get('sitemap/products.xml', [SitemapController::class, 'products'])->name('sitemap.products');
+
+Route::view('/ring-size-guide', 'frontend.pages.ring_size_guide')->name('ring.size.guide');
