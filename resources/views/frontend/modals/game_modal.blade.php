@@ -3,7 +3,7 @@
         <div class="modal-content border-0 text-center p-4"
             style="background: #fffbf2; border: 3px solid #ff6f00; background-image: url('https://www.transparenttextures.com/patterns/cubes.png');">
 
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal"></button>
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="closeLuckyDraw()" aria-label="Close"></button>
 
             <h3 class="fw-bold font-heading mb-1">🎰 Lucky Draw</h3>
             <p class="text-muted small mb-4">Pick a lucky chit to win up to <strong>₹ 100!</strong></p>

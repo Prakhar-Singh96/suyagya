@@ -3265,3 +3265,9 @@ div#heroSlider .bnanner-img {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-5px); }
     }
+
+/* Global Fix for Horizontal Scroll */
+body, html {
+    overflow-x: hidden;
+    width: 100%;
+}

@@ -12,24 +12,25 @@
         }
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
-        .gem-config-container {
+        /* .gem-config-container {
             border: 1px solid #eee;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            background-color: #fff;
-        }
+            background-color: #f7f1de;
+        } */
 
         .gem-option-group {
             margin-bottom: 15px;
         }
 
         .gem-option-title {
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 700;
             color: #333;
             margin-bottom: 8px;
             display: block;
+            font-family: 'Merriweather', serif;
         }
 
         .gem-btn-wrapper {

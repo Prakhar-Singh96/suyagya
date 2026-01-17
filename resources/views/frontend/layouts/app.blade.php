@@ -195,13 +195,20 @@
 
     {{-- 🎉 GAMIFICATION MODAL --}}
 
-    @if(Request::is('/') && Cookie::get('lucky_draw_played') === null)
-
+    @if (Cookie::get('lucky_draw_played') === null)
         @include('frontend.modals.game_modal') {{-- Ya jo apka modal code hai --}}
-
     @endif
 
+    {{-- 🎁 1. FLOATING ICON (Added this) --}}
+    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()" style="display: none;">
+        <div class="icon-pulse">
+            <i class="las la-gift"></i>
+        </div>
+        <span class="lucky-text">Win Prize</span>
+    </div>
+
     <style>
+        /* Existing Styles */
         .jump-anim {
             animation: jump 1.5s infinite;
         }
@@ -215,6 +222,92 @@
 
             50% {
                 transform: translateY(-10px);
+            }
+        }
+
+        /* 🎁 Floating Icon Style (Fixed Alignment) */
+        .lucky-float-btn {
+            position: fixed;
+            bottom: 100px;
+            /* 🟢 WhatsApp ke thoda aur upar (Overlap na ho) */
+            right: 20px;
+            z-index: 9990;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #d4af37, #f7f1de);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+
+            /* 🔥 Flexbox Centering Fix */
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+            transition: transform 0.3s ease;
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+
+        /* 🟢 Yeh hack zaroori hai: Jab jQuery ise 'display: block' karega, tab bhi ye 'flex' rahega */
+        .lucky-float-btn[style*="display: block"] {
+            display: flex !important;
+        }
+
+        .lucky-float-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .lucky-float-btn i {
+            font-size: 24px;
+            /* Icon thoda chhota kiya taki text fit ho */
+            color: #333;
+            margin-bottom: 2px;
+            /* Text aur Icon ke beech gap */
+            line-height: 1;
+        }
+
+        .lucky-float-btn .lucky-text {
+            font-size: 8px;
+            /* Text size perfect fit ke liye */
+            font-weight: 800;
+            color: #333;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        /* Animation */
+        @keyframes floatIcon {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Mobile Fix */
+        @media (max-width: 768px) {
+            .lucky-float-btn {
+                bottom: 90px;
+                /* Mobile par thoda neeche */
+                right: 15px;
+                width: 55px;
+                height: 55px;
+            }
+
+            .lucky-float-btn i {
+                font-size: 20px;
+            }
+
+            .lucky-float-btn .lucky-text {
+                font-size: 7px;
             }
         }
     </style>
@@ -447,14 +540,14 @@
     <script>
         $(document).ready(function() {
 
-            @auth
-                // Check karo ki kya Database me koi Active Coupon hai?
-                let dbHasActiveCoupon = {{ \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
+                @auth
+                // Check if Database has Active Coupon
+                let dbHasActiveCoupon =
+                    {{ \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
 
-                // Agar Database me coupon NAHI hai, lekin LocalStorage me hai...
+                // Sync LocalStorage if DB is empty
                 if (!dbHasActiveCoupon) {
-                    // ...to LocalStorage ko saaf kar do!
-                    if(localStorage.getItem('gaming_coupon_amount')) {
+                    if (localStorage.getItem('gaming_coupon_amount')) {
                         localStorage.removeItem('gaming_coupon_amount');
                         localStorage.removeItem('gaming_coupon_code');
                         console.log("🧹 Sync: Database empty, removed fake coupon from browser.");
@@ -466,16 +559,21 @@
             let userAlreadyPlayed =
                 {{ Auth::check() && \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
 
-            // 2. LocalStorage Check
+            // 2. LocalStorage Checks
             let shouldOpenGame = localStorage.getItem('openGameAfterLogin');
+            let gameClosedByUser = localStorage.getItem('luckyDrawClosed'); // 🆕 New Flag
 
-            if (shouldOpenGame === 'true') {
+            // LOGIC: If user closed it before, show ICON only. Else show MODAL.
+            if (gameClosedByUser === 'true' && !userAlreadyPlayed) {
+                $('#luckyFloatingIcon').fadeIn(); // Show icon immediately
+            } else if (shouldOpenGame === 'true') {
                 @auth
                 $('#gameModal').modal('show');
                 localStorage.removeItem('openGameAfterLogin');
             @endauth
-        } else {
-            // Normal Visit
+        }
+        else {
+            // Normal Visit - Show Modal if not played and not closed
             if (!userAlreadyPlayed) {
                 setTimeout(() => {
                     $('#gameModal').modal('show');
@@ -484,9 +582,22 @@
         }
         });
 
-        // 2. Guest Logic (Same)
+        // ❌ 3. NEW: Function to run when User clicks 'X' (Close)
+        function closeLuckyDraw() {
+            $('#gameModal').modal('hide');
+            localStorage.setItem('luckyDrawClosed', 'true'); // Save state
+            $('#luckyFloatingIcon').fadeIn(); // Show floating icon
+        }
+
+        // 🎁 4. NEW: Function to reopen modal from Icon
+        function reopenLuckyDraw() {
+            $('#gameModal').modal('show');
+            $('#luckyFloatingIcon').fadeOut(); // Hide icon while modal is open
+        }
+
+        // 2. Guest Logic (Existing)
         function playGuest() {
-            $('#guest-view .chit-card i').addClass('d-none'); // Hide icon
+            $('#guest-view .chit-card i').addClass('d-none');
             $('#guest-result').removeClass('d-none');
             setTimeout(() => {
                 $('#guest-msg').removeClass('d-none');
@@ -499,14 +610,13 @@
             $('#login_modal').modal('show');
         }
 
-        // 3. User Logic (Updated for Parchi)
+        // 3. User Logic (Existing)
         let playing = false;
 
         function playUser(element) {
             if (playing) return;
             playing = true;
 
-            // Click visual effect
             $(element).css('transform', 'scale(0.9)');
 
             $.ajax({
@@ -518,23 +628,23 @@
                 success: function(res) {
                     if (res.status === 'success' || res.status === 'already_played') {
 
-                        // 1. Hide Icon, Show Result
+                        // 🏆 WINNER LOGIC: Remove 'Closed' flag so icon doesn't show anymore
+                        localStorage.removeItem('luckyDrawClosed');
+                        $('#luckyFloatingIcon').hide();
+
                         $(element).find('.chit-icon').addClass('d-none');
                         $(element).find('.prize-amt').text('₹' + res.amount);
                         $(element).find('.chit-result').removeClass('d-none');
 
-                        // Card Highlight (Opened State)
                         $(element).css({
                             'transform': 'scale(1.1)',
                             'border': '2px solid #28a745',
                             'background': '#e8f5e9'
                         });
 
-                        // 2. Save Data
                         localStorage.setItem('gaming_coupon_amount', res.amount);
                         localStorage.setItem('gaming_coupon_code', res.code);
 
-                        // 3. Show Big Message
                         setTimeout(() => {
                             $('#final-amt').text(res.amount);
                             $('#win-msg').removeClass('d-none');
@@ -544,7 +654,6 @@
                             }, 2500);
                         }, 600);
 
-                        // 4. Disable others
                         $('.chit-card').not(element).css('opacity', 0.3).attr('onclick', '');
                     }
                 }
