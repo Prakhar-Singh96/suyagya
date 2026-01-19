@@ -74,6 +74,26 @@
             $metaKeys = $subCategory->meta_keywords ?? $metaKeys;
         }
 
+        // ✅ 5. BLOG PAGES (Dynamic SEO)
+        elseif (Route::is('blogs.index')) {
+            $metaTitle = 'Our Blogs - Spiritual Knowledge & Insights | Suyagya';
+            $metaDesc =
+                'Read latest articles on Rudraksha, Gemstones, and spirituality. Gain knowledge and insights from our experts.';
+        } elseif (Route::is('blogs.show') && !empty($blog)) {
+            // Blog Detail Page
+            $metaTitle = !empty($blog->meta_title) ? $blog->meta_title : $blog->title . ' | Suyagya';
+            $metaDesc = !empty($blog->meta_description)
+                ? $blog->meta_description
+                : Str::limit(strip_tags($blog->content), 160);
+            $metaKeys = !empty($blog->meta_keywords) ? $blog->meta_keywords : $metaKeys;
+
+            if (!empty($blog->main_image)) {
+                $ogImage = asset($blog->main_image);
+            } elseif (!empty($blog->og_image)) {
+                $ogImage = asset($blog->og_image);
+            }
+        }
+
         // ✅ 5. STATIC PAGES (Terms, Privacy, Refund, Support)
         elseif (Route::is('terms.conditions')) {
             $metaTitle = 'Terms & Conditions | Suyagya';
@@ -90,19 +110,15 @@
         } elseif (Route::is('support.policy')) {
             $metaTitle = 'Support Policy | Suyagya';
             $metaDesc = 'Need help? Contact Suyagya support team for assistance with orders, products, and services.';
-        }
-        elseif (Route::is('frontend.faq')) {
+        } elseif (Route::is('frontend.faq')) {
             $metaTitle = 'Frequently Asked Questions | Suyagya';
-            $metaDesc =
-                'Find answers to your questions related to products, shipping, and more.';
+            $metaDesc = 'Find answers to your questions related to products, shipping, and more.';
         } elseif (Route::is('about')) {
             $metaTitle = 'About us | Suyagya';
-            $metaDesc =
-                'How Suyagya Was Born.';
+            $metaDesc = 'How Suyagya Was Born.';
         } elseif (Route::is('contact')) {
             $metaTitle = 'Contact us | Suyagya';
-            $metaDesc =
-                'For business related bulk orders or queries, please contact us here.';
+            $metaDesc = 'For business related bulk orders or queries, please contact us here.';
         } elseif (Route::is('track.order')) {
             $metaTitle = 'Track Order | Suyagya';
             $metaDesc = 'Track Your Order Here.';

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 
 class SitemapController extends Controller
 {
@@ -19,6 +20,7 @@ class SitemapController extends Controller
         // यहाँ हम छोटे sitemaps का लिंक दे रहे हैं
         $routes = [
             'sitemap.pages',
+            'sitemap.blogs',
             'sitemap.collections',
             'sitemap.categories',
             'sitemap.products',
@@ -36,23 +38,60 @@ class SitemapController extends Controller
     }
 
     // 2. STATIC PAGES (Home, FAQ, Track Order)
+    // 2. STATIC PAGES (Updated with Policy & Contact Pages)
     public function pages()
     {
         $sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
         $sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        // आपके फिक्स पेज
+        // ✅ All Static Routes (Manually Added)
         $staticUrls = [
-            url('/'),
-            url('/faqs'),
-            url('/track-order'),
+            url('/'),                   // Home
+            route('frontend.faq'),      // FAQs
+            url('/track-order'),        // Track Order
+            route('about'),             // About Us
+            route('contact'),           // Contact Us
+            route('terms.conditions'),  // Terms & Conditions
+            route('refund.policy'),     // Refund Policy
+            route('privacy.policy'),    // Privacy Policy
+            route('support.policy'),    // Support Policy
         ];
 
         foreach ($staticUrls as $url) {
             $sitemap .= '<url>';
             $sitemap .= '<loc>' . $url . '</loc>';
-            $sitemap .= '<changefreq>daily</changefreq>';
-            $sitemap .= '<priority>1.0</priority>';
+            $sitemap .= '<changefreq>monthly</changefreq>'; // Policies roz change nahi hoti
+            $sitemap .= '<priority>0.7</priority>';
+            $sitemap .= '</url>';
+        }
+
+        $sitemap .= '</urlset>';
+        return response($sitemap, 200)->header('Content-Type', 'text/xml');
+    }
+
+    // 3. BLOGS SITEMAP (New Function)
+    public function blogs()
+    {
+        $sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
+        $sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        // 1. Blog Listing Page
+        $sitemap .= '<url>';
+        $sitemap .= '<loc>' . route('blogs.index') . '</loc>';
+        $sitemap .= '<changefreq>daily</changefreq>';
+        $sitemap .= '<priority>0.8</priority>';
+        $sitemap .= '</url>';
+
+        // 2. Single Blog Posts
+        $blogs = Blog::where('status', 1)->latest()->get(); // Status check zaroori hai
+
+        foreach ($blogs as $blog) {
+            $sitemap .= '<url>';
+            // Note: Route name 'blogs.show' use kiya hai jo apne bheja tha
+            $sitemap .= '<loc>' . route('blogs.show', $blog->slug) . '</loc>';
+            $sitemap .= '<lastmod>' . $blog->updated_at->toAtomString() . '</lastmod>';
+            $sitemap .= '<changefreq>weekly</changefreq>';
+            $sitemap .= '<priority>0.8</priority>';
             $sitemap .= '</url>';
         }
 
