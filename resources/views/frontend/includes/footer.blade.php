@@ -256,10 +256,10 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <h4 class="footer-heading">Policies</h4>
                 <ul class="footer-list">
-                    <li><a href="{{ url('refund-policy') }}">Refund and Cancellations</a></li>
-                    <li><a href="{{ url('terms') }}">Terms and Conditions</a></li>
-                    <li><a href="{{ url('shipping-policy') }}">Shipping Policy</a></li>
-                    <li><a href="{{ url('privacy-policy') }}">Privacy Policy</a></li>
+                    <li><a href="{{ route('refund.policy') }}">Refund & Cancellation</a></li>
+                    <li><a href="{{ route('terms.conditions') }}">Terms & Conditions</a></li>
+                    <li><a href="{{ route('support.policy') }}">Support Policy</a></li>
+                    <li><a href="{{ route('privacy.policy') }}">Privacy Policy</a></li>
                 </ul>
             </div>
 
@@ -305,7 +305,7 @@
                         </svg>
                     </a>
 
-                    <a href="#" target="_blank" aria-label="Youtube" class="social-icon-btn">
+                    <a href="https://www.youtube.com/@MySuyagya" target="_blank" aria-label="Youtube" class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
                                 d="M21.5,8.43a2.59,2.59,0,0,0-1.83-1.83C18.66,6,12,6,12,6s-6.66,0-7.67,0.6A2.59,2.59,0,0,0,2.5,8.43,26.43,26.43,0,0,0,2,12a26.43,26.43,0,0,0,0.5,3.57,2.59,2.59,0,0,0,1.83,1.83C5.34,18,12,18,12,18s6.66,0,7.67-0.6a2.59,2.59,0,0,0,1.83-1.83A26.43,26.43,0,0,0,22,12a26.43,26.43,0,0,0-0.5-3.57ZM10,14V10l4,2Z">
@@ -313,7 +313,7 @@
                         </svg>
                     </a>
 
-                    <a href="#" target="_blank" aria-label="LinkedIn" class="social-icon-btn">
+                    <a href="https://www.linkedin.com/company/suyagya/" target="_blank" aria-label="LinkedIn" class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
                                 d="M21.5,2H2.5A0.5,0.5,0,0,0,2,2.5v19A0.5,0.5,0,0,0,2.5,22h19A0.5,0.5,0,0,0,22,21.5V2.5A0.5,0.5,0,0,0,21.5,2ZM8,19H5V10H8ZM6.5,8.2A1.7,1.7,0,1,1,8.2,6.5,1.7,1.7,0,0,1,6.5,8.2ZM19,19H16V14.6c0-1.04-.3-1.74-1.29-1.74A1.33,1.33,0,0,0,13.43,14,1.4,1.4,0,0,0,13.36,15V19H10V10h3V11.2a4.42,4.42,0,0,1,3.95-2.1c2.89,0,5.05,1.72,5.05,5V19Z">

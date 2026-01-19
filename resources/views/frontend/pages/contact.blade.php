@@ -5,9 +5,9 @@
 {{-- 1. HERO BANNER --}}
 <div class="position-relative w-100">
     {{-- Replace with a Banner Image --}}
-    <img src="{{ asset('assets/img/contact-banner.jpg') }}" alt="Contact Banner" class="w-100 object-fit-cover" style="height: 350px;">
+    <img src="{{ asset('assets/img/contact.webp') }}" alt="Contact Banner" class="w-100 object-fit-cover" style="height: 600px; object-position: center top;">
     <div class="position-absolute bottom-0 end-0 p-5 mb-4 text-end">
-        <h1 class="display-2 fw-bold text-white" style="font-family: 'Merriweather', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">CONTACT US</h1>
+        {{-- <h1 class="display-2 fw-bold text-white" style="font-family: 'Merriweather', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">CONTACT US</h1> --}}
     </div>
 </div>
 
@@ -26,7 +26,7 @@
             </div>
 
             <div class="mb-4">
-                <p class="mb-1"><strong class="text-dark">Email Id:</strong> <a href="mailto:info@suyagya.com" class="text-decoration-none text-muted">support@suyagya.com</a></p>
+                <p class="mb-1"><strong class="text-dark">Email Id:</strong> <a href="mailto:info@suyagya.com" class="text-decoration-none text-muted">info@suyagya.com</a></p>
                 <p class="mb-1"><strong class="text-dark">Phone no:</strong> <a href="tel:+917692005006" class="text-decoration-none text-muted">+91 7692 005 006</a></p>
             </div>
         </div>
@@ -35,7 +35,7 @@
         <div class="col-lg-6">
             <div class="text-center">
                 {{-- Replace with a square product image --}}
-                <img src="{{ asset('assets/img/contact-side-img.jpg') }}" alt="Contact Visual" class="img-fluid shadow-sm" style="max-height: 350px; border-radius: 4px;">
+                <img src="{{ asset('assets/img/contact-us.webp') }}" alt="Contact Visual" class="img-fluid shadow-sm" style="max-height: 350px; border-radius: 4px;">
             </div>
         </div>
     </div>

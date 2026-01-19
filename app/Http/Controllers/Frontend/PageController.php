@@ -16,4 +16,25 @@ class PageController extends Controller
     {
         return view('frontend.pages.contact');
     }
+
+    public function terms()
+    {
+        return view('frontend.pages.terms_conditions');
+    }
+
+    public function refund_policy()
+    {
+        return view('frontend.pages.refund_policy');
+    }
+
+    public function privacy_policy()
+    {
+        return view('frontend.pages.privacy_policy');
+    }
+
+    public function support_policy()
+    {
+        return view('frontend.pages.support_policy');
+    }
+
 }

@@ -104,6 +104,10 @@ Route::get('/wishlist/fetch', [WishlistController::class, 'fetchWishlist'])->nam
 Route::get('/faqs', [FaqController::class, 'index'])->name('frontend.faq');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/terms-conditions', [PageController::class, 'terms'])->name('terms.conditions');
+Route::get('/refund-policy', [PageController::class, 'refund_policy'])->name('refund.policy');
+Route::get('/privacy-policy', [PageController::class, 'privacy_policy'])->name('privacy.policy');
+Route::get('/support-policy', [PageController::class, 'support_policy'])->name('support.policy');
 // Blog Routes
 Route::get('/blogs', [BlogPageController::class, 'index'])->name('blogs.index');
 Route::get('/blog/{slug}', [BlogPageController::class, 'show'])->name('blogs.show');

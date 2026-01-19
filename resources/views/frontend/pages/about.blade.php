@@ -10,7 +10,7 @@
          style="background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6)); z-index: 1;"></div>
 
     {{-- Banner Image --}}
-    <img src="{{ asset('assets/img/about-banner.webp') }}" alt="About Banner"
+    <img src="{{ asset('assets/img/about.webp') }}" alt="About Banner"
          class="w-100 object-fit-cover"
          style="height: 600px; object-position: center top;">
          {{-- Height 600px mobile/desktop dono ke liye balanced hai --}}
