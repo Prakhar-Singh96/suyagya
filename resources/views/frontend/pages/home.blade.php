@@ -56,8 +56,10 @@
                                             @endif
 
                                             {{-- 💻 DESKTOP IMAGE (Default) --}}
-                                            <img class="bnanner-img w-100" src="{{ asset($banner->desktop_image) }}"
+                                            @if ($banner->desktop_image)
+                                                <img class="bnanner-img w-100" src="{{ asset($banner->desktop_image) }}"
                                                 alt="Banner" fetchpriority= "high">
+                                            @endif
                                         </picture>
                                     </a>
                                 </div>
