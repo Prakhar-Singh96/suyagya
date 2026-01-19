@@ -47,29 +47,25 @@
                         @if (isset($banners) && count($banners) > 0)
                             @foreach ($banners as $banner)
                                 <div>
-                                    {{-- Link Logic: Agar link hai to <a> tag lagaye --}}
                                     <a href="{{ $banner->link ?? '#' }}" class="d-block">
                                         <picture>
-                                            {{-- Mobile Image Logic: Check if exists, else use desktop image --}}
+                                            {{-- 📱 MOBILE IMAGE (Max Width 767px) --}}
                                             @if ($banner->mobile_image)
                                                 <source media="(max-width: 767px)"
                                                     srcset="{{ asset($banner->mobile_image) }}">
-                                            @else
-                                                <source media="(max-width: 767px)"
-                                                    srcset="{{ asset($banner->desktop_image) }}">
                                             @endif
 
-                                            {{-- Desktop Image (Main) --}}
+                                            {{-- 💻 DESKTOP IMAGE (Default) --}}
                                             <img class="bnanner-img w-100" src="{{ asset($banner->desktop_image) }}"
-                                                alt="Banner">
+                                                alt="Banner" fetchpriority= "high">
                                         </picture>
                                     </a>
                                 </div>
                             @endforeach
                         @else
-                            {{-- Fallback: Agar Admin ne koi banner nahi dala --}}
+                            {{-- Fallback --}}
                             <div>
-                                <img src="https://placehold.co/1920x600?text=Welcome+to+Suyagya" class="w-100">
+                                <img src="https://placehold.co/1903x700?text=Welcome+to+Suyagya" class="w-100 bnanner-img">
                             </div>
                         @endif
                     </div>
