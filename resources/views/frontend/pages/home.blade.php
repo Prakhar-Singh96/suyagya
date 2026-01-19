@@ -58,7 +58,9 @@
                                             {{-- 💻 DESKTOP IMAGE (Default) --}}
                                             @if ($banner->desktop_image)
                                                 <img class="bnanner-img w-100" src="{{ asset($banner->desktop_image) }}"
-                                                alt="Banner" fetchpriority= "high">
+                                                    srcset="{{ asset($banner->desktop_image) }} 1920w"
+                                                    sizes="(max-width: 768px) 100vw, 100vw" alt="Banner" width="1920"
+                                                    height="700" fetchpriority="high">
                                             @endif
                                         </picture>
                                     </a>

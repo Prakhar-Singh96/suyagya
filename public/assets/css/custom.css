@@ -411,6 +411,9 @@ main {
     position: relative;
     padding: 0; /* Ensure no padding on section */
     margin: 0;
+    /* 🔥 FOR DESKTOP: Space reserve karega */
+    aspect-ratio: 1920 / 700;
+    min-height: 700px;
 }
 
 /* 3. Banner Image Styling (Desktop Default) */
@@ -428,10 +431,10 @@ main {
 @media (max-width: 767px) {
     .home-banner-area .bnanner-img {
         width: 100% !important; /* Force full width */
-        height: auto !important; /* Let aspect ratio define height */
+        min-height: auto !important; /* Let aspect ratio define height */
         aspect-ratio: 1 / 1; /* Force square for 400x400 */
         object-fit: cover !important; /* CHANGED to 'cover' to fill gaps */
-        max-height: none; /* Remove height limit for mobile if needed, or keep 450px */
+        max-height: 400px; /* Remove height limit for mobile if needed, or keep 450px */
     }
 }
 
