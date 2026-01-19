@@ -846,55 +846,58 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                 <div class="testimonial-slider">
                     @if (isset($reviews) && $reviews->count() > 0)
                         @foreach ($reviews as $review)
-                            <div class="px-3">
-                                {{-- 🔥 Added fixed height style --}}
-                                <div class="testimonial-card shadow-sm border-0 overflow-hidden"
-                                    style="height: 280px; border-radius: 15px; background: #fff;">
-                                    <div class="row g-0 h-100">
+                            {{-- 🔥 LOGIC CHANGE: Check if Image Exists --}}
+                            @php
+                                // Check karein ki media array hai aur khali nahi hai
+                                $hasImage =
+                                    !empty($review->media) && is_array($review->media) && count($review->media) > 0;
+                            @endphp
 
-                                        {{-- Left: Text Content --}}
-                                        <div class="col-7 p-4 d-flex flex-column justify-content-center">
-                                            <div class="text-warning mb-2">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <i class="{{ $i <= $review->rating ? 'las' : 'lar' }} la-star"></i>
-                                                @endfor
+                            {{-- 🔥 CONDITION: Sirf tab dikhao jab Image ho --}}
+                            @if ($hasImage)
+                                <div class="px-3">
+                                    <div class="testimonial-card shadow-sm border-0 overflow-hidden"
+                                        style="height: 280px; border-radius: 15px; background: #fff;">
+                                        <div class="row g-0 h-100">
+
+                                            {{-- Left: Text Content --}}
+                                            <div class="col-7 p-4 d-flex flex-column justify-content-center">
+                                                <div class="text-warning mb-2">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i class="las la-star"></i>
+                                                    @endfor
+                                                </div>
+
+                                                <p class="mb-2 small text-muted"
+                                                    style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                                                    "{{ $review->review }}"
+                                                </p>
+
+                                                @if ($review->title)
+                                                    <h6 class="fw-bold text-dark mb-0 text-truncate">{{ $review->title }}
+                                                    </h6>
+                                                @endif
+                                                <p class="text-muted x-small m-0 fw-bold mt-1">-
+                                                    {{ $review->display_name }}
+                                                </p>
                                             </div>
 
-                                            {{-- Limit text to keep height consistent --}}
-                                            <p class="mb-2 small text-muted"
-                                                style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
-                                                "{{ $review->review }}"
-                                            </p>
-
-                                            @if ($review->title)
-                                                <h6 class="fw-bold text-dark mb-0 text-truncate">{{ $review->title }}</h6>
-                                            @endif
-                                            <p class="text-muted x-small m-0 fw-bold mt-1">- {{ $review->display_name }}
-                                            </p>
-                                        </div>
-
-                                        {{-- Right: Image (Single) --}}
-                                        <div class="col-5 h-100">
-                                            @php
-                                                $reviewImage =
-                                                    'https://placehold.co/400x400/e0d4c3/555?text=Happy+Customer';
-                                                // Agar media array hai aur usme items hain
-                                                if (
-                                                    !empty($review->media) &&
-                                                    is_array($review->media) &&
-                                                    count($review->media) > 0
-                                                ) {
-                                                    // Sirf pehli file le lo
+                                            {{-- Right: Image (Single) --}}
+                                            <div class="col-5 h-100">
+                                                @php
+                                                    // Yahan ab placeholder logic ki zarurat nahi hai
+                                                    // kyunki hum upar hi check kar chuke hain ki image hai.
                                                     $reviewImage = asset($review->media[0]);
-                                                }
-                                            @endphp
-                                            <img src="{{ $reviewImage }}" alt="Review"
-                                                class="w-100 h-100 object-fit-cover">
-                                        </div>
+                                                @endphp
+                                                <img src="{{ $reviewImage }}" alt="Review"
+                                                    class="w-100 h-100 object-fit-cover">
+                                            </div>
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
+                            {{-- End If Condition --}}
                         @endforeach
                     @else
                         <div class="col-12 text-center text-muted">
