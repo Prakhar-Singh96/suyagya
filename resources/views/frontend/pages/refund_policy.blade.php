@@ -1,7 +1,5 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Return & Refund Policy | Suyagya')
-
 @section('styles')
 <style>
     /* ✨ Refund Policy Page Styles */

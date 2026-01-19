@@ -74,6 +74,40 @@
             $metaKeys = $subCategory->meta_keywords ?? $metaKeys;
         }
 
+        // ✅ 5. STATIC PAGES (Terms, Privacy, Refund, Support)
+        elseif (Route::is('terms.conditions')) {
+            $metaTitle = 'Terms & Conditions | Suyagya';
+            $metaDesc =
+                'Read the Terms and Conditions of Suyagya. Understand our policies regarding usage, orders, and services.';
+        } elseif (Route::is('privacy.policy')) {
+            $metaTitle = 'Privacy Policy | Suyagya';
+            $metaDesc =
+                'Your privacy is important to us. Learn how Suyagya collects, uses, and protects your personal data.';
+        } elseif (Route::is('refund.policy')) {
+            $metaTitle = 'Return & Refund Policy | Suyagya';
+            $metaDesc =
+                'Understand our return and refund process. We ensure customer satisfaction with transparent policies.';
+        } elseif (Route::is('support.policy')) {
+            $metaTitle = 'Support Policy | Suyagya';
+            $metaDesc = 'Need help? Contact Suyagya support team for assistance with orders, products, and services.';
+        }
+        elseif (Route::is('frontend.faq')) {
+            $metaTitle = 'Frequently Asked Questions | Suyagya';
+            $metaDesc =
+                'Find answers to your questions related to products, shipping, and more.';
+        } elseif (Route::is('about')) {
+            $metaTitle = 'About us | Suyagya';
+            $metaDesc =
+                'How Suyagya Was Born.';
+        } elseif (Route::is('contact')) {
+            $metaTitle = 'Contact us | Suyagya';
+            $metaDesc =
+                'For business related bulk orders or queries, please contact us here.';
+        } elseif (Route::is('track.order')) {
+            $metaTitle = 'Track Order | Suyagya';
+            $metaDesc = 'Track Your Order Here.';
+        }
+
         // 5. Agar HOME Page hai (check via route name or variable)
         // Note: HomeController me humne $homeSettings pass kiya tha
         elseif (isset($homeSettings) && !empty($homeSettings)) {

@@ -1,7 +1,5 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Support Policy | Suyagya')
-
 @section('styles')
 <style>
     /* ✨ Support Page Styles */

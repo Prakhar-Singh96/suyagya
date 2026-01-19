@@ -1,7 +1,5 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Frequently Asked Questions | Suyagya')
-
 @section('content')
 <div class="container py-5">
     <div class="text-center mb-5">

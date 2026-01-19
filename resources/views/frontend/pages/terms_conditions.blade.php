@@ -1,7 +1,5 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Terms & Conditions | Suyagya')
-
 @section('styles')
 <style>
     /* ✨ Terms & Conditions Page Styles */

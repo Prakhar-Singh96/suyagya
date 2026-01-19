@@ -1,7 +1,5 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Privacy Policy | Suyagya')
-
 @section('styles')
 <style>
     /* ✨ Privacy Policy Page Styles */
