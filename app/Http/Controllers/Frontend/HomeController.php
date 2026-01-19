@@ -88,7 +88,6 @@ class HomeController extends Controller
 
         // 🟢 2. Fetch Approved Reviews (Customer Love)
         $reviews = ProductReview::where('status', 1) // Only Approved
-            ->latest()
             ->take(10) // Show latest 10
             ->get();
 
