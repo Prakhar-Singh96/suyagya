@@ -418,7 +418,7 @@ main {
         height: auto !important; /* Height auto rakhein taki aspect ratio bana rahe */
         aspect-ratio: 1 / 1; /* 🔥 Mobile par Square (400x400) dikhane ke liye */
         object-fit: contain; /* Pura image dikhe */
-        max-height: 450px; /* Mobile par limit */
+        max-height: 400px; /* Mobile par limit */
     }
 }
 
