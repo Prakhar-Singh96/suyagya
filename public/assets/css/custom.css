@@ -402,39 +402,43 @@ main {
     max-width: 100% !important;
 }
 
-/* 2. Container Styling */
+/* 2. Container Styling (Desktop Default) */
 .home-banner-area {
     width: 100%;
-    /* Max height for desktop */
+    /* Desktop Aspect Ratio */
+    aspect-ratio: 1920 / 700;
     max-height: 700px;
     overflow: hidden;
     position: relative;
-    padding: 0; /* Ensure no padding on section */
+    padding: 0;
     margin: 0;
-    /* 🔥 FOR DESKTOP: Space reserve karega */
-    aspect-ratio: 1920 / 700;
-    min-height: 700px;
 }
 
-/* 3. Banner Image Styling (Desktop Default) */
+/* 3. Banner Image Styling (Desktop) */
 .home-banner-area .bnanner-img {
     width: 100%;
-    height: auto; /* Allow height to adjust */
-    max-height: 700px;
-    object-fit: cover; /* Cover entire area */
+    height: 100%; /* Container ko fill kare */
+    object-fit: cover;
     object-position: center;
     display: block;
-    margin: 0 auto; /* Center image */
 }
 
 /* 4. Mobile Specific (Small Screens < 768px) */
 @media (max-width: 767px) {
+
+    /* 🔥 FIX: Mobile Container ka Ratio Square (1:1) karein */
+    .home-banner-area {
+        aspect-ratio: 1 / 1 !important;
+        max-height: none !important; /* Height limit hatayein */
+        height: auto !important;
+    }
+
+    /* Mobile Image Styling */
     .home-banner-area .bnanner-img {
-        width: 100% !important; /* Force full width */
-        min-height: auto !important; /* Let aspect ratio define height */
-        aspect-ratio: 1 / 1; /* Force square for 400x400 */
-        object-fit: cover !important; /* CHANGED to 'cover' to fill gaps */
-        max-height: 400px; /* Remove height limit for mobile if needed, or keep 450px */
+        width: 100% !important;
+        height: 100% !important; /* Container ke barabar height */
+        aspect-ratio: 1 / 1;
+        object-fit: cover !important; /* Pura area cover kare */
     }
 }
 
