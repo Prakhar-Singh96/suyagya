@@ -1,5 +1,5 @@
 {{-- ============================================================== --}}
-{{-- 🎨 INTERNAL CSS FOR SEARCH BAR (Mobile vs Desktop) --}}
+{{-- 🎨 INTERNAL CSS FOR HEADER (Desktop, Laptop, Mobile) --}}
 {{-- ============================================================== --}}
 <style>
     /* 📱 MOBILE STYLE (Max-width 991px) */
@@ -7,16 +7,12 @@
         .header-search-bar {
             display: none;
             position: fixed !important;
-            /* Header ki height ke barabar niche (approx 60px-70px) */
             top: 65px !important;
             left: 0;
             width: 100%;
-            /* ✅ Auto Height: Taaki pura page na dhake */
             height: auto !important;
             max-height: 80vh;
-            /* Screen ka 80% hi use kare */
             z-index: 990;
-            /* Header (z-1020) ke niche, content ke upar */
             background-color: #fff;
             overflow-y: auto;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -29,7 +25,6 @@
         .header-search-bar {
             display: none;
             position: fixed !important;
-            /* Desktop Header Height Adjustment */
             top: 106px !important;
             left: 0;
             width: 100%;
@@ -41,73 +36,84 @@
             background-color: #fff;
             overflow-y: auto;
         }
-
     }
 
-    /* ========================================= */
-    /* 💻 MINI LAPTOP COMPACT MODE (Fix Icons)   */
-    /* ========================================= */
-    @media (min-width: 992px) and (max-width: 1350px) {
+    /* ========================================================= */
+    /* 💻 LAPTOP MAGIC: CENTER MENU WRAP (Logo Left, Icons Right) */
+    /* ========================================================= */
+    @media (min-width: 992px) and (max-width: 1550px) {
 
-        /* 1. Container ke side ki padding kam karein */
-        header .container-fluid {
-            padding-left: 15px !important;
-            padding-right: 15px !important;
+        /* 1. Main Container: Sab ek line mein start honge */
+        header .navbar .container-fluid {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            /* Important: Logo aur Icon kabhi niche nahi girne chahiye */
+            align-items: center !important;
+            /* Vertically Center */
+            justify-content: space-between !important;
         }
 
-        /* 2. Logo Size Chhota karein */
-        .navbar-brand img {
-            height: 66px !important;
-            /* Standard se chhota */
+        /* 2. Logo: Left Side Fixed */
+        .navbar-brand {
+            flex-shrink: 0 !important;
+            /* Logo dabega nahi */
+            margin-right: 15px !important;
         }
 
-        /* 3. Menu Text Chhota aur Compact karein */
-        #mainMenu .nav-link {
-            font-size: 11px !important;
-            padding-left: 5px !important;
-            padding-right: 5px !important;
-            letter-spacing: 0px !important;
-        }
-
-        /* 4. Menu Items ke beech gap kam karein */
-        #mainMenu .navbar-nav {
-            gap: 8px !important;
-        }
-
-        /* 5. Icons Size aur Gap adjust karein */
+        /* 3. Icons: Right Side Fixed */
         .nav-action-icons {
-            gap: 10px !important;
-            /* Icons paas layein */
+            flex-shrink: 0 !important;
+            /* Icons dabenge nahi */
+            margin-left: 15px !important;
+            order: 3;
+            /* Hamesha right me */
         }
 
-        .nav-action-icons i,
-        .nav-action-icons .las,
-        .nav-action-icons .lar {
-            font-size: 20px !important;
-            /* Icons thode chhote */
+        /* 4. Menu Container: Beech ki jagah lega */
+        #mainMenu {
+            flex-grow: 1 !important;
+            /* Bachi hui saari jagah lega */
+            width: auto !important;
+            margin: 1px !important;
+            padding: 1px !important;
+            border: none !important;
+            order: 2;
+            /* Logo aur Icons ke beech me */
         }
 
-        /* Badge Position Fix for Small Icons */
-        .nav-action-icons .badge {
-            width: 15px !important;
-            height: 15px !important;
-            font-size: 8px !important;
+        /* 5. 🔥 MAGIC: Menu Items Wrap Logic */
+        #mainMenu .navbar-nav {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            /* Jagah kam hone par items niche aayenge */
+            justify-content: center !important;
+            /* Center me dikhenge */
+            flex-direction: row !important;
+            gap: 8px 15px !important;
+            /* Row gap 8px, Side gap 15px */
         }
-    }
 
-    /* ✅ COMMON FIX: Text kabhi 2 line me na toote */
-    #mainMenu .nav-link {
-        white-space: nowrap !important;
-        /* Force text in one line */
+        /* 6. Font Adjustment */
+        #mainMenu .nav-link {
+            font-size: 12px !important;
+            white-space: nowrap;
+            /* Text nahi tootega, pura item niche aayega */
+            padding: 5px 0 !important;
+        }
+
+        /* Toggle Button Hide */
+        .navbar-toggler {
+            display: none !important;
+        }
     }
 </style>
 
 {{-- 🟢 DESKTOP HEADER (Fully Responsive) --}}
-<header class="sticky-top z-1020 shadow-sm" style="background-color: #fff; border-bottom: 1px solid #f0f0f0;">
+<header class="sticky-top z-1020 shadow-sm" style="background-color: var(--light); border-bottom: 1px solid #f0f0f0;">
 
     <nav class="navbar navbar-expand-lg py-2">
 
-        {{-- ✅ px-4 px-xl-5: Laptop par kam padding, bade screen par jyada --}}
+        {{-- ✅ Container Fluid --}}
         <div class="container-fluid px-3 px-lg-4 px-xl-5">
 
             {{-- 1. LOGO --}}
@@ -122,8 +128,7 @@
 
             {{-- 2. MAIN MENU --}}
             <div class="collapse navbar-collapse justify-content-center" id="mainMenu">
-                {{-- flex-nowrap: Items ek hi line me rahenge --}}
-                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center gap-3 gap-xl-4 flex-nowrap">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center gap-3 gap-xl-4">
 
                     @foreach ($headerCategories as $category)
                         <li class="nav-item dropdown hover-dropdown">
@@ -135,7 +140,7 @@
                                     {{ $category->name }} <i class="las la-angle-down small ms-1"
                                         style="font-size: 10px;"></i>
                                 </a>
-                                {{-- Mega Menu Code Same Rahega --}}
+                                {{-- Mega Menu --}}
                                 <div class="dropdown-menu japam-mega-menu shadow-lg border-0"
                                     aria-labelledby="catDrop{{ $category->id }}">
                                     <div class="row g-0">
@@ -157,7 +162,7 @@
                                             <div class="japam-prod-grid h-100">
                                                 <div class="row g-3">
                                                     @if ($category->products->count() > 0)
-                                                        @foreach ($category->products as $product)
+                                                        @foreach ($category->products->take(4) as $product)
                                                             <div class="col-3">
                                                                 <a href="{{ route('product.detail', $product->slug) }}"
                                                                     class="japam-prod-card">
@@ -171,7 +176,6 @@
                                                         @endforeach
                                                     @else
                                                         <div class="col-12 text-center py-5 text-muted">
-                                                            <i class="las la-box-open fs-1 mb-2"></i>
                                                             <p>Explore our {{ $category->name }} collection</p>
                                                         </div>
                                                     @endif
@@ -194,7 +198,6 @@
             </div>
 
             {{-- 3. ICONS (Right Side) --}}
-            {{-- 🔥 FIX: 'flex-shrink-0' add kiya taki ye kabhi gayab na ho --}}
             <div class="d-flex align-items-center gap-3 ms-auto nav-action-icons flex-shrink-0">
 
                 {{-- Search --}}
