@@ -442,6 +442,45 @@ main {
     }
 }
 
+/* ======================================================== */
+/* 🚀 FIX: SLIDER INTERNAL LAYOUT SHIFT (CLS Fix)           */
+/* ======================================================== */
+
+/* 1. Slider Wrapper ko force karein ki wo container ko fill kare */
+#heroSlider {
+    width: 100%;
+    height: 100%;
+    display: flex; /* Taki images side-by-side load hon (Vertical stack na ho) */
+    overflow: hidden; /* Extra images bahar na dikhein */
+}
+
+/* 2. Slider ke andar har element ki height 100% honi chahiye */
+#heroSlider .slick-list,
+#heroSlider .slick-track,
+#heroSlider > div {
+    height: 100%;
+}
+
+/* 3. Anchor aur Picture tag ko bhi full height dein */
+#heroSlider a,
+#heroSlider picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* 4. 🔥 SABSE ZAROORI: Javascript load hone se pehle extra slides chhupa dein */
+/* (Ye line "Layout Shift" ko 0 kar degi) */
+#heroSlider:not(.slick-initialized) > div:not(:first-child) {
+    display: none !important;
+}
+
+/* Agar Slick Slider use nahi kar rahe (General fix) */
+#heroSlider > div {
+    flex-shrink: 0;
+    width: 100%;
+}
+
 /* ===================================================== */
 /* 📱 FULL RESPONSIVE BREAKPOINTS FOR HEADER */
 /* ===================================================== */
@@ -3312,4 +3351,10 @@ div#heroSlider .bnanner-img {
 body, html {
     overflow-x: hidden;
     width: 100%;
+}
+
+@font-face {
+    font-family: 'AapkaFontName';
+    src: url('font.woff2');
+    font-display: swap;  /* ✅ Ye Line zaroor lagayein */
 }
