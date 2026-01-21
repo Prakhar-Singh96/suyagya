@@ -45,36 +45,53 @@
     }
 
     /* ========================================= */
-    /* 💻 LAPTOP & SMALL DESKTOP FIXES (992px - 1400px) */
+    /* 💻 MINI LAPTOP COMPACT MODE (Fix Icons)   */
     /* ========================================= */
-    @media (min-width: 992px) and (max-width: 1400px) {
+    @media (min-width: 992px) and (max-width: 1350px) {
 
-        /* 1. Container ki padding kam karein taki jagah mile */
+        /* 1. Container ke side ki padding kam karein */
         header .container-fluid {
-            padding-left: 20px !important;
-            padding-right: 20px !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
         }
 
-        /* 2. Menu Items ke beech ka gap kam karein */
-        #mainMenu .navbar-nav {
-            gap: 15px !important;
-            /* Kam space */
+        /* 2. Logo Size Chhota karein */
+        .navbar-brand img {
+            height: 66px !important;
+            /* Standard se chhota */
         }
 
-        /* 3. Font Size Chhota karein taki fit aaye */
+        /* 3. Menu Text Chhota aur Compact karein */
         #mainMenu .nav-link {
             font-size: 11px !important;
-            /* Thoda chhota font */
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            letter-spacing: 0.3px !important;
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+            letter-spacing: 0px !important;
         }
 
-        /* 4. Icons ka size adjust karein */
+        /* 4. Menu Items ke beech gap kam karein */
+        #mainMenu .navbar-nav {
+            gap: 8px !important;
+        }
+
+        /* 5. Icons Size aur Gap adjust karein */
+        .nav-action-icons {
+            gap: 10px !important;
+            /* Icons paas layein */
+        }
+
         .nav-action-icons i,
         .nav-action-icons .las,
         .nav-action-icons .lar {
-            font-size: 22px !important;
+            font-size: 20px !important;
+            /* Icons thode chhote */
+        }
+
+        /* Badge Position Fix for Small Icons */
+        .nav-action-icons .badge {
+            width: 15px !important;
+            height: 15px !important;
+            font-size: 8px !important;
         }
     }
 
@@ -177,7 +194,8 @@
             </div>
 
             {{-- 3. ICONS (Right Side) --}}
-            <div class="d-flex align-items-center gap-3 ms-auto nav-action-icons">
+            {{-- 🔥 FIX: 'flex-shrink-0' add kiya taki ye kabhi gayab na ho --}}
+            <div class="d-flex align-items-center gap-3 ms-auto nav-action-icons flex-shrink-0">
 
                 {{-- Search --}}
                 <a href="javascript:void(0);" onclick="toggleSearch()" class="text-dark" title="Search">
@@ -190,7 +208,7 @@
                         <div class="dropdown">
                             <a href="#" class="text-dark d-flex align-items-center" role="button"
                                 data-bs-toggle="dropdown">
-                                <i class="las la-user-circle" style="font-size: 26px;"></i>
+                                <i class="las la-user-circle" style="font-size: 24px;"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
                                 <li><a class="dropdown-item small" href="{{ url('/orders') }}">My Orders</a></li>
@@ -198,18 +216,19 @@
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                                 </li>
                             </ul>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf
+                            </form>
                         </div>
                     @else
                         <a href="javascript:void(0);" onclick="showLoginModal()" class="text-dark" title="Login">
-                            <i class="las la-user-circle" style="font-size: 26px;"></i>
+                            <i class="las la-user-circle" style="font-size: 24px;"></i>
                         </a>
                     @endauth
                 </div>
 
                 {{-- Wishlist --}}
                 <a href="javascript:void(0)" onclick="openWishlistModal()" class="text-dark position-relative">
-                    <i class="lar la-heart" style="font-size: 26px;"></i>
+                    <i class="lar la-heart" style="font-size: 24px;"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger p-1"
                         style="font-size: 10px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
                         {{ Auth::check() ? \App\Models\Wishlist::where('user_id', Auth::id())->count() : count(session('guest_wishlist', [])) }}
@@ -218,7 +237,7 @@
 
                 {{-- Cart --}}
                 <a href="javascript:void(0);" onclick="openSideCart()" class="text-dark position-relative">
-                    <i class="las la-shopping-bag" style="font-size: 26px;"></i>
+                    <i class="las la-shopping-bag" style="font-size: 24px;"></i>
                     <span id="cart-badge"
                         class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger p-1"
                         style="font-size: 10px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; {{ isset($cartGlobalCount) && $cartGlobalCount > 0 ? '' : 'display: none;' }}">
