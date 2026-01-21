@@ -18,9 +18,16 @@ use Intervention\Image\Facades\Image; // 👈 Make sure this is imported
 class ProductController extends Controller
 {
     // 1. List Products
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'subCategory'])->latest()->get();
+        // 🔍 Search Logic
+        $search = $request->input('search');
+        $products = Product::with(['category', 'subCategory'])
+        ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%{$search}%");
+            })
+            ->latest() // Newest first
+            ->paginate(15); // 15 per page
         return view('admin.products.index', compact('products'));
     }
 

@@ -43,52 +43,82 @@
         }
 
     }
+
+    /* ========================================= */
+    /* 💻 LAPTOP & SMALL DESKTOP FIXES (992px - 1400px) */
+    /* ========================================= */
+    @media (min-width: 992px) and (max-width: 1400px) {
+
+        /* 1. Container ki padding kam karein taki jagah mile */
+        header .container-fluid {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+
+        /* 2. Menu Items ke beech ka gap kam karein */
+        #mainMenu .navbar-nav {
+            gap: 15px !important;
+            /* Kam space */
+        }
+
+        /* 3. Font Size Chhota karein taki fit aaye */
+        #mainMenu .nav-link {
+            font-size: 11px !important;
+            /* Thoda chhota font */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            letter-spacing: 0.3px !important;
+        }
+
+        /* 4. Icons ka size adjust karein */
+        .nav-action-icons i,
+        .nav-action-icons .las,
+        .nav-action-icons .lar {
+            font-size: 22px !important;
+        }
+    }
+
+    /* ✅ COMMON FIX: Text kabhi 2 line me na toote */
+    #mainMenu .nav-link {
+        white-space: nowrap !important;
+        /* Force text in one line */
+    }
 </style>
 
-{{-- 🟢 DESKTOP HEADER START --}}
-<header class="sticky-top z-1020 shadow-sm" style="background-color: var(--light) !important; position: relative;">
+{{-- 🟢 DESKTOP HEADER (Fully Responsive) --}}
+<header class="sticky-top z-1020 shadow-sm" style="background-color: #fff; border-bottom: 1px solid #f0f0f0;">
 
-    {{-- ⭐️ Top Bar --}}
-    {{-- <div class="top-navbar d-none d-lg-block border-bottom" style="background-color: var(--light) !important;">
-        <div class="container-fluid px-3">
-            <div class="d-flex justify-content-between align-items-center py-1">
-                <div class="d-flex align-items-center">
-                    <div class="dropdown me-3" id="lang-change">
-                        <a href="javascript:void(0)" class="dropdown-toggle text-dark small" data-bs-toggle="dropdown">
-                            <span style="color: var(--dark);">English</span>
-                        </a>
-                    </div>
-                    <div class="dropdown" id="currency-change">
-                        <a href="javascript:void(0)" class="dropdown-toggle text-dark small" data-bs-toggle="dropdown">
-                            <span style="color: var(--dark);">Currency</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center">
-                    <a href="{{ url('shops/create') }}" class="text-dark small pe-3 border-end">Become a seller!</a>
-                    <a href="{{ url('seller/login') }}" class="text-dark small ps-3">Login to Seller</a>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+    <nav class="navbar navbar-expand-lg py-2">
 
-    {{-- 🏠 Main Nav Bar --}}
-    <nav class="navbar navbar-expand-lg py-0">
-        <div class="container-fluid px-3">
-            <a class="navbar-brand py-2 me-lg-5" href="{{ url('/') }}">
-                <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya" height="50">
+        {{-- ✅ px-4 px-xl-5: Laptop par kam padding, bade screen par jyada --}}
+        <div class="container-fluid px-3 px-lg-4 px-xl-5">
+
+            {{-- 1. LOGO --}}
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya"
+                    style="height: 50px; width: auto; object-fit: contain;">
             </a>
 
+            <button class="navbar-toggler p-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            {{-- 2. MAIN MENU --}}
             <div class="collapse navbar-collapse justify-content-center" id="mainMenu">
-                <ul class="navbar-nav ml-auto mb-2 mb-lg-0 main-nav-list align-items-center">
+                {{-- flex-nowrap: Items ek hi line me rahenge --}}
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center gap-3 gap-xl-4 flex-nowrap">
+
                     @foreach ($headerCategories as $category)
-                        @if ($category->subCategories->count() > 0)
-                            <li class="nav-item dropdown hover-dropdown me-3">
-                                <a class="nav-link text-dark dropdown-toggle fw-bold"
+                        <li class="nav-item dropdown hover-dropdown">
+                            @if ($category->subCategories->count() > 0)
+                                <a class="nav-link text-dark fw-bold text-uppercase d-flex align-items-center"
+                                    style="font-size: 13px; letter-spacing: 0.5px;"
                                     href="{{ route('products.category', $category->slug) }}"
                                     id="catDrop{{ $category->id }}" role="button" aria-expanded="false">
-                                    {{ $category->name }}
+                                    {{ $category->name }} <i class="las la-angle-down small ms-1"
+                                        style="font-size: 10px;"></i>
                                 </a>
+                                {{-- Mega Menu Code Same Rahega --}}
                                 <div class="dropdown-menu japam-mega-menu shadow-lg border-0"
                                     aria-labelledby="catDrop{{ $category->id }}">
                                     <div class="row g-0">
@@ -133,180 +163,75 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
-                        @else
-                            <li class="nav-item me-3">
+                            @else
                                 <a href="{{ route('products.category', $category->slug) }}"
-                                    class="nav-link text-dark fw-bold">
+                                    class="nav-link text-dark fw-bold text-uppercase"
+                                    style="font-size: 13px; letter-spacing: 0.5px;">
                                     {{ $category->name }}
                                 </a>
-                            </li>
-                        @endif
+                            @endif
+                        </li>
                     @endforeach
+
                 </ul>
             </div>
 
-            {{-- 3. ICON ACTION BLOCK --}}
-            <div class="d-flex align-items-center nav-action-icons ms-auto">
-                {{-- 🔍 Search Icon Trigger --}}
-                <div class="nav-search-icon ms-2">
-                    <a href="javascript:void(0);" onclick="toggleSearch()" title="Search">
-                        <i class="las la-search"></i>
-                    </a>
-                </div>
+            {{-- 3. ICONS (Right Side) --}}
+            <div class="d-flex align-items-center gap-3 ms-auto nav-action-icons">
 
-                <div class="nav-user-auth ms-4">
+                {{-- Search --}}
+                <a href="javascript:void(0);" onclick="toggleSearch()" class="text-dark" title="Search">
+                    <i class="las la-search" style="font-size: 24px;"></i>
+                </a>
+
+                {{-- User --}}
+                <div class="nav-user-auth">
                     @auth
                         <div class="dropdown">
-                            <a href="#" class="d-flex align-items-center text-dark text-decoration-none"
-                                role="button" data-bs-toggle="dropdown">
-                                <i class="las la-user-circle fs-2"></i>
+                            <a href="#" class="text-dark d-flex align-items-center" role="button"
+                                data-bs-toggle="dropdown">
+                                <i class="las la-user-circle" style="font-size: 26px;"></i>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 rounded-3"
-                                style="min-width: 200px;">
-                                {{-- <li class="px-3 py-2 border-bottom">
-                                    <span class="small text-muted d-block">Welcome,</span>
-                                    <span class="fw-bold text-dark">{{ Auth::user()->name ?? 'User' }}</span>
-                                </li> --}}
-                                <li><a class="dropdown-item py-2" href="{{ url('/orders') }}"><i
-                                            class="las la-box me-2"></i> Order History</a></li>
-                                {{-- <li><a class="dropdown-item py-2" href="{{ url('/profile') }}"><i class="las la-user-cog me-2"></i> My Profile</a></li> --}}
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="las la-sign-out-alt me-2"></i> Logout
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                        class="d-none">
-                                        @csrf</form>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
+                                <li><a class="dropdown-item small" href="{{ url('/orders') }}">My Orders</a></li>
+                                <li><a class="dropdown-item small text-danger" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                                 </li>
                             </ul>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
                         </div>
                     @else
-                        <a href="javascript:void(0);" onclick="showLoginModal()" title="Login / Signup">
-                            <i class="las la-user-circle fs-2"></i>
+                        <a href="javascript:void(0);" onclick="showLoginModal()" class="text-dark" title="Login">
+                            <i class="las la-user-circle" style="font-size: 26px;"></i>
                         </a>
                     @endauth
                 </div>
 
-                <div class="nav-wishlist-icon ms-4">
-                    <a href="javascript:void(0)" onclick="openWishlistModal()" class="position-relative ...">
-                        <i class="lar la-heart fs-4"></i>
-                        <span
-                            class="wishlist-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 10px;">
-                            {{ Auth::check() ? \App\Models\Wishlist::where('user_id', Auth::id())->count() : count(session('guest_wishlist', [])) }}
-                        </span>
-                    </a>
-                </div>
+                {{-- Wishlist --}}
+                <a href="javascript:void(0)" onclick="openWishlistModal()" class="text-dark position-relative">
+                    <i class="lar la-heart" style="font-size: 26px;"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger p-1"
+                        style="font-size: 10px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
+                        {{ Auth::check() ? \App\Models\Wishlist::where('user_id', Auth::id())->count() : count(session('guest_wishlist', [])) }}
+                    </span>
+                </a>
 
-                <div class="nav-cart-box ms-4 position-relative">
-                    <a href="javascript:void(0);" onclick="openSideCart()" title="Cart" class="text-dark">
-                        <i class="las la-shopping-bag" style="font-size: 28px;"></i>
-                        <span id="cart-badge"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 10px; {{ isset($cartGlobalCount) && $cartGlobalCount > 0 ? '' : 'display: none;' }}">
-                            {{ $cartGlobalCount ?? 0 }}
-                        </span>
-                    </a>
-                </div>
+                {{-- Cart --}}
+                <a href="javascript:void(0);" onclick="openSideCart()" class="text-dark position-relative">
+                    <i class="las la-shopping-bag" style="font-size: 26px;"></i>
+                    <span id="cart-badge"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger p-1"
+                        style="font-size: 10px; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; {{ isset($cartGlobalCount) && $cartGlobalCount > 0 ? '' : 'display: none;' }}">
+                        {{ $cartGlobalCount ?? 0 }}
+                    </span>
+                </a>
+
             </div>
 
-            {{-- Login Modal (Hidden) --}}
-            <div class="modal fade" id="login_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-                <div class="modal-dialog modal-dialog-centered login-modal-dialog">
-                    <div class="modal-content login-modal-content">
-                        <div class="row g-0">
-
-                            {{-- LEFT SIDE: BRANDING --}}
-                            <div class="col-md-5 login-left-panel d-none d-md-flex">
-                                <div class="login-logo">
-                                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Logo">
-                                </div>
-                                <h4 class="login-offer-text">Login Now & avail best offers!</h4>
-
-                                <div class="feature-box">
-                                    <div class="feature-icon"><i class="las la-star"></i></div>
-                                    <div class="feature-title">100% Authentic Products</div>
-                                    <div class="feature-desc">Lab certified & verified items</div>
-                                </div>
-
-                                <div class="feature-box">
-                                    <div class="feature-icon"><i class="las la-gift"></i></div>
-                                    <div class="feature-title">Exclusive Discounts</div>
-                                    <div class="feature-desc">Best prices for registered users</div>
-                                </div>
-                            </div>
-
-                            {{-- RIGHT SIDE: FORM --}}
-                            <div class="col-md-7 login-right-panel">
-                                <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
-                                    data-bs-dismiss="modal" aria-label="Close"></button>
-
-                                {{-- STEP 1: PHONE NUMBER INPUT --}}
-                                <div id="step-phone-container">
-                                    <h3 class="login-title">Get Started</h3>
-                                    <p class="text-center text-muted small mb-4">Enter your mobile number to login/sign
-                                        up</p>
-
-                                    <div class="mb-4">
-                                        <label class="fw-bold small mb-2">Mobile Number</label>
-                                        {{-- intl-tel-input requires a standard input. The library handles the styling --}}
-                                        <input type="tel" id="phone_input" class="form-control"
-                                            placeholder="Enter Number" style="width: 100%;">
-                                        <small id="phone_error" class="text-danger"></small>
-                                    </div>
-
-                                    <button onclick="sendOtp()" id="btn-get-otp" class="btn-login-action">GET
-                                        OTP</button>
-                                </div>
-
-                                {{-- STEP 2: OTP VERIFICATION (Initially Hidden) --}}
-                                <div id="step-otp-container" style="display: none;">
-                                    <h3 class="login-title">OTP Verification</h3>
-                                    <p class="text-center text-muted small mb-3">
-                                        OTP sent to <span id="display_phone" class="fw-bold text-dark"></span>
-                                        <a href="#" onclick="editPhone()" class="edit-number-btn">Edit</a>
-                                    </p>
-
-                                    {{-- 4 Digit Boxes --}}
-                                    <div class="otp-boxes">
-                                        <input type="text" class="otp-input" maxlength="1"
-                                            oninput="moveToNext(this, 'otp2')" id="otp1">
-                                        <input type="text" class="otp-input" maxlength="1"
-                                            oninput="moveToNext(this, 'otp3')" id="otp2">
-                                        <input type="text" class="otp-input" maxlength="1"
-                                            oninput="moveToNext(this, 'otp4')" id="otp3">
-                                        <input type="text" class="otp-input" maxlength="1"
-                                            oninput="moveToNext(this, 'submitOtp')" id="otp4">
-                                    </div>
-                                    <small id="otp_error" class="text-danger text-center d-block mb-2"></small>
-
-                                    <div class="text-center mb-3">
-                                        <small class="text-muted"><i class="las la-clock"></i> Resend OTP in <span
-                                                id="timer">30</span> Sec</small>
-                                    </div>
-
-                                    <button onclick="verifyOtp()" id="btn-verify"
-                                        class="btn-login-action">LOGIN</button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button class="navbar-toggler p-0 d-lg-none" type="button" data-bs-toggle="collapse"
-                data-bs-target="#mainMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
         </div>
     </nav>
 </header>
+
 
 {{-- Mobile Header (Separate Block) --}}
 <div class="Mobile-Header sticky-top" style="background: #fff; z-index: 1020;">

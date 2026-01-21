@@ -8,6 +8,16 @@
     </div>
 
     <div class="card">
+        {{-- Search Box --}}
+            <div class="d-flex align-items-center">
+                <form action="{{ route('admin.products.index') }}" method="GET">
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+                        <input type="text" class="form-control" name="search" placeholder="Search..." value="{{ request('search') }}" aria-label="Search..." aria-describedby="basic-addon-search31">
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
@@ -72,6 +82,10 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        {{-- Pagination --}}
+        <div class="card-footer d-flex justify-content-end">
+             {{ $products->appends(request()->input())->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>
