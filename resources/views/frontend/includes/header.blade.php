@@ -250,6 +250,91 @@
 
             </div>
 
+             {{-- Login Modal (Hidden) --}}
+            <div class="modal fade" id="login_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered login-modal-dialog">
+                    <div class="modal-content login-modal-content">
+                        <div class="row g-0">
+
+                            {{-- LEFT SIDE: BRANDING --}}
+                            <div class="col-md-5 login-left-panel d-none d-md-flex">
+                                <div class="login-logo">
+                                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Logo">
+                                </div>
+                                <h4 class="login-offer-text">Login Now & avail best offers!</h4>
+
+                                <div class="feature-box">
+                                    <div class="feature-icon"><i class="las la-star"></i></div>
+                                    <div class="feature-title">100% Authentic Products</div>
+                                    <div class="feature-desc">Lab certified & verified items</div>
+                                </div>
+
+                                <div class="feature-box">
+                                    <div class="feature-icon"><i class="las la-gift"></i></div>
+                                    <div class="feature-title">Exclusive Discounts</div>
+                                    <div class="feature-desc">Best prices for registered users</div>
+                                </div>
+                            </div>
+
+                            {{-- RIGHT SIDE: FORM --}}
+                            <div class="col-md-7 login-right-panel">
+                                <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                {{-- STEP 1: PHONE NUMBER INPUT --}}
+                                <div id="step-phone-container">
+                                    <h3 class="login-title">Get Started</h3>
+                                    <p class="text-center text-muted small mb-4">Enter your mobile number to login/sign
+                                        up</p>
+
+                                    <div class="mb-4">
+                                        <label class="fw-bold small mb-2">Mobile Number</label>
+                                        {{-- intl-tel-input requires a standard input. The library handles the styling --}}
+                                        <input type="tel" id="phone_input" class="form-control"
+                                            placeholder="Enter Number" style="width: 100%;">
+                                        <small id="phone_error" class="text-danger"></small>
+                                    </div>
+
+                                    <button onclick="sendOtp()" id="btn-get-otp" class="btn-login-action">GET
+                                        OTP</button>
+                                </div>
+
+                                {{-- STEP 2: OTP VERIFICATION (Initially Hidden) --}}
+                                <div id="step-otp-container" style="display: none;">
+                                    <h3 class="login-title">OTP Verification</h3>
+                                    <p class="text-center text-muted small mb-3">
+                                        OTP sent to <span id="display_phone" class="fw-bold text-dark"></span>
+                                        <a href="#" onclick="editPhone()" class="edit-number-btn">Edit</a>
+                                    </p>
+
+                                    {{-- 4 Digit Boxes --}}
+                                    <div class="otp-boxes">
+                                        <input type="text" class="otp-input" maxlength="1"
+                                            oninput="moveToNext(this, 'otp2')" id="otp1">
+                                        <input type="text" class="otp-input" maxlength="1"
+                                            oninput="moveToNext(this, 'otp3')" id="otp2">
+                                        <input type="text" class="otp-input" maxlength="1"
+                                            oninput="moveToNext(this, 'otp4')" id="otp3">
+                                        <input type="text" class="otp-input" maxlength="1"
+                                            oninput="moveToNext(this, 'submitOtp')" id="otp4">
+                                    </div>
+                                    <small id="otp_error" class="text-danger text-center d-block mb-2"></small>
+
+                                    <div class="text-center mb-3">
+                                        <small class="text-muted"><i class="las la-clock"></i> Resend OTP in <span
+                                                id="timer">30</span> Sec</small>
+                                    </div>
+
+                                    <button onclick="verifyOtp()" id="btn-verify"
+                                        class="btn-login-action">LOGIN</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </nav>
 </header>
