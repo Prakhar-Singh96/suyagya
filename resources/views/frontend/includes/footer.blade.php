@@ -249,6 +249,7 @@
                     <li><a href="{{ route('contact') }}">Contact Us</a></li>
                     <li><a href="{{ route('about') }}">About Us</a></li>
                     <li><a href="{{ route('frontend.faq') }}">FAQs</a></li>
+                    <li><a href="{{ route('blogs.index') }}">Blogs</a></li>
                 </ul>
             </div>
 

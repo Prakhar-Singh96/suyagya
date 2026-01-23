@@ -1,50 +1,54 @@
 User-agent: *
 Allow: /
 
-# Backend & Panels
+# 1. Backend & Admin (Inko Google na dekhe)
 Disallow: /admin/
 Disallow: /seller/
+Disallow: /dashboard/
 
-# System commands
+# 2. System Actions
 Disallow: /run-migration
 Disallow: /clear-cache
 Disallow: /run-seeder
 
-# Shopping process
+# 3. Shopping Actions (Cart, Checkout - Ye SEO ke liye nahi hain)
 Disallow: /cart
 Disallow: /checkout
 Disallow: /wishlist
 Disallow: /add-to-cart
+Disallow: /cart/*
+Disallow: /checkout/*
+
+# 4. 🔥 AJAX & Functional URLs (Ye hi 4xx Error de rahe hain - FIX HERE)
 Disallow: /apply-coupon
 Disallow: /get-coupons
+Disallow: /play-sticker-game
+Disallow: /check-pincode-delivery/
+Disallow: /home/section/
+Disallow: /home/section/*
+Disallow: /reviews/*
+Disallow: /compare/*
 
-# User account
+# 5. User Private Pages
 Disallow: /profile
 Disallow: /orders
 Disallow: /track-order
 Disallow: /my-account
-
-# Authentication
-Disallow: /login
-Disallow: /register
-Disallow: /send-otp
-Disallow: /login-with-otp
-Disallow: /logout
 Disallow: /password/
 
-# AJAX & APIs
-Disallow: /ajax-search
-Disallow: /check-pincode-delivery/
-Disallow: /reviews/submit
-Disallow: /reviews/filter
-Disallow: /cart/update-quantity
-Disallow: /cart/side-cart-html
+# 6. Login/Register
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Disallow: /send-otp
+Disallow: /login-with-otp
 
-# Internal search
+# 7. Internal Search & Sort Filters
 Disallow: /search
+Disallow: /ajax-search
+Disallow: /*?sort=
+Disallow: /*&sort=
+Disallow: /*?filter=
 
-# URL parameters / filters
-Disallow: /*?
-
-# Sitemap
+# Sitemap (Google ko rasta dikhane ke liye)
 Sitemap: https://suyagya.com/sitemap.xml
