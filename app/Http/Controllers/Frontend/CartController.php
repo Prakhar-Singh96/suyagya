@@ -19,13 +19,13 @@ class CartController extends Controller
 
         // User login hai to User ID se, nahi to Session ID se cart nikalo
         $cartItems = Cart::with('product')
-                    ->where(function($q) use ($sessionId, $userId) {
-                        if($userId) {
-                            $q->where('user_id', $userId);
-                        } else {
-                            $q->where('session_id', $sessionId);
-                        }
-                    })->get();
+            ->where(function ($q) use ($sessionId, $userId) {
+                if ($userId) {
+                    $q->where('user_id', $userId);
+                } else {
+                    $q->where('session_id', $sessionId);
+                }
+            })->get();
 
         return view('frontend.pages.cart', compact('cartItems'));
     }
@@ -35,7 +35,7 @@ class CartController extends Controller
     {
 
         // 🛑 1. ADMIN/STAFF/SELLER CHECK
-       if (Auth::check()) {
+        if (Auth::check()) {
             $user = Auth::user();
 
             // Blocked Roles ki list banayein
@@ -62,13 +62,13 @@ class CartController extends Controller
 
         // Check if product already in cart
         $existingCart = Cart::where('product_id', $productId)
-                        ->where('is_siddh', $isSiddh)
-                        ->where(function($q) use ($sessionId, $userId) {
-                            if($userId) $q->where('user_id', $userId);
-                            else $q->where('session_id', $sessionId);
-                        })->first();
+            ->where('is_siddh', $isSiddh)
+            ->where(function ($q) use ($sessionId, $userId) {
+                if ($userId) $q->where('user_id', $userId);
+                else $q->where('session_id', $sessionId);
+            })->first();
 
-        if($existingCart) {
+        if ($existingCart) {
             // Update Quantity
             $existingCart->increment('quantity', $quantity);
         } else {
@@ -83,10 +83,10 @@ class CartController extends Controller
         }
 
         // Return updated count for Header Badge
-        $count = Cart::where(function($q) use ($sessionId, $userId) {
-                    if($userId) $q->where('user_id', $userId);
-                    else $q->where('session_id', $sessionId);
-                })->count();
+        $count = Cart::where(function ($q) use ($sessionId, $userId) {
+            if ($userId) $q->where('user_id', $userId);
+            else $q->where('session_id', $sessionId);
+        })->count();
 
         return response()->json(['status' => true, 'message' => 'Added to Cart!', 'cart_count' => $count]);
     }
@@ -99,15 +99,15 @@ class CartController extends Controller
         $maxStock = $cartItem->product->quantity;
 
         // 1. Validate Stock
-        if($newQty > $maxStock) {
+        if ($newQty > $maxStock) {
             return response()->json([
                 'status' => false,
-                'message' => 'Only '.$maxStock.' items left in stock!'
+                'message' => 'Only ' . $maxStock . ' items left in stock!'
             ]);
         }
 
         // 2. Minimum 1 hona chahiye
-        if($newQty < 1) {
+        if ($newQty < 1) {
             return response()->json(['status' => false, 'message' => 'Minimum quantity is 1']);
         }
 
@@ -118,21 +118,21 @@ class CartController extends Controller
         $sessionId = \Illuminate\Support\Facades\Session::getId();
         $userId = \Illuminate\Support\Facades\Auth::id();
 
-        $cartItems = Cart::with('product')->where(function($q) use ($sessionId, $userId) {
-            if($userId) $q->where('user_id', $userId);
+        $cartItems = Cart::with('product')->where(function ($q) use ($sessionId, $userId) {
+            if ($userId) $q->where('user_id', $userId);
             else $q->where('session_id', $sessionId);
         })->get();
 
         $total = 0;
-        foreach($cartItems as $item) {
+        foreach ($cartItems as $item) {
             $price = $item->product->price;
-            if($item->is_siddh) $price += $item->product->siddh_price;
+            if ($item->is_siddh) $price += $item->product->siddh_price;
             $total += ($price * $item->quantity);
         }
 
         // Item ka specific subtotal
         $itemPrice = $cartItem->product->price;
-        if($cartItem->is_siddh) $itemPrice += $cartItem->product->siddh_price;
+        if ($cartItem->is_siddh) $itemPrice += $cartItem->product->siddh_price;
         $itemSubtotal = $itemPrice * $newQty;
 
         return response()->json([
@@ -156,15 +156,15 @@ class CartController extends Controller
         $sessionId = Session::getId();
         $userId = Auth::id();
 
-        $cartItems = Cart::with('product')->where(function($q) use ($sessionId, $userId) {
-            if($userId) $q->where('user_id', $userId);
+        $cartItems = Cart::with('product')->where(function ($q) use ($sessionId, $userId) {
+            if ($userId) $q->where('user_id', $userId);
             else $q->where('session_id', $sessionId);
         })->latest()->get();
 
         $total = 0;
         $totalMrp = 0;
 
-        foreach($cartItems as $item) {
+        foreach ($cartItems as $item) {
             $price = $item->product->price + ($item->is_siddh ? $item->product->siddh_price : 0);
             $mrp = $item->product->mrp_price + ($item->is_siddh ? $item->product->siddh_price : 0);
 
@@ -173,7 +173,15 @@ class CartController extends Controller
         }
 
         $savings = $totalMrp - $total;
-        $html = view('frontend.includes.side_cart_items', compact('cartItems'))->render();
+
+        // 🔥 3. FETCH RECOMMENDATIONS (New Code)
+        // Aap yahan logic change kar sakte hain (e.g. is_bestseller column)
+        $bestSellers = Product::where('status', 1)->inRandomOrder()->take(5)->get();
+        $youMayLike = Product::where('status', 1)->inRandomOrder()->skip(5)->take(5)->get();
+
+        // View Render with new variables
+        $html = view('frontend.includes.side_cart_items', compact('cartItems', 'bestSellers', 'youMayLike'))->render();
+        // $html = view('frontend.includes.side_cart_items', compact('cartItems'))->render();
 
         return response()->json([
             'status' => true,

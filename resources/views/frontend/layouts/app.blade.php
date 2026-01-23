@@ -218,13 +218,13 @@
             position: fixed;
             bottom: 100px; /* Above Whatsapp */
             right: 20px;
-            z-index: 9990;
+            z-index: 99;
             width: 60px;
             height: 60px;
             background: linear-gradient(135deg, #d4af37, #f7f1de);
             border: 2px solid #fff;
             border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 2px 2px 3px #999;
             cursor: pointer;
             display: none; /* Hidden by default */
             align-items: center;

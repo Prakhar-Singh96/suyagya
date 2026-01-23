@@ -648,7 +648,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
 
                     <div class="col-6 col-sm-4 col-md-3 col-lg-custom-8">
                         {{-- 🔗 Dynamic Link: Sends to Product Listing with ?purpose=Health --}}
-                        <a href="{{ route('products.all_collection') }}?purpose={{ $purpose->value }}&sort_by=created-descending"
+                        <a href="{{ route('products.all_collection') }}?purpose={{ $purpose->value }}"
                             class="energy-card text-decoration-none d-block text-center">
 
                             <div class="icon-wrapper mb-3 mx-auto">

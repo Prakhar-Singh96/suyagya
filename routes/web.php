@@ -248,6 +248,8 @@ Route::get('/run-migration', function () {
 Route::get('/clear-cache', function () {
     Artisan::call('config:cache');
     Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('optimize:clear');
     return 'Cache Cleared!';
 });
 

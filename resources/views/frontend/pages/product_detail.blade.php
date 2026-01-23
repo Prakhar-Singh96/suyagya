@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-            border: 1px solid #eee;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            background-color: #f7f1de;
-        } */
+                    border: 1px solid #eee;
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                    background-color: #f7f1de;
+                } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -116,23 +116,23 @@
 
         /* Mobile Adjustments */
         /* @media (max-width: 768px) {
-                                            .product-slider-container {
-                                                height: 455px !important;
-                                                aspect-ratio: 1 / 1;
-                                                width: 100%;
-                                            }
+                                                    .product-slider-container {
+                                                        height: 455px !important;
+                                                        aspect-ratio: 1 / 1;
+                                                        width: 100%;
+                                                    }
 
-                                            .product-slider-container img,
-                                            .product-slider-container video {
-                                                width: 100%;
-                                                height: 100%;
-                                                object-fit: cover;
-                                            }
+                                                    .product-slider-container img,
+                                                    .product-slider-container video {
+                                                        width: 100%;
+                                                        height: 100%;
+                                                        object-fit: cover;
+                                                    }
 
-                                            .product-images {
-                                                top: 0 !important;
-                                            }
-                                        } */
+                                                    .product-images {
+                                                        top: 0 !important;
+                                                    }
+                                                } */
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
             overflow: hidden;
@@ -451,7 +451,8 @@
                                     @endfor
                                     <option value="adjustable">Free/Adjustable</option>
                                 </select>
-                                <a href="{{route('ring.size.guide')}}" class="small text-primary text-decoration-underline ms-3">Size Chart</a>
+                                <a href="{{ route('ring.size.guide') }}"
+                                    class="small text-primary text-decoration-underline ms-3">Size Chart</a>
                             </div>
                         </div>
 
@@ -938,12 +939,28 @@
                                         </a>
                                     </h6>
 
-                                    {{-- Rating (Static or Dynamic if you load it) --}}
+                                    {{-- ⭐ Dynamic Rating Logic ⭐ --}}
                                     <div class="mb-2 small text-warning">
-                                        <i class="las la-star"></i><i class="las la-star"></i><i
-                                            class="las la-star"></i><i class="las la-star"></i><i
-                                            class="las la-star"></i>
-                                        <span class="text-muted ms-1" style="font-size: 0.75rem;">(25)</span>
+                                        @php
+                                            // Rating ko round figure me convert karein (e.g. 4.5 -> 5)
+                                            $avgStar = round($related->reviews_avg_rating ?? 0);
+                                        @endphp
+
+                                        {{-- 1 se 5 tak loop chalayen --}}
+                                        @foreach (range(1, 5) as $i)
+                                            @if ($avgStar >= $i)
+                                                {{-- Bhara hua sitara --}}
+                                                <i class="las la-star"></i>
+                                            @else
+                                                {{-- Khali sitara --}}
+                                                <i class="lar la-star"></i>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Review Count --}}
+                                        <span class="text-muted ms-1" style="font-size: 0.75rem;">
+                                            ({{ $related->reviews_count ?? 0 }})
+                                        </span>
                                     </div>
 
                                     {{-- Price --}}

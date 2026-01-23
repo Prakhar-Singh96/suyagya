@@ -26,10 +26,10 @@ class ProductListingController extends Controller
             $query->where(function ($q) use ($catId) {
                 // 1. Check Primary Category
                 $q->where('category_id', $catId)
-                  // 2. OR Check Additional Categories (Pivot Table)
-                  ->orWhereHas('additionalCategories', function ($subQ) use ($catId) {
-                      $subQ->where('categories.id', $catId);
-                  });
+                    // 2. OR Check Additional Categories (Pivot Table)
+                    ->orWhereHas('additionalCategories', function ($subQ) use ($catId) {
+                        $subQ->where('categories.id', $catId);
+                    });
             });
         }
 
@@ -40,16 +40,16 @@ class ProductListingController extends Controller
             $query->where(function ($q) use ($subCatId) {
                 // 1. Check Primary SubCategory
                 $q->where('sub_category_id', $subCatId)
-                  // 2. OR Check Additional SubCategories (Pivot Table)
-                  ->orWhereHas('additionalSubCategories', function ($subQ) use ($subCatId) {
-                      $subQ->where('sub_categories.id', $subCatId);
-                  });
+                    // 2. OR Check Additional SubCategories (Pivot Table)
+                    ->orWhereHas('additionalSubCategories', function ($subQ) use ($subCatId) {
+                        $subQ->where('sub_categories.id', $subCatId);
+                    });
             });
         }
 
         // C. Context: Collection/Purpose (FilterValue)
         if (isset($context['filter_value_id'])) {
-            $query->whereHas('filterValues', function($q) use ($context) {
+            $query->whereHas('filterValues', function ($q) use ($context) {
                 $q->where('filter_values.id', $context['filter_value_id']);
             });
         }
@@ -64,7 +64,7 @@ class ProductListingController extends Controller
         // 1. Handle Simple 'purpose' Parameter
         if ($request->filled('purpose')) {
             $purpose = $request->input('purpose');
-            $query->whereHas('filterValues', function($q) use ($purpose) {
+            $query->whereHas('filterValues', function ($q) use ($purpose) {
                 $q->where('value', 'like', $purpose);
             });
         }
@@ -137,49 +137,49 @@ class ProductListingController extends Controller
             // Updated logic for dynamic filters too
             if (isset($context['category_id'])) {
                 $catId = $context['category_id'];
-                $q->where(function($subQ) use ($catId) {
+                $q->where(function ($subQ) use ($catId) {
                     $subQ->where('category_id', $catId)
-                         ->orWhereHas('additionalCategories', function($deepQ) use ($catId) {
-                             $deepQ->where('categories.id', $catId);
-                         });
+                        ->orWhereHas('additionalCategories', function ($deepQ) use ($catId) {
+                            $deepQ->where('categories.id', $catId);
+                        });
                 });
             }
             if (isset($context['sub_category_id'])) {
                 $subCatId = $context['sub_category_id'];
-                $q->where(function($subQ) use ($subCatId) {
+                $q->where(function ($subQ) use ($subCatId) {
                     $subQ->where('sub_category_id', $subCatId)
-                         ->orWhereHas('additionalSubCategories', function($deepQ) use ($subCatId) {
-                             $deepQ->where('sub_categories.id', $subCatId);
-                         });
+                        ->orWhereHas('additionalSubCategories', function ($deepQ) use ($subCatId) {
+                            $deepQ->where('sub_categories.id', $subCatId);
+                        });
                 });
             }
         })
-        ->with(['filterValues' => function ($q) use ($context) {
-            $q->withCount(['products' => function ($sq) use ($context) {
-                $sq->where('status', 1);
+            ->with(['filterValues' => function ($q) use ($context) {
+                $q->withCount(['products' => function ($sq) use ($context) {
+                    $sq->where('status', 1);
 
-                if (isset($context['category_id'])) {
-                    $catId = $context['category_id'];
-                    $sq->where(function($subQ) use ($catId) {
-                        $subQ->where('category_id', $catId)
-                             ->orWhereHas('additionalCategories', function($deepQ) use ($catId) {
-                                 $deepQ->where('categories.id', $catId);
-                             });
-                    });
-                }
+                    if (isset($context['category_id'])) {
+                        $catId = $context['category_id'];
+                        $sq->where(function ($subQ) use ($catId) {
+                            $subQ->where('category_id', $catId)
+                                ->orWhereHas('additionalCategories', function ($deepQ) use ($catId) {
+                                    $deepQ->where('categories.id', $catId);
+                                });
+                        });
+                    }
 
-                if (isset($context['sub_category_id'])) {
-                    $subCatId = $context['sub_category_id'];
-                    $sq->where(function($subQ) use ($subCatId) {
-                        $subQ->where('sub_category_id', $subCatId)
-                             ->orWhereHas('additionalSubCategories', function($deepQ) use ($subCatId) {
-                                 $deepQ->where('sub_categories.id', $subCatId);
-                             });
-                    });
-                }
-            }]);
-        }])
-        ->get();
+                    if (isset($context['sub_category_id'])) {
+                        $subCatId = $context['sub_category_id'];
+                        $sq->where(function ($subQ) use ($subCatId) {
+                            $subQ->where('sub_category_id', $subCatId)
+                                ->orWhereHas('additionalSubCategories', function ($deepQ) use ($subCatId) {
+                                    $deepQ->where('sub_categories.id', $subCatId);
+                                });
+                        });
+                    }
+                }]);
+            }])
+            ->get();
     }
 
     // =========================================================
@@ -218,8 +218,7 @@ class ProductListingController extends Controller
             if ($request->type == 'featured') {
                 $pageTitle = "Featured Products";
                 $pageDesc = "Handpicked exclusive spiritual items for you.";
-            }
-            elseif ($request->type == 'best-selling') {
+            } elseif ($request->type == 'best-selling') {
                 $pageTitle = "Best Selling Products";
                 $pageDesc = "Our most loved and purchased spiritual items.";
             }
@@ -263,12 +262,14 @@ class ProductListingController extends Controller
         ];
 
         // Related Products Logic (Updated to check both categories)
-        $relatedProducts = Product::where('status', 1)
-            ->where(function($q) use ($product) {
+        $relatedProducts = Product::withCount('reviews') // ✅ Total Reviews layega
+            ->withAvg('reviews', 'rating') // ✅ Average Rating nikalega (reviews_avg_rating)
+            ->where('status', 1)
+            ->where(function ($q) use ($product) {
                 $q->where('category_id', $product->category_id)
-                  ->orWhereHas('additionalCategories', function($sq) use ($product) {
-                      $sq->where('categories.id', $product->category_id);
-                  });
+                    ->orWhereHas('additionalCategories', function ($sq) use ($product) {
+                        $sq->where('categories.id', $product->category_id);
+                    });
             })
             ->where('id', '!=', $product->id)
             ->take(8)->get();
