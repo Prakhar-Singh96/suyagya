@@ -48,8 +48,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="px-4 py-3">
-            {{ $orders->links() }}
+        <div class="card-footer d-flex justify-content-end">
+            {{ $orders->appends(request()->input())->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>

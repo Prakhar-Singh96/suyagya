@@ -11,7 +11,7 @@ class RedirectController extends Controller
 {
     public function index()
     {
-        $redirects = Redirect::latest()->paginate(10);
+        $redirects = Redirect::latest()->paginate(20);
         return view('admin.redirects.index', compact('redirects'));
     }
 

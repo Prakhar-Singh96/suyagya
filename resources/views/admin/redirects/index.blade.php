@@ -60,7 +60,10 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $redirects->links() }}
+            {{-- Pagination --}}
+            <div class="card-footer d-flex justify-content-end">
+                 {{ $redirects->appends(request()->input())->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 </div>

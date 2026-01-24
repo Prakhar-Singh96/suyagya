@@ -27,7 +27,7 @@ class ProductController extends Controller
                 return $query->where('name', 'like', "%{$search}%");
             })
             ->latest() // Newest first
-            ->paginate(15); // 15 per page
+            ->paginate(20); // 15 per page
         return view('admin.products.index', compact('products'));
     }
 
