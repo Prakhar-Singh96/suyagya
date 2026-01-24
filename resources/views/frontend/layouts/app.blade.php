@@ -13,7 +13,8 @@
     @php
         // 1. Default Values (Fallback)
         $metaTitle = 'Suyagya - Authentic Stone Jewelry & Rudraksha';
-        $metaDesc = 'Shop genuine Rudraksha, Gemstones, and spiritual jewelry at Suyagya. Certified products with lab reports.';
+        $metaDesc =
+            'Shop genuine Rudraksha, Gemstones, and spiritual jewelry at Suyagya. Certified products with lab reports.';
         $metaKeys = 'rudraksha, gemstones, spiritual jewelry, mala, suyagya';
         $ogImage = asset('og-images/default-og.jpg');
         $currentUrl = url()->current();
@@ -21,7 +22,9 @@
         // 2. PRODUCT Detail Page
         if (Route::is('product.detail') && !empty($product)) {
             $metaTitle = !empty($product->meta_title) ? $product->meta_title : $product->name . ' | Suyagya';
-            $metaDesc = !empty($product->meta_description) ? $product->meta_description : Str::limit(strip_tags($product->description), 160);
+            $metaDesc = !empty($product->meta_description)
+                ? $product->meta_description
+                : Str::limit(strip_tags($product->description), 160);
             $metaKeys = $product->meta_keywords ?? $metaKeys;
             if (!empty($product->og_image)) {
                 $ogImage = asset($product->og_image);
@@ -33,8 +36,12 @@
         }
         // 3. CATEGORY Page
         elseif (Route::is('products.category') && !empty($category)) {
-            $metaTitle = !empty($category->meta_title) ? $category->meta_title : $category->name . ' Collection | Suyagya';
-            $metaDesc = !empty($category->meta_description) ? $category->meta_description : 'Explore our exclusive collection of ' . $category->name;
+            $metaTitle = !empty($category->meta_title)
+                ? $category->meta_title
+                : $category->name . ' Collection | Suyagya';
+            $metaDesc = !empty($category->meta_description)
+                ? $category->meta_description
+                : 'Explore our exclusive collection of ' . $category->name;
             $metaKeys = $category->meta_keywords ?? $metaKeys;
             if ($category->og_image) {
                 $ogImage = asset($category->og_image);
@@ -42,17 +49,24 @@
         }
         // 4. SUB-CATEGORY Page
         elseif (Route::is('products.subcategory') && !empty($subCategory)) {
-            $metaTitle = !empty($subCategory->meta_title) ? $subCategory->meta_title : $subCategory->name . ' | Suyagya';
-            $metaDesc = !empty($subCategory->meta_description) ? $subCategory->meta_description : 'Best quality ' . $subCategory->name . ' available online.';
+            $metaTitle = !empty($subCategory->meta_title)
+                ? $subCategory->meta_title
+                : $subCategory->name . ' | Suyagya';
+            $metaDesc = !empty($subCategory->meta_description)
+                ? $subCategory->meta_description
+                : 'Best quality ' . $subCategory->name . ' available online.';
             $metaKeys = $subCategory->meta_keywords ?? $metaKeys;
         }
         // ✅ 5. BLOG PAGES (Dynamic SEO)
         elseif (Route::is('blogs.index')) {
             $metaTitle = 'Our Blogs - Spiritual Knowledge & Insights | Suyagya';
-            $metaDesc = 'Read latest articles on Rudraksha, Gemstones, and spirituality. Gain knowledge and insights from our experts.';
+            $metaDesc =
+                'Read latest articles on Rudraksha, Gemstones, and spirituality. Gain knowledge and insights from our experts.';
         } elseif (Route::is('blogs.show') && !empty($blog)) {
             $metaTitle = !empty($blog->meta_title) ? $blog->meta_title : $blog->title . ' | Suyagya';
-            $metaDesc = !empty($blog->meta_description) ? $blog->meta_description : Str::limit(strip_tags($blog->content), 160);
+            $metaDesc = !empty($blog->meta_description)
+                ? $blog->meta_description
+                : Str::limit(strip_tags($blog->content), 160);
             $metaKeys = !empty($blog->meta_keywords) ? $blog->meta_keywords : $metaKeys;
             if (!empty($blog->main_image)) {
                 $ogImage = asset($blog->main_image);
@@ -63,13 +77,16 @@
         // ✅ 6. STATIC PAGES
         elseif (Route::is('terms.conditions')) {
             $metaTitle = 'Terms & Conditions | Suyagya';
-            $metaDesc = 'Read the Terms and Conditions of Suyagya. Understand our policies regarding usage, orders, and services.';
+            $metaDesc =
+                'Read the Terms and Conditions of Suyagya. Understand our policies regarding usage, orders, and services.';
         } elseif (Route::is('privacy.policy')) {
             $metaTitle = 'Privacy Policy | Suyagya';
-            $metaDesc = 'Your privacy is important to us. Learn how Suyagya collects, uses, and protects your personal data.';
+            $metaDesc =
+                'Your privacy is important to us. Learn how Suyagya collects, uses, and protects your personal data.';
         } elseif (Route::is('refund.policy')) {
             $metaTitle = 'Return & Refund Policy | Suyagya';
-            $metaDesc = 'Understand our return and refund process. We ensure customer satisfaction with transparent policies.';
+            $metaDesc =
+                'Understand our return and refund process. We ensure customer satisfaction with transparent policies.';
         } elseif (Route::is('support.policy')) {
             $metaTitle = 'Support Policy | Suyagya';
             $metaDesc = 'Need help? Contact Suyagya support team for assistance with orders, products, and services.';
@@ -130,22 +147,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     {{-- ⚡ PERFORMANCE: Added display=swap --}}
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap"
+        rel="stylesheet">
 
     {{-- 💡 BOOTSTRAP 5 CSS CDN --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 
     {{-- 💡 Premium Custom Styles --}}
-    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}?v={{ filemtime(public_path('assets/css/custom.css')) }}">
+    <link rel="stylesheet"
+        href="{{ asset('assets/css/custom.css') }}?v={{ filemtime(public_path('assets/css/custom.css')) }}">
 
     @yield('styles')
 
@@ -153,6 +175,7 @@
 </head>
 
 {{-- 🎨 Body --}}
+
 <body>
     <div class="aiz-main-wrapper d-flex flex-column" style="background-color: var(--light) !important;">
 
@@ -210,13 +233,27 @@
 
     {{-- CSS for Floating Buttons (Game & Whatsapp) --}}
     <style>
-        .jump-anim { animation: jump 1.5s infinite; }
-        @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .jump-anim {
+            animation: jump 1.5s infinite;
+        }
+
+        @keyframes jump {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
 
         /* 🎁 Floating Game Icon */
         .lucky-float-btn {
             position: fixed;
-            bottom: 100px; /* Above Whatsapp */
+            bottom: 100px;
+            /* Above Whatsapp */
             right: 20px;
             z-index: 99;
             width: 60px;
@@ -226,41 +263,116 @@
             border-radius: 50%;
             box-shadow: 2px 2px 3px #999;
             cursor: pointer;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
             align-items: center;
             justify-content: center;
             flex-direction: column;
             transition: transform 0.3s ease;
             animation: floatIcon 3s ease-in-out infinite;
         }
-        .lucky-float-btn[style*="display: block"] { display: flex !important; }
-        .lucky-float-btn:hover { transform: scale(1.1); }
-        .lucky-float-btn i { font-size: 24px; color: #333; margin-bottom: 2px; line-height: 1; }
-        .lucky-float-btn .lucky-text { font-size: 8px; font-weight: 800; color: #333; text-transform: uppercase; line-height: 1.2; }
-        @keyframes floatIcon { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
+
+        .lucky-float-btn[style*="display: block"] {
+            display: flex !important;
+        }
+
+        .lucky-float-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .lucky-float-btn i {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+
+        .lucky-float-btn .lucky-text {
+            font-size: 8px;
+            font-weight: 800;
+            color: #333;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        @keyframes floatIcon {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
 
         /* 🟢 WhatsApp Button */
         .whatsapp-float {
-            position: fixed; width: 60px; height: 60px; bottom: 25px; right: 25px;
-            background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center;
-            font-size: 35px; box-shadow: 2px 2px 3px #999; z-index: 99;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s ease; text-decoration: none !important;
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 35px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            text-decoration: none !important;
             animation: pulse-green 2s infinite;
         }
-        .whatsapp-float:hover { background-color: #1ebe57; transform: scale(1.1); color: #fff; }
+
+        .whatsapp-float:hover {
+            background-color: #1ebe57;
+            transform: scale(1.1);
+            color: #fff;
+        }
+
         @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
         }
 
         /* Mobile Fixes */
         @media (max-width: 768px) {
-            .lucky-float-btn { bottom: 90px; right: 15px; width: 55px; height: 55px; }
-            .lucky-float-btn i { font-size: 20px; }
-            .lucky-float-btn .lucky-text { font-size: 7px; }
-            .whatsapp-float { width: 50px; height: 50px; bottom: 20px; right: 20px; font-size: 28px; }
+            .lucky-float-btn {
+                bottom: 90px;
+                right: 15px;
+                width: 55px;
+                height: 55px;
+            }
+
+            .lucky-float-btn i {
+                font-size: 20px;
+            }
+
+            .lucky-float-btn .lucky-text {
+                font-size: 7px;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 28px;
+            }
         }
     </style>
 
@@ -282,10 +394,21 @@
                 scriptRazor.src = "https://checkout.razorpay.com/v1/checkout.js";
                 document.body.appendChild(scriptRazor);
 
-                // 2. Load Razorpay Affordability (Jo Head se hataya tha)
-                var scriptAfford = document.createElement('script');
-                scriptAfford.src = "https://cdn.razorpay.com/widgets/affordability/affordability.js";
-                document.body.appendChild(scriptAfford);
+                // // 2. Load Razorpay Affordability (With Auto-Render Fix)
+                // var scriptAfford = document.createElement('script');
+                // scriptAfford.src = "https://cdn.razorpay.com/widgets/affordability/affordability.js";
+
+                // // 🔥 FIX: Jaise hi script load ho, widget render karo
+                // scriptAfford.onload = function() {
+                //     console.log("Razorpay Affordability Loaded!");
+                //     // Agar product detail page par hain, to widget chalao
+                //     if (typeof renderRazorpayWidget === 'function') {
+                //         let currentPrice = parseFloat(document.getElementById('display_price')
+                //             ?.innerText.replace(/,/g, '') || "{{ $product->price ?? 0 }}");
+                //         if (currentPrice > 0) renderRazorpayWidget(currentPrice);
+                //     }
+                // };
+                // document.body.appendChild(scriptAfford);
 
                 // 3. Load GTM / Analytics (Jo Head se hataya tha)
                 var scriptGTM = document.createElement('script');
@@ -294,7 +417,10 @@
                 document.head.appendChild(scriptGTM);
 
                 window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
+
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
                 gtag('js', new Date());
                 gtag('config', 'G-6ECDBEM0VJ');
 
@@ -309,6 +435,7 @@
     <script>
         // ... (Apka Mega Menu Code Same Rahega) ...
         init__megaMenu();
+
         function init__megaMenu() {
             const mm = document.querySelector('aside#mega-menu--mobile');
             if (mm) {
@@ -316,26 +443,59 @@
                 const mm_screens = mm.querySelectorAll('.mega__screen');
                 const mm_subIcons = mm.querySelectorAll('a.btn .btn__icon');
                 const mm_subLinks = mm.querySelectorAll('a.btn[aria-label]');
-                const mm_subLinks_icon = `<svg width="4" height="7" viewBox="0 0 4 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.88255 3.2234C4.03915 3.37573 4.03915 3.62204 3.88255 3.77275L0.683882 6.88575C0.52728 7.03808 0.274052 7.03808 0.119117 6.88575C-0.0358184 6.73343 -0.0374844 6.48711 0.119117 6.3364L3.03457 3.50051L0.117451 0.662992C-0.0391504 0.510664 -0.0391504 0.264347 0.117451 0.113639C0.274052 -0.0370684 0.52728 -0.0386889 0.682216 0.113639L3.88255 3.2234Z" fill="#221F20"/></svg>`;
+                const mm_subLinks_icon =
+                    `<svg width="4" height="7" viewBox="0 0 4 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.88255 3.2234C4.03915 3.37573 4.03915 3.62204 3.88255 3.77275L0.683882 6.88575C0.52728 7.03808 0.274052 7.03808 0.119117 6.88575C-0.0358184 6.73343 -0.0374844 6.48711 0.119117 6.3364L3.03457 3.50051L0.117451 0.662992C-0.0391504 0.510664 -0.0391504 0.264347 0.117451 0.113639C0.274052 -0.0370684 0.52728 -0.0386889 0.682216 0.113639L3.88255 3.2234Z" fill="#221F20"/></svg>`;
                 let mm_active_depth = parseInt(mm_container.dataset.activeDepth);
                 mm_screens[0].dataset.activeMenu = true;
-                mm_subLinks.forEach(item => { const iconSpan = item.querySelector('.btn__icon'); if (iconSpan) iconSpan.insertAdjacentHTML("afterbegin", mm_subLinks_icon); });
+                mm_subLinks.forEach(item => {
+                    const iconSpan = item.querySelector('.btn__icon');
+                    if (iconSpan) iconSpan.insertAdjacentHTML("afterbegin", mm_subLinks_icon);
+                });
                 const screenBackBtns = mm.querySelectorAll('.screen-back-btn');
-                screenBackBtns.forEach(backBtn => { backBtn.addEventListener('click', (e) => { if (mm_active_depth > 1) sub__handleActiveDepth(mm_screens, e, mm_container); }); });
-                mm_subIcons.forEach(icon => { icon.addEventListener('click', (e) => sub__handleActiveDepth(mm_screens, e, mm_container)); });
-                mm_subLinks.forEach(link => { link.addEventListener('click', (e) => sub__handleActiveDepth(mm_screens, e, mm_container)); });
+                screenBackBtns.forEach(backBtn => {
+                    backBtn.addEventListener('click', (e) => {
+                        if (mm_active_depth > 1) sub__handleActiveDepth(mm_screens, e, mm_container);
+                    });
+                });
+                mm_subIcons.forEach(icon => {
+                    icon.addEventListener('click', (e) => sub__handleActiveDepth(mm_screens, e, mm_container));
+                });
+                mm_subLinks.forEach(link => {
+                    link.addEventListener('click', (e) => sub__handleActiveDepth(mm_screens, e, mm_container));
+                });
+
                 function sub__handleActiveDepth(screens, event, container) {
                     const target = event.currentTarget || event.target;
                     if (target.classList.contains('screen-back-btn') || target.id == "menu-back") {
-                        mm_active_depth -= 1; mm_container.dataset.activeDepth = mm_active_depth;
-                        mm_screens.forEach(screen => { let dft_screen_depth = parseInt(screen.dataset.menuDepth); screen.dataset.activeMenu = false; dft_screen_depth >= mm_active_depth ? screen.classList.remove('stacked') : null; dft_screen_depth == mm_active_depth ? screen.dataset.activeMenu = true : null; });
+                        mm_active_depth -= 1;
+                        mm_container.dataset.activeDepth = mm_active_depth;
+                        mm_screens.forEach(screen => {
+                            let dft_screen_depth = parseInt(screen.dataset.menuDepth);
+                            screen.dataset.activeMenu = false;
+                            dft_screen_depth >= mm_active_depth ? screen.classList.remove('stacked') : null;
+                            dft_screen_depth == mm_active_depth ? screen.dataset.activeMenu = true : null;
+                        });
                     } else {
-                        event.preventDefault(); event.stopPropagation();
-                        mm_active_depth += 1; mm_container.dataset.activeDepth = mm_active_depth;
-                        mm_screens.forEach(screen => { let dft_screen_depth = parseInt(screen.dataset.menuDepth); screen.dataset.activeMenu = false; dft_screen_depth < mm_active_depth ? screen.classList.add('stacked') : null; dft_screen_depth == mm_active_depth ? screen.dataset.activeMenu = true : null; });
-                        let link = target.closest('a.btn') || target; let link_menu = link.getAttribute('aria-label'); container.dataset.activeNav = link_menu;
-                        let dft_active_screen = container.querySelector('.mega__screen[data-active-menu="true"]'); let dft_active_screen__navs = dft_active_screen.querySelectorAll('nav'); dft_active_screen__navs.forEach(nav => { nav.classList.add('hidden'); });
-                        let dft_active_nav = dft_active_screen.querySelector(`nav[aria-labelledby="${link_menu}"]`); if (dft_active_nav) dft_active_nav.classList.remove('hidden');
+                        event.preventDefault();
+                        event.stopPropagation();
+                        mm_active_depth += 1;
+                        mm_container.dataset.activeDepth = mm_active_depth;
+                        mm_screens.forEach(screen => {
+                            let dft_screen_depth = parseInt(screen.dataset.menuDepth);
+                            screen.dataset.activeMenu = false;
+                            dft_screen_depth < mm_active_depth ? screen.classList.add('stacked') : null;
+                            dft_screen_depth == mm_active_depth ? screen.dataset.activeMenu = true : null;
+                        });
+                        let link = target.closest('a.btn') || target;
+                        let link_menu = link.getAttribute('aria-label');
+                        container.dataset.activeNav = link_menu;
+                        let dft_active_screen = container.querySelector('.mega__screen[data-active-menu="true"]');
+                        let dft_active_screen__navs = dft_active_screen.querySelectorAll('nav');
+                        dft_active_screen__navs.forEach(nav => {
+                            nav.classList.add('hidden');
+                        });
+                        let dft_active_nav = dft_active_screen.querySelector(`nav[aria-labelledby="${link_menu}"]`);
+                        if (dft_active_nav) dft_active_nav.classList.remove('hidden');
                     }
                 }
             }
@@ -343,8 +503,11 @@
 
         const menuButton = document.getElementById('menuButton');
         const megaMenu = document.getElementById('mega-menu--mobile');
-        if(menuButton){
-             menuButton.addEventListener('click', () => { megaMenu.classList.toggle('active'); menuButton.classList.toggle('active'); });
+        if (menuButton) {
+            menuButton.addEventListener('click', () => {
+                megaMenu.classList.toggle('active');
+                menuButton.classList.toggle('active');
+            });
         }
 
         function initFooterAccordion() {
@@ -354,48 +517,112 @@
                     if (window.innerWidth > 767) return;
                     const list = heading.nextElementSibling;
                     if (!list || !list.classList.contains('footer-list')) return;
-                    heading.classList.toggle('active'); list.classList.toggle('active');
+                    heading.classList.toggle('active');
+                    list.classList.toggle('active');
                 });
             });
         }
         initFooterAccordion();
 
-        window.appRoutes = { getCoupons: "{{ route('get.coupons') }}", applyCoupon: "{{ route('apply.coupon') }}" };
+        window.appRoutes = {
+            getCoupons: "{{ route('get.coupons') }}",
+            applyCoupon: "{{ route('apply.coupon') }}"
+        };
         window.csrfToken = "{{ csrf_token() }}";
     </script>
 
     {{-- LUCKY DRAW LOGIC --}}
     <script>
         $(document).ready(function() {
-            @auth
-                let dbHasActiveCoupon = {{ \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
-                if (!dbHasActiveCoupon) { if (localStorage.getItem('gaming_coupon_amount')) { localStorage.removeItem('gaming_coupon_amount'); localStorage.removeItem('gaming_coupon_code'); console.log("🧹 Sync: Database empty, removed fake coupon."); } }
+                @auth
+                let dbHasActiveCoupon =
+                    {{ \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
+                if (!dbHasActiveCoupon) {
+                    if (localStorage.getItem('gaming_coupon_amount')) {
+                        localStorage.removeItem('gaming_coupon_amount');
+                        localStorage.removeItem('gaming_coupon_code');
+                        console.log("🧹 Sync: Database empty, removed fake coupon.");
+                    }
+                }
             @endauth
-            let userAlreadyPlayed = {{ Auth::check() && \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
+            let userAlreadyPlayed =
+                {{ Auth::check() && \App\Models\UserCoupon::where('user_id', Auth::id())->where('is_used', 0)->exists() ? 'true' : 'false' }};
             let shouldOpenGame = localStorage.getItem('openGameAfterLogin');
             let gameClosedByUser = localStorage.getItem('luckyDrawClosed');
 
-            if (gameClosedByUser === 'true' && !userAlreadyPlayed) { $('#luckyFloatingIcon').fadeIn(); }
-            else if (shouldOpenGame === 'true') { @auth $('#gameModal').modal('show'); localStorage.removeItem('openGameAfterLogin'); @endauth }
-            else { if (!userAlreadyPlayed) { setTimeout(() => { $('#gameModal').modal('show'); }, 3000); } }
+            if (gameClosedByUser === 'true' && !userAlreadyPlayed) {
+                $('#luckyFloatingIcon').fadeIn();
+            } else if (shouldOpenGame === 'true') {
+                @auth $('#gameModal').modal('show');
+                localStorage.removeItem('openGameAfterLogin');
+            @endauth
+        }
+        else {
+            if (!userAlreadyPlayed) {
+                setTimeout(() => {
+                    $('#gameModal').modal('show');
+                }, 3000);
+            }
+        }
         });
 
-        function closeLuckyDraw() { $('#gameModal').modal('hide'); localStorage.setItem('luckyDrawClosed', 'true'); $('#luckyFloatingIcon').fadeIn(); }
-        function reopenLuckyDraw() { $('#gameModal').modal('show'); $('#luckyFloatingIcon').fadeOut(); }
-        function playGuest() { $('#guest-view .chit-card i').addClass('d-none'); $('#guest-result').removeClass('d-none'); setTimeout(() => { $('#guest-msg').removeClass('d-none'); }, 600); }
-        function openLoginForGame() { $('#gameModal').modal('hide'); localStorage.setItem('openGameAfterLogin', 'true'); $('#login_modal').modal('show'); }
+        function closeLuckyDraw() {
+            $('#gameModal').modal('hide');
+            localStorage.setItem('luckyDrawClosed', 'true');
+            $('#luckyFloatingIcon').fadeIn();
+        }
+
+        function reopenLuckyDraw() {
+            $('#gameModal').modal('show');
+            $('#luckyFloatingIcon').fadeOut();
+        }
+
+        function playGuest() {
+            $('#guest-view .chit-card i').addClass('d-none');
+            $('#guest-result').removeClass('d-none');
+            setTimeout(() => {
+                $('#guest-msg').removeClass('d-none');
+            }, 600);
+        }
+
+        function openLoginForGame() {
+            $('#gameModal').modal('hide');
+            localStorage.setItem('openGameAfterLogin', 'true');
+            $('#login_modal').modal('show');
+        }
         let playing = false;
+
         function playUser(element) {
-            if (playing) return; playing = true; $(element).css('transform', 'scale(0.9)');
+            if (playing) return;
+            playing = true;
+            $(element).css('transform', 'scale(0.9)');
             $.ajax({
-                url: "{{ route('game.play') }}", type: "POST", data: { _token: "{{ csrf_token() }}" },
+                url: "{{ route('game.play') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
                 success: function(res) {
                     if (res.status === 'success' || res.status === 'already_played') {
-                        localStorage.removeItem('luckyDrawClosed'); $('#luckyFloatingIcon').hide();
-                        $(element).find('.chit-icon').addClass('d-none'); $(element).find('.prize-amt').text('₹' + res.amount); $(element).find('.chit-result').removeClass('d-none');
-                        $(element).css({ 'transform': 'scale(1.1)', 'border': '2px solid #28a745', 'background': '#e8f5e9' });
-                        localStorage.setItem('gaming_coupon_amount', res.amount); localStorage.setItem('gaming_coupon_code', res.code);
-                        setTimeout(() => { $('#final-amt').text(res.amount); $('#win-msg').removeClass('d-none'); setTimeout(() => { $('#gameModal').modal('hide'); }, 2500); }, 600);
+                        localStorage.removeItem('luckyDrawClosed');
+                        $('#luckyFloatingIcon').hide();
+                        $(element).find('.chit-icon').addClass('d-none');
+                        $(element).find('.prize-amt').text('₹' + res.amount);
+                        $(element).find('.chit-result').removeClass('d-none');
+                        $(element).css({
+                            'transform': 'scale(1.1)',
+                            'border': '2px solid #28a745',
+                            'background': '#e8f5e9'
+                        });
+                        localStorage.setItem('gaming_coupon_amount', res.amount);
+                        localStorage.setItem('gaming_coupon_code', res.code);
+                        setTimeout(() => {
+                            $('#final-amt').text(res.amount);
+                            $('#win-msg').removeClass('d-none');
+                            setTimeout(() => {
+                                $('#gameModal').modal('hide');
+                            }, 2500);
+                        }, 600);
                         $('.chit-card').not(element).css('opacity', 0.3).attr('onclick', '');
                     }
                 }
@@ -403,4 +630,5 @@
         }
     </script>
 </body>
+
 </html>

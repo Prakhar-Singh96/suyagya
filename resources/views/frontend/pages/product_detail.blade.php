@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                    border: 1px solid #eee;
-                    padding: 15px;
-                    border-radius: 8px;
-                    margin-bottom: 20px;
-                    background-color: #f7f1de;
-                } */
+                        border: 1px solid #eee;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-bottom: 20px;
+                        background-color: #f7f1de;
+                    } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -116,23 +116,23 @@
 
         /* Mobile Adjustments */
         /* @media (max-width: 768px) {
-                                                    .product-slider-container {
-                                                        height: 455px !important;
-                                                        aspect-ratio: 1 / 1;
-                                                        width: 100%;
-                                                    }
+                                                        .product-slider-container {
+                                                            height: 455px !important;
+                                                            aspect-ratio: 1 / 1;
+                                                            width: 100%;
+                                                        }
 
-                                                    .product-slider-container img,
-                                                    .product-slider-container video {
-                                                        width: 100%;
-                                                        height: 100%;
-                                                        object-fit: cover;
-                                                    }
+                                                        .product-slider-container img,
+                                                        .product-slider-container video {
+                                                            width: 100%;
+                                                            height: 100%;
+                                                            object-fit: cover;
+                                                        }
 
-                                                    .product-images {
-                                                        top: 0 !important;
-                                                    }
-                                                } */
+                                                        .product-images {
+                                                            top: 0 !important;
+                                                        }
+                                                    } */
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
             overflow: hidden;
@@ -491,7 +491,7 @@
                     </div>
                 @endif --}}
 
-                <div id="razorpay-affordability-widget"> </div>
+                <div id="razorpay-affordability-widget"></div>
 
                 {{-- Siddh Checkbox --}}
                 @if ($product->is_siddh_enabled)
@@ -1078,23 +1078,41 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.razorpay.com/widgets/affordability/affordability.js"></script>
     <script>
         // --- 🟢 RAZORPAY WIDGET CONFIGURATION ---
         const rzpKey = "rzp_live_S0zZ2YEhXKBKxb"; // Aapki Live Key
 
-        // 1. Widget Render Function (Yehi Main Hai)
+        // --- 🟢 WIDGET RENDER FUNCTION (FIXED) ---
         function renderRazorpayWidget(currentPrice) {
             const container = document.getElementById('razorpay-affordability-widget');
 
-            // Container saaf karein taaki duplicate na bane
-            if (container) container.innerHTML = '';
+            // 1. Agar container nahi mila, toh error log karo
+            if (!container) {
+                console.error("Error: Widget Container nahi mila! HTML check karein.");
+                return;
+            }
 
-            // Widget sirf tab dikhayein jab price ek limit se zyada ho (Optional, e.g. > 100)
-            if (currentPrice < 1100) return;
+            // 2. Container ko saaf karo
+            container.innerHTML = '';
+            container.removeAttribute('data-razorpay-rendered');
+
+            // 3. SHOW / HIDE LOGIC
+            // Agar price ₹1000 se kam hai, toh widget chhupa do aur return ho jao
+            // (Aap is limit ko 1000 ki jagah 0 ya 3000 kar sakte hain)
+            if (currentPrice < 1200) {
+                container.style.display = 'none'; // ❌ HIDE
+                console.log("Price low hai, widget hide kiya gaya.");
+                return;
+            } else {
+                container.style.display = 'block'; // ✅ SHOW
+            }
+
+            console.log("Rendering Widget for Price:", currentPrice);
 
             const widgetConfig = {
-                "key": rzpKey,
-                "amount": Math.round(currentPrice * 100), // Convert to Paise
+                "key": rzpKey, // Ensure 'rzpKey' upar define ho
+                "amount": Math.round(currentPrice * 100), // Paise convert
             };
 
             try {
@@ -1115,6 +1133,12 @@
 
             // Gemstone Logic Initialize
             if (document.getElementById('gem_data')) findGemPrice();
+
+            // 🔥 FIX: Page load hote hi Variant ka Stock check karo
+            const variantSelect = document.getElementById('variant_select');
+            if(variantSelect) {
+                variantSelect.dispatchEvent(new Event('change'));
+            }
         });
         // 1. Slider Setup (Fixed)
         $('.product-main-slider').slick({
@@ -1136,14 +1160,21 @@
             arrows: false
         });
 
-        // 2. Quantity
+        // 2. Quantity Logic (Ab ye Updated Max Stock padhega)
         function updateQty(action) {
             const input = document.getElementById('qty_input');
             let currentVal = parseInt(input.value);
-            const maxStock = parseInt(input.getAttribute('max'));
+            // 🔥 Fix: Hamesha fresh max attribute uthao
+            let maxStock = parseInt(input.getAttribute('max'));
+
+            if (isNaN(maxStock)) maxStock = 100; // Fallback
+
             if (action === 'plus') {
-                if (currentVal < maxStock) input.value = currentVal + 1;
-                else alert('Maximum stock limit reached!');
+                if (currentVal < maxStock) {
+                    input.value = currentVal + 1;
+                } else {
+                    alert('Sorry, only ' + maxStock + ' items available in this size.');
+                }
             } else if (action === 'minus') {
                 if (currentVal > 1) input.value = currentVal - 1;
             }
@@ -1230,14 +1261,44 @@
             }
         }
 
-        // 5. Weight Variant Logic
+        // =========================================================
+        // 🔥 5. WEIGHT VARIANT LOGIC (MAIN FIX HERE) 🔥
+        // =========================================================
         const variantSelect = document.getElementById('variant_select');
         if (variantSelect) {
             variantSelect.addEventListener('change', function() {
                 const opt = this.options[this.selectedIndex];
-                // Ensure values are parsed correctly
+
+                // Get Data
                 const price = opt.getAttribute('data-price');
                 const mrp = opt.getAttribute('data-mrp');
+                const stock = parseInt(opt.getAttribute('data-stock')); // Stock nikala
+
+                // 🔥 UPDATE QUANTITY LIMITS
+                const qtyInput = document.getElementById('qty_input');
+                const cartBtn = document.querySelector('.btn-warning'); // Add to cart button
+
+                if(qtyInput) {
+                    qtyInput.setAttribute('max', stock); // Max limit set ki
+                    qtyInput.value = 1; // Reset value to 1
+                }
+
+                // 🔥 HANDLE OUT OF STOCK
+                if(stock < 1) {
+                    if(qtyInput) qtyInput.value = 0;
+                    if(cartBtn) {
+                        cartBtn.disabled = true;
+                        cartBtn.innerText = "Out of Stock";
+                        cartBtn.style.opacity = "0.6";
+                    }
+                } else {
+                    if(cartBtn) {
+                        cartBtn.disabled = false;
+                        cartBtn.innerText = "ADD TO CART";
+                        cartBtn.style.opacity = "1";
+                    }
+                }
+
                 updatePrices(price, mrp);
             });
         }
@@ -1304,19 +1365,20 @@
                 const displayPrice = document.getElementById('display_price');
                 const inputSiddh = document.getElementById('input_is_siddh');
 
+                let finalPrice = currentBasePrice;
+
                 if (this.checked) {
-                    let newPrice = currentBasePrice + siddhPrice;
-                    displayPrice.innerText = newPrice.toLocaleString('en-IN');
+                    finalPrice = currentBasePrice + siddhPrice;
                     inputSiddh.value = 1;
                 } else {
-                    displayPrice.innerText = currentBasePrice.toLocaleString('en-IN');
                     inputSiddh.value = 0;
                 }
 
-                // 1. Update the Price Display
+                // Update Display
                 displayPrice.innerText = finalPrice.toLocaleString('en-IN');
 
-                renderRazorpayWidget(price);
+                // Update Razorpay
+                renderRazorpayWidget(finalPrice);
             });
         }
 
