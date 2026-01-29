@@ -26,7 +26,7 @@ class ProkeralaService
             // 💡 सुधार: टोकन के लिए URL में 'v2' या 'oauth/token' नहीं होगा
             $tokenUrl = 'https://api.prokerala.com/token';
 
-            $response = Http::withoutVerifying()->asForm()->post($tokenUrl, [
+            $response = Http::asForm()->post($tokenUrl, [
                 'grant_type'    => 'client_credentials',
                 'client_id'     => $this->clientId,
                 'client_secret' => $this->clientSecret,
@@ -53,7 +53,7 @@ class ProkeralaService
         $location = $data['lat'] . ',' . $data['lng'];
 
         // 🪐 1. Planets Position - ayanamsa जोड़ें
-        $planets = Http::withoutVerifying()->withToken($token)
+        $planets = Http::withToken($token)
             ->get($this->baseUrl . '/astrology/planet-position', [
                 'datetime' => $datetime,
                 'coordinates' => $location,
@@ -61,7 +61,7 @@ class ProkeralaService
             ])->json();
 
         // 📅 2. Panchang - ayanamsa जोड़ें
-        $panchang = Http::withoutVerifying()->withToken($token)
+        $panchang = Http::withToken($token)
             ->get($this->baseUrl . '/astrology/panchang', [
                 'datetime' => $datetime,
                 'coordinates' => $location,
