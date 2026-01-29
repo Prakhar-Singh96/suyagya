@@ -3080,6 +3080,10 @@ transition: all 350ms ease-in-out;
     justify-content: flex-end;
     pointer-events: all;
 }
+
+#mega-menu--mobile .navigation.hidden {
+    display: none !important;
+}
 .all-catagorys > section:first-child,
 .all-catagorys > section:last-child{
     background-color: #f7f1de;

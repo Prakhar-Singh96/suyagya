@@ -106,6 +106,31 @@
             display: none !important;
         }
     }
+
+    /* 💻 For Tablet & Desktop (992px and above) */
+    @media (min-width: 992px) {
+        .Mobile-Header {
+            display: none !important;
+            /* Tablet/Laptop par mobile header nahi dikhna chahiye */
+        }
+
+        header.sticky-top {
+            display: block !important;
+            /* Desktop Header dikhna chahiye */
+        }
+    }
+
+    /* 📱 For Mobile Only (Below 991px) */
+    @media (max-width: 991px) {
+        header.sticky-top {
+            display: none !important;
+            /* Mobile par desktop header hide karo */
+        }
+
+        .Mobile-Header {
+            display: block !important;
+        }
+    }
 </style>
 
 {{-- 🟢 DESKTOP HEADER (Fully Responsive) --}}
@@ -250,7 +275,7 @@
 
             </div>
 
-             {{-- Login Modal (Hidden) --}}
+            {{-- Login Modal (Hidden) --}}
             <div class="modal fade" id="login_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered login-modal-dialog">
                     <div class="modal-content login-modal-content">
