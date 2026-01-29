@@ -59,7 +59,11 @@ class Product extends Model
         'is_best_seller', // ✅ New
 
         'delivery_days',
-        'emi_available'
+        'emi_available',
+
+        'astro_planet',
+        'astro_rashi',
+        'astro_benefits'
 
     ];
 

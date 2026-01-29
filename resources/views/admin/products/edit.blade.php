@@ -376,6 +376,38 @@
                         </div>
                     </div>
 
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Astrology Settings (Chatbot ke liye)</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Astro Planet (Grah)</label>
+                                        <input type="text" name="astro_planet" class="form-control"
+                                            value="{{ $product->astro_planet ?? '' }}" placeholder="e.g. Jupiter, Mars">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Astro Rashi</label>
+                                        <input type="text" name="astro_rashi" class="form-control"
+                                            value="{{ $product->astro_rashi ?? '' }}"
+                                            placeholder="e.g. Leo, Aries, Cancer">
+                                        <small class="text-muted">Comma (,) se separate karein</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Astro Benefits</label>
+                                        <textarea name="astro_benefits" class="form-control" rows="2">{{ $product->astro_benefits ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- 6. Brand Story (Dynamic for this product) --}}
                     <div class="card mb-4">
                         <h5 class="card-header">Product Story / Q&A</h5>

@@ -51,13 +51,15 @@
                         <h5 class="card-header">Images</h5>
                         <div class="card-body">
                             <div class="mb-4 border p-3 rounded">
-                                <label class="form-label fw-bold">small Main Image <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold">small Main Image <span
+                                        class="text-danger">*</span></label>
                                 <input type="file" class="form-control mb-2" name="main_image" required>
                                 <input type="text" class="form-control form-control-sm" name="main_image_alt"
                                     placeholder="Alt Text (SEO)">
                             </div>
                             <div class="mb-4 border p-3 rounded">
-                                <label class="form-label fw-bold">Product Main Image <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold">Product Main Image <span
+                                        class="text-danger">*</span></label>
                                 <input type="file" class="form-control mb-2" name="product_main_image" required>
                                 <input type="text" class="form-control form-control-sm" name="product_main_image_alt"
                                     placeholder="Alt Text (SEO)">
@@ -196,6 +198,38 @@
                             </div>
                             <div class="mb-3"><label class="form-label">OG Image</label><input type="file"
                                     class="form-control" name="og_image"></div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Astrology Settings (Chatbot ke liye)</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Astro Planet (Grah)</label>
+                                        <input type="text" name="astro_planet" class="form-control"
+                                            value="{{ $product->astro_planet ?? '' }}" placeholder="e.g. Jupiter, Mars">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Astro Rashi</label>
+                                        <input type="text" name="astro_rashi" class="form-control"
+                                            value="{{ $product->astro_rashi ?? '' }}"
+                                            placeholder="e.g. Leo, Aries, Cancer">
+                                        <small class="text-muted">Comma (,) se separate karein</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Astro Benefits</label>
+                                        <textarea name="astro_benefits" class="form-control" rows="2">{{ $product->astro_benefits ?? '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

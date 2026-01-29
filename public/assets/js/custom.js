@@ -2043,6 +2043,113 @@ function calculateFinalTotal() {
     $('#btn_pay_amount').text('₹' + fmtTotal);
 }
 
+// 1. Chat window toggle logic
+function toggleChat() {
+    const chat = document.getElementById('astro-chat-window');
+    chat.style.display = (chat.style.display === 'none' || chat.style.display === '') ? 'flex' : 'none';
+}
+
+// 2. City se Lat/Lng nikalne ke liye (onblur ke liye optimized)
+async function getCoordinates() {
+    const cityInput = document.getElementById('birth_city');
+    const city = cityInput.value;
+    if (!city) return false;
+
+    // UI Feedback: Input border yellow karo jab tak fetch ho raha hai
+    cityInput.style.borderColor = "#ffc107";
+
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`);
+        const data = await res.json();
+        if (data.length > 0) {
+            document.getElementById('lat').value = data[0].lat;
+            document.getElementById('lng').value = data[0].lon;
+            cityInput.style.borderColor = "#28a745"; // Success Green
+            console.log("Location Found:", data[0].display_name);
+            return true;
+        } else {
+            cityInput.style.borderColor = "#dc3545"; // Error Red
+            return false;
+        }
+    } catch (e) {
+        console.error("Location error", e);
+        return false;
+    }
+}
+
+// 3. Main Action Function
+async function processAstroRequest() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const name = document.getElementById('user_name').value.trim();
+    let lat = document.getElementById('lat').value;
+
+    // 🛡️ सुरक्षा चेक: अगर नाम खाली है
+    if (!name) {
+        alert("कृपया अपना नाम दर्ज करें।");
+        return;
+    }
+
+    // 🛡️ सुरक्षा चेक: अगर कोर्डिनेट्स नहीं मिले, तो एक बार फिर फेच करने की कोशिश करें
+    if (!lat) {
+        const found = await getCoordinates();
+        if (!found) {
+            alert("कृपया एक सही शहर का नाम डालें और उसके लोड होने का इंतज़ार करें।");
+            return;
+        }
+        // फेच होने के बाद नई वैल्यू लें
+        lat = document.getElementById('lat').value;
+    }
+
+    // UI badlo (Form hide karo, Loader dikhao)
+    document.getElementById('astro-form').style.display = 'none';
+    document.getElementById('chat-loader').style.display = 'block';
+
+    const payload = {
+        name: name,
+        dob: document.getElementById('dob').value,
+        tob: document.getElementById('tob').value,
+        lat: lat,
+        lng: document.getElementById('lng').value,
+        _token: csrfToken
+    };
+
+    try {
+        // ✅ नया और सही तरीका:
+        const response = await fetch("/get-astro-advice", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken // 👈 Headers mein bhi sahi token
+            },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        document.getElementById('chat-loader').style.display = 'none';
+        document.getElementById('ai-result-area').style.display = 'block';
+        document.getElementById('ai-response-text').innerText = result.message;
+
+    } catch (err) {
+        alert("सर्वर एरर! कृपया दोबारा प्रयास करें।");
+        resetChat();
+    }
+}
+
+// WhatsApp Share & Reset Functions (No change needed here)
+function shareOnWhatsApp() {
+    const text = document.getElementById('ai-response-text').innerText;
+    const name = document.getElementById('user_name').value;
+    const shareText = `✨ *Suyagya Astro Report for ${name}* ✨\n\n${text}\n\nApni Kundali check karein: https://suyagya.com`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+}
+
+function resetChat() {
+    document.getElementById('astro-form').style.display = 'block';
+    document.getElementById('ai-result-area').style.display = 'none';
+    document.getElementById('chat-loader').style.display = 'none';
+    document.getElementById('lat').value = ""; // Reset Lat
+}
+
 
 
 

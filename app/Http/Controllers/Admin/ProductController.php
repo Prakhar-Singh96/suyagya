@@ -23,7 +23,7 @@ class ProductController extends Controller
         // 🔍 Search Logic
         $search = $request->input('search');
         $products = Product::with(['category', 'subCategory'])
-        ->when($search, function ($query, $search) {
+            ->when($search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");
             })
             ->latest() // Newest first
@@ -119,6 +119,10 @@ class ProductController extends Controller
             $data['is_best_seller'] = $request->has('is_best_seller') ? 1 : 0;
             $data['emi_available'] = $request->has('emi_available') ? 1 : 0;
             $data['is_gemstone'] = $request->has('is_gemstone') ? 1 : 0;
+
+            $data['astro_planet'] = $request->astro_planet;
+            $data['astro_rashi'] = $request->astro_rashi;
+            $data['astro_benefits'] = $request->astro_benefits;
 
             $product = Product::create($data);
 
@@ -261,6 +265,10 @@ class ProductController extends Controller
             $data['emi_available'] = $request->has('emi_available') ? 1 : 0;
             $data['is_gemstone'] = $request->has('is_gemstone') ? 1 : 0;
 
+            $data['astro_planet'] = $request->astro_planet;
+            $data['astro_rashi'] = $request->astro_rashi;
+            $data['astro_benefits'] = $request->astro_benefits;
+
             // =========================================================
             // 🖼️ IMAGE UPDATE LOGIC (With Auto OG Generation)
             // =========================================================
@@ -268,7 +276,7 @@ class ProductController extends Controller
             // 1. Product Main Image (600x600)
             if ($request->hasFile('product_main_image')) {
                 // Delete Old
-                if($product->product_main_image && File::exists(public_path($product->product_main_image))) {
+                if ($product->product_main_image && File::exists(public_path($product->product_main_image))) {
                     File::delete(public_path($product->product_main_image));
                 }
 
@@ -278,7 +286,7 @@ class ProductController extends Controller
                 // 🚀 AUTO OG UPDATE: Agar naya main image dala hai, aur OG explicitly nahi dala
                 if (!$request->hasFile('og_image')) {
                     // Purana OG delete karo
-                    if($product->og_image && File::exists(public_path($product->og_image))) {
+                    if ($product->og_image && File::exists(public_path($product->og_image))) {
                         File::delete(public_path($product->og_image));
                     }
                     // Naya banao 1200x630
@@ -288,7 +296,7 @@ class ProductController extends Controller
 
             // 2. Listing Image (310x310)
             if ($request->hasFile('main_image')) {
-                if($product->main_image && File::exists(public_path($product->main_image))) {
+                if ($product->main_image && File::exists(public_path($product->main_image))) {
                     File::delete(public_path($product->main_image));
                 }
                 $data['main_image'] = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 600, 600);
@@ -296,7 +304,7 @@ class ProductController extends Controller
 
             // 3. OG Image Manual Update (1200x630)
             if ($request->hasFile('og_image')) {
-                if($product->og_image && File::exists(public_path($product->og_image))) {
+                if ($product->og_image && File::exists(public_path($product->og_image))) {
                     File::delete(public_path($product->og_image));
                 }
                 $data['og_image'] = $this->uploadAndResize($request->file('og_image'), 'uploads/products/og', 1200, 630);
@@ -404,18 +412,18 @@ class ProductController extends Controller
     {
         $product = Product::with('images')->findOrFail($id);
 
-        if($product->main_image && File::exists(public_path($product->main_image))) {
+        if ($product->main_image && File::exists(public_path($product->main_image))) {
             File::delete(public_path($product->main_image));
         }
-        if($product->product_main_image && File::exists(public_path($product->product_main_image))) {
+        if ($product->product_main_image && File::exists(public_path($product->product_main_image))) {
             File::delete(public_path($product->product_main_image));
         }
-        if($product->og_image && File::exists(public_path($product->og_image))) {
+        if ($product->og_image && File::exists(public_path($product->og_image))) {
             File::delete(public_path($product->og_image));
         }
 
         foreach ($product->images as $img) {
-            if(File::exists(public_path($img->image))) {
+            if (File::exists(public_path($img->image))) {
                 File::delete(public_path($img->image));
             }
             $img->delete();
@@ -434,7 +442,7 @@ class ProductController extends Controller
     function deleteGalleryImage($id)
     {
         $img = ProductImage::findOrFail($id);
-        if(File::exists(public_path($img->image))) {
+        if (File::exists(public_path($img->image))) {
             File::delete(public_path($img->image));
         }
         $img->delete();

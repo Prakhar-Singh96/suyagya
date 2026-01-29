@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\AstroChatController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VideoController;
@@ -277,3 +278,6 @@ Route::get('sitemap/products.xml', [SitemapController::class, 'products'])->name
 Route::get('/sitemap/blogs.xml', [SitemapController::class, 'blogs'])->name('sitemap.blogs');
 
 Route::view('/ring-size-guide', 'frontend.pages.ring_size_guide')->name('ring.size.guide');
+
+
+Route::post('/get-astro-advice', [AstroChatController::class, 'getAstroAdvice'])->name('astro.get-advice');

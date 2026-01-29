@@ -139,7 +139,7 @@
     {{-- ✅ 3. SCHEMA MARKUP --}}
     @include('frontend.includes.schema')
 
-    <meta name="p:domain_verify" content="da11f887c65754b1b5b976de4e3e4fbd"/>
+    <meta name="p:domain_verify" content="da11f887c65754b1b5b976de4e3e4fbd" />
 
     {{-- ✅ FAVICON --}}
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
@@ -219,11 +219,69 @@
     @endif
 
     {{-- 🎁 FLOATING LUCKY DRAW ICON --}}
-    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()" style="display: none;">
+    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()" style="display: none; left: 20px; right: auto;">
         <div class="icon-pulse">
             <i class="las la-gift"></i>
         </div>
         <span class="lucky-text">Win Prize</span>
+    </div>
+
+    <div id="chat-launcher" onclick="toggleChat()"
+        style="position:fixed; bottom:110px; right:25px; background:#673ab7; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:99; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        <i class="las la-robot" style="font-size: 30px;"></i>
+    </div>
+
+    <div id="astro-chat-window"
+        style="position:fixed; bottom:100px; right:20px; width:350px; max-height:550px; background:white; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display:none; flex-direction:column; z-index:10000; border: 1px solid #e0e0e0; overflow:hidden;">
+
+        <div
+            style="background:#673ab7; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold;"><i class="las la-stars"></i> Suyagya Astro AI</span>
+            <span onclick="toggleChat()" style="cursor:pointer; font-size:20px;">&times;</span>
+        </div>
+
+        <div id="chat-content"
+            style="padding:15px; overflow-y:auto; flex-grow:1; background:#f9f9f9; max-height:400px;">
+            <div class="bot-msg"
+                style="background:#eee; padding:10px; border-radius:10px 10px 10px 0; margin-bottom:15px; font-size:14px;">
+                Namaste! 🙏 Main aapka digital jyotish hoon. Apni kundali aur sahi product janne ke liye details
+                bharein:
+            </div>
+
+            <div id="astro-form">
+                <input type="text" id="user_name" class="form-control mb-2" placeholder="Aapka Naam">
+                <input type="date" id="dob" class="form-control mb-2">
+                <input type="time" id="tob" class="form-control mb-2">
+                <input type="text" id="birth_city" class="form-control mb-2" placeholder="City (e.g. New Delhi)"
+                    onchange="getCoordinates()">
+
+                <input type="hidden" id="lat">
+                <input type="hidden" id="lng">
+
+                <button onclick="processAstroRequest()" id="submit-btn" class="btn btn-primary w-100"
+                    style="background:#673ab7; border:none;">
+                    Kundali Analysis Karein ✨
+                </button>
+            </div>
+
+            <div id="chat-loader" style="display:none; text-align:center; padding:20px;">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p style="font-size:12px; margin-top:10px;">Grahon ki ganana ho rahi hai...</p>
+            </div>
+
+            <div id="ai-result-area" style="display:none;">
+                <div id="ai-response-text"
+                    style="background:white; padding:12px; border-radius:10px; border-left:4px solid #673ab7; font-size:14px; line-height:1.6; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button onclick="shareOnWhatsApp()" class="btn btn-success btn-sm flex-grow-1">
+                        <i class="lab la-whatsapp"></i> WhatsApp Share
+                    </button>
+                    <button onclick="resetChat()" class="btn btn-outline-secondary btn-sm">Reset</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     {{-- ✅ WHATSAPP FLOATING BUTTON START --}}
