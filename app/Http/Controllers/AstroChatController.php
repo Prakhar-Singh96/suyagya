@@ -56,7 +56,7 @@ class AstroChatController extends Controller
                 })
                 ->inRandomOrder()
                 ->take(5)
-                ->get(['name', 'slug', 'astro_planet', 'astro_benefits', 'sale_price', 'main_image']);
+                ->get(['name', 'slug', 'astro_planet', 'astro_benefits', 'price', 'main_image']);
 
             $productsData = $recommendedProducts->isNotEmpty()
                 ? json_encode($recommendedProducts)
@@ -79,18 +79,18 @@ class AstroChatController extends Controller
 
                 2. **Planet Analysis**: 'planets' data ka upyog karke batayein ki unka Moon sign (Rashi) kya hai aur unke mukhya grah (Sun/Jupiter) unke vyaktitva (personality) ko kaise prabhavit kar rahe hain.
 
-                3. **Panchang Insight**: 'panchang' data se unki Tithi ({$panchangClean['Tithi']}) aur Nakshatra ({$panchangClean['Nakshatra']}) ke bare mein 1-2 line ka vishesh mahatva (significance) batayein.
+                3. **Panchang Insight**: 'panchang' data se unki Tithi ({$panchangClean['Tithi']}) , Nakshatra ({$panchangClean['Nakshatra']}) , Yog ({$panchangClean['Yog']}) aur Karan ({$panchangClean['Karan']}) ke bare mein 1-2 line ka vishesh mahatva (significance) batayein.
 
                 4. **Recommendations**: Suggest up to 5 best products. Use this EXACT Markdown format for each:
                 Product Name: **[Product Name Here]**
-                Image: https://suyagya.com/[main_image]
-                Price: ₹[sale_price]
-                Benefit: [1-line astro reason]
-                Buy Link: https://suyagya.com/product/[slug]
+                ![Product Image](https://suyagya.com/[main_image])
+                - **Price**: ₹[price]
+                - **Benefit**: [1-line reason]
+                - [Buy Now Click Here](https://suyagya.com/product/[slug])
 
                 STRICT RULES:
                 - Image URL format must be: https://suyagya.com/[main_image] (Kyuki main_image column me path 'uploads/products/main/...' pehle se hai).
-                - Links ko active karne ke liye bina kisi bracket ke pura URL likhein.
+                - Links: [Text](URL) format use karein taaki JS use clickable bana sake.
                 - Tone: Expert Hinglish.
             ";
 

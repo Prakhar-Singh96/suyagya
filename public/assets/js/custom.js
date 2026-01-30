@@ -2144,10 +2144,10 @@ function formatAstroResponse(text) {
 
     return text
         // 1. Image Fix: ![alt](url) -> <img src="url">
-        .replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:100%; border-radius:10px; margin:10px 0;">')
+        .replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:150px; border-radius:10px; margin:10px 0; display:block; border:1px solid #ddd;">')
 
         // 2. Link Fix: [text](url) -> <a href="url" target="_blank">text</a>
-        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="buy-btn">$1</a>')
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="display:inline-block; background:#673ab7; color:white !important; padding:8px 15px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:12px; margin-top:5px;">$1</a>')
 
         // 3. Bold Fix: **text** -> <b>text</b>
         .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
@@ -2155,7 +2155,11 @@ function formatAstroResponse(text) {
         // 4. Heading Fix: ### text -> <h3>text</h3>
         .replace(/### (.*?)\n/g, '<h3>$1</h3>')
 
-        // 5. Line Breaks Fix
+        // 5. Plain URL Fix (अगर AI Markdown भूल जाए)
+        .replace(/Image: (https?:\/\/[^\s]+)/g, '<img src="$1" style="max-width:150px; border-radius:10px; margin:10px 0; display:block;">')
+        .replace(/Buy Link: (https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#673ab7; text-decoration:underline;">$1</a>')
+
+        // 6. Line Breaks Fix
         .replace(/\n/g, '<br>');
 }
 
