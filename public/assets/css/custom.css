@@ -3510,3 +3510,37 @@ html {
     background: #673ab7;
     border-radius: 10px;
 }
+
+/* लेबल्स के लिए स्टाइल */
+.astro-label {
+    font-size: 11px;
+    color: #673ab7;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+    text-align: left;
+}
+
+/* इनपुट बॉक्स को साफ़ दिखाने के लिए */
+#astro-form .form-control {
+    background-color: #ffffff !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+    height: 42px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+}
+
+
+/* Date और Time आइकॉन को हर डिवाइस पर साफ़ दिखाने के लिए */
+#astro-form input[type="date"]::-webkit-calendar-picker-indicator,
+#astro-form input[type="time"]::-webkit-calendar-picker-indicator {
+    display: block !important;
+    background-size: contain;
+    cursor: pointer;
+    opacity: 1 !important; /* इसे 1 रखने से आइकॉन हमेशा दिखेगा */
+    /* सुयज्ञ के बैंगनी रंग में आइकॉन बदलने के लिए */
+    filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(246deg) brightness(97%) contrast(91%);
+    width: 20px;
+    height: 20px;
+}

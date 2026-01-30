@@ -2077,30 +2077,18 @@ async function getCoordinates() {
     }
 }
 
-// 3. Main Action Function
-async function processAstroRequest() {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const name = document.getElementById('user_name').value.trim();
-    let lat = document.getElementById('lat').value;
+let chatMemory = []; // 🧠 Memory Array
+let currentUserRashi = "";
 
-    // 🛡️ सुरक्षा चेक: अगर नाम खाली है
-    if (!name) {
-        alert("कृपया अपना नाम दर्ज करें।");
+async function processAstroRequest() {
+    const name = document.getElementById('user_name').value.trim();
+    const lat = document.getElementById('lat').value;
+
+    if (!name || !lat) {
+        alert("Please enter Name and City.");
         return;
     }
 
-    // 🛡️ सुरक्षा चेक: अगर कोर्डिनेट्स नहीं मिले, तो एक बार फिर फेच करने की कोशिश करें
-    if (!lat) {
-        const found = await getCoordinates();
-        if (!found) {
-            alert("कृपया एक सही शहर का नाम डालें और उसके लोड होने का इंतज़ार करें।");
-            return;
-        }
-        // फेच होने के बाद नई वैल्यू लें
-        lat = document.getElementById('lat').value;
-    }
-
-    // UI badlo (Form hide karo, Loader dikhao)
     document.getElementById('astro-form').style.display = 'none';
     document.getElementById('chat-loader').style.display = 'block';
 
@@ -2110,57 +2098,97 @@ async function processAstroRequest() {
         tob: document.getElementById('tob').value,
         lat: lat,
         lng: document.getElementById('lng').value,
-        _token: csrfToken
+        message: "Initial Kundali Request",
+        history: chatMemory
     };
 
+    await callAstroService(payload);
+}
+
+async function sendFollowup() {
+    const input = document.getElementById('user-followup-msg');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    // Display User Message
+    document.getElementById('ai-response-text').innerHTML += `<div style="text-align:right; margin:10px; color:#673ab7;"><b>Aap:</b> ${msg}</div>`;
+    input.value = "";
+
+    const payload = {
+        name: document.getElementById('user_name').value,
+        message: msg,
+        user_rashi: currentUserRashi,
+        history: chatMemory
+    };
+
+    await callAstroService(payload);
+}
+
+async function callAstroService(payload) {
+    document.getElementById('chat-loader').style.display = 'block';
+
+    // लोडर दिखने के बाद ऑटो-स्क्रॉल करें ताकि यूज़र को पता चले कि काम हो रहा है
+    scrollToBottom();
+
     try {
-        // ✅ नया और सही तरीका:
         const response = await fetch("/get-astro-advice", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken // 👈 Headers mein bhi sahi token
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify(payload)
         });
-        const result = await response.json();
 
+        const result = await response.json();
         document.getElementById('chat-loader').style.display = 'none';
         document.getElementById('ai-result-area').style.display = 'block';
-        // 💡 सुधार 1: .innerText की जगह .innerHTML का उपयोग करें
-        // 💡 सुधार 2: formatAstroResponse फंक्शन का उपयोग करके टेक्स्ट को HTML में बदलें
-        let formattedMsg = formatAstroResponse(result.message);
-        document.getElementById('ai-response-text').innerHTML = formattedMsg;
 
-    } catch (err) {
-        alert("सर्वर एरर! कृपया दोबारा प्रयास करें।");
-        resetChat();
+        if (result.status === 'success') {
+            currentUserRashi = result.user_rashi;
+
+            // Memory में डेटा जोड़ें
+            chatMemory.push({ role: "user", content: payload.message });
+            chatMemory.push({ role: "assistant", content: result.message });
+
+            // AI रिस्पॉन्स रेंडर करें
+            let formatted = formatAstroResponse(result.message);
+
+            // नया मैसेज एक अलग div में डालें ताकि पहचानना आसान हो
+            const responseContainer = document.getElementById('ai-response-text');
+            responseContainer.innerHTML += `<div class="bot-msg-wrapper" style="margin-bottom:20px; border-left:4px solid #673ab7; padding-left:10px;">${formatted}</div>`;
+
+            // 🚀 स्मूथ ऑटो-स्क्रॉल: मैसेज रेंडर होने के तुरंत बाद
+            setTimeout(() => {
+                scrollToBottom();
+            }, 100);
+        }
+    } catch (e) {
+        console.error(e);
+        document.getElementById('chat-loader').style.display = 'none';
+        alert("Technical issue! Please try again.");
     }
 }
 
-// 💡 नया फंक्शन: जो इमेज और लिंक्स को असली HTML में बदल देगा
+// 💡 स्क्रॉल के लिए अलग फंक्शन ताकि इसे कहीं भी इस्तेमाल कर सकें
+function scrollToBottom() {
+    const container = document.getElementById('chat-content');
+    if (container) {
+        container.scrollTo({
+            top: container.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+}
+
 function formatAstroResponse(text) {
     if (!text) return "";
-
     return text
-        // 1. Image Fix: ![alt](url) -> <img src="url">
-        .replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:150px; border-radius:10px; margin:10px 0; display:block; border:1px solid #ddd;">')
-
-        // 2. Link Fix: [text](url) -> <a href="url" target="_blank">text</a>
-        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="display:inline-block; background:#673ab7; color:white !important; padding:8px 15px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:12px; margin-top:5px;">$1</a>')
-
-        // 3. Bold Fix: **text** -> <b>text</b>
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-
-        // 4. Heading Fix: ### text -> <h3>text</h3>
-        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
-
-        // 5. Plain URL Fix (अगर AI Markdown भूल जाए)
-        .replace(/Image: (https?:\/\/[^\s]+)/g, '<img src="$1" style="max-width:150px; border-radius:10px; margin:10px 0; display:block;">')
-        .replace(/Buy Link: (https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#673ab7; text-decoration:underline;">$1</a>')
-
-        // 6. Line Breaks Fix
-        .replace(/\n/g, '<br>');
+        .replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">') // Image Rendering
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="buy-btn">$1</a>') // Active Link
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Bold
+        .replace(/### (.*?)\n/g, '<h3>$1</h3>') // Headings
+        .replace(/\n/g, '<br>'); // Line breaks
 }
 
 // WhatsApp Share & Reset Functions (No change needed here)

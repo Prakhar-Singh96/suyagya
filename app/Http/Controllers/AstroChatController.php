@@ -12,98 +12,65 @@ class AstroChatController extends Controller
 {
     public function getAstroAdvice(Request $request, ProkeralaService $prokerala, GroqService $groq)
     {
-        Log::info("Astro Chat Request Started", $request->all());
-
         try {
-            $astroDetails = $prokerala->getFullAstroData($request->all());
+            $astroDetails = null;
+            $userRashi = $request->user_rashi ?? 'Unknown';
+            $panchangData = "";
 
-            if (!$astroDetails || $astroDetails['rashi'] === 'Unknown') {
-                return response()->json(['message' => 'ज्योतिष डेटा प्राप्त नहीं हो सका।'], 500);
+            // 💡 पहली बार में कुंडली डेटा निकालें
+            if ($request->has('dob') && $request->dob != null) {
+                $astroDetails = $prokerala->getFullAstroData($request->all());
+                $userRashi = $astroDetails['rashi'] ?? 'Unknown';
+
+                $panchangClean = [
+                    'Tithi' => $astroDetails['panchang']['tithi'][0]['name'] ?? 'Not Available',
+                    'Nakshatra' => $astroDetails['panchang']['nakshatra'][0]['name'] ?? 'Not Available',
+                    'Yog' => $astroDetails['panchang']['yog'][0]['name'] ?? 'Not Available',
+                    'Karan' => $astroDetails['panchang']['karan'][0]['name'] ?? 'Not Available',
+                ];
+                $panchangData = json_encode($panchangClean);
             }
 
-            $userRashi = $astroDetails['rashi'];
-
-            // 💡 Vedic to English Mapping
-            $rashiMap = [
-                'Mesha' => 'Aries',
-                'Vrishabha' => 'Taurus',
-                'Mithuna' => 'Gemini',
-                'Karka' => 'Cancer',
-                'Simha' => 'Leo',
-                'Kanya' => 'Virgo',
-                'Tula' => 'Libra',
-                'Vrischika' => 'Scorpio',
-                'Dhanu' => 'Sagittarius',
-                'Makara' => 'Capricorn',
-                'Kumbha' => 'Aquarius',
-                'Meena' => 'Pisces'
-            ];
-
-            $panchangClean = [
-                'Tithi' => $astroDetails['panchang']['tithi'][0]['name'] ?? 'Not Available',
-                'Nakshatra' => $astroDetails['panchang']['nakshatra'][0]['name'] ?? 'Not Available',
-                'Yog' => $astroDetails['panchang']['yog'][0]['name'] ?? 'Not Available',
-                'Karan' => $astroDetails['panchang']['karan'][0]['name'] ?? 'Not Available',
-            ];
-
+            // 💡 प्रोडक्ट मैपिंग (Vedic to English)
+            $rashiMap = ['Mesha'=>'Aries', 'Vrishabha'=>'Taurus', 'Mithuna'=>'Gemini', 'Karka'=>'Cancer', 'Simha'=>'Leo', 'Kanya'=>'Virgo', 'Tula'=>'Libra', 'Vrischika'=>'Scorpio', 'Dhanu'=>'Sagittarius', 'Makara'=>'Capricorn', 'Kumbha'=>'Aquarius', 'Meena'=>'Pisces'];
             $englishRashi = $rashiMap[$userRashi] ?? $userRashi;
 
-            // 🔍 1. Database Query: Ab 5 products aur Images/Price ke saath
+            // 🔍 डेटाबेस से 5 प्रोडक्ट्स
             $recommendedProducts = Product::where('status', 1)
                 ->where(function ($q) use ($userRashi, $englishRashi) {
-                    $q->where('astro_rashi', 'like', "%$userRashi%")
-                        ->orWhere('astro_rashi', 'like', "%$englishRashi%");
-                })
-                ->inRandomOrder()
-                ->take(5)
-                ->get(['name', 'slug', 'astro_planet', 'astro_benefits', 'price', 'main_image']);
+                    $q->where('astro_rashi', 'like', "%$userRashi%")->orWhere('astro_rashi', 'like', "%$englishRashi%");
+                })->inRandomOrder()->take(5)->get(['name', 'slug', 'price', 'main_image']);
 
-            $productsData = $recommendedProducts->isNotEmpty()
-                ? json_encode($recommendedProducts)
-                : "Suggest general spiritual items like Rudraksha or Yantras.";
+            $productsJson = json_encode($recommendedProducts);
 
-            // 🔍 2. Advanced Groq Prompt for Bold text, Images & Price
-            $prompt = "
-                You are an expert Vedic Astrologer for 'Suyagya'.
+            // 🧠 डाइनैमिक सिस्टम प्रॉम्ट
+            $systemPrompt = "You are 'Suyagya Astro AI'.
+            - Current User Rashi: $userRashi.
+            - Planets: " . json_encode($astroDetails['planets'] ?? []) . "
+            - Panchang: $panchangData.
+            - Products: $productsJson.
 
-                USER DATA:
-                - Name: {$request->name}
-                - Rashi: {$userRashi} ({$englishRashi})
-                - Planets: " . json_encode($astroDetails['planets']) . "
-                - Panchang: " . json_encode($panchangClean) . "
+            INSTRUCTIONS:
+            1. Agar ye pehla message hai, toh Planet Analysis aur Panchang Insight (Tithi/Nakshatra) zaroor dein.
+            2. Recommendations: Har product ko is format mein dikhayein:
+               ### **[Product Name]**
+               ![Image](https://suyagya.com/[main_image])
+               - Price: ₹[price]
+               - **Benefit**: [1-line reason]
+               - [Buy Now Click Here](https://suyagya.com/product/[slug])
+            3. Memory: User ke follow-up sawalon ka jawab unki rashi ($userRashi) ke hisab se dein.
+            4. Tone: Spiritual Hinglish.";
 
-                AVAILABLE PRODUCTS: $productsData
-
-                STRICT TASK:
-                1. **Greeting**: Start with 'Namaste {$request->name} ji!'.
-
-                2. **Planet Analysis**: 'planets' data ka upyog karke batayein ki unka Moon sign (Rashi) kya hai aur unke mukhya grah (Sun/Jupiter) unke vyaktitva (personality) ko kaise prabhavit kar rahe hain.
-
-                3. **Panchang Insight**: 'panchang' data se unki Tithi ({$panchangClean['Tithi']}) , Nakshatra ({$panchangClean['Nakshatra']}) , Yog ({$panchangClean['Yog']}) aur Karan ({$panchangClean['Karan']}) ke bare mein 1-2 line ka vishesh mahatva (significance) batayein.
-
-                4. **Recommendations**: Suggest up to 5 best products. Use this EXACT Markdown format for each:
-                Product Name: **[Product Name Here]**
-                ![Product Image](https://suyagya.com/[main_image])
-                - **Price**: ₹[price]
-                - **Benefit**: [1-line reason]
-                - [Buy Now Click Here](https://suyagya.com/product/[slug])
-
-                STRICT RULES:
-                - Image URL format must be: https://suyagya.com/[main_image] (Kyuki main_image column me path 'uploads/products/main/...' pehle se hai).
-                - Links: [Text](URL) format use karein taaki JS use clickable bana sake.
-                - Tone: Expert Hinglish.
-            ";
-
-            $reply = $groq->getAstroAdvice($prompt);
+            $reply = $groq->getChatResponse($systemPrompt, $request->history ?? [], $request->message);
 
             return response()->json([
                 'status' => 'success',
                 'message' => $reply,
-                'debug_info' => ['rashi' => $userRashi, 'count' => $recommendedProducts->count()]
+                'user_rashi' => $userRashi
             ]);
         } catch (\Exception $e) {
-            Log::error("AstroBot CRITICAL Error: " . $e->getMessage());
-            return response()->json(['message' => 'तकनीकी खराबी! दोबारा प्रयास करें।'], 500);
+            Log::error("Astro Error: " . $e->getMessage());
+            return response()->json(['message' => 'Error!'], 500);
         }
     }
 }

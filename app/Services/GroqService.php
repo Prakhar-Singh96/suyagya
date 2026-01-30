@@ -15,39 +15,50 @@ class GroqService
         $this->apiKey = env('GROQ_API_KEY');
     }
 
-    public function getAstroAdvice($prompt)
+    /**
+     * AI को पुरानी बातचीत (Memory) के साथ कॉल करने के लिए
+     */
+    public function getChatResponse($systemPrompt, $history = [], $currentUserMessage)
     {
+        // 1. सबसे पहले System Instruction सेट करें
+        $messages = [
+            ['role' => 'system', 'content' => $systemPrompt]
+        ];
+
+        // 2. पुरानी बातचीत (History) को एरे में जोड़ें
+        // $history में [{role: 'user', content: '...'}, {role: 'assistant', content: '...'}] होगा
+        foreach ($history as $chat) {
+            $messages[] = [
+                'role'    => $chat['role'],
+                'content' => $chat['content']
+            ];
+        }
+
+        // 3. यूज़र का ताज़ा सवाल (Current Message) जोड़ें
+        $messages[] = ['role' => 'user', 'content' => $currentUserMessage];
+
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
+                'Content-Type'  => 'application/json',
             ])->post($this->baseUrl, [
-                'model' => 'llama-3.3-70b-versatile', // यह सबसे पावरफुल मॉडल है
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert Vedic Astrologer for Suyagya. Use Hinglish.'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
-                ],
-                'temperature' => 0.7,
+                'model'    => 'llama-3.3-70b-versatile', // तेज़ और स्मार्ट मॉडल
+                'messages' => $messages,
+                'temperature' => 0.7, // थोड़ी क्रिएटिविटी के लिए
+                'max_tokens'  => 2048,
             ]);
 
-            $data = $response->json();
-
-            if (isset($data['error'])) {
-                Log::error("Groq API Error:", ['error' => $data['error']]);
-                return "क्षमा करें, अभी मैं विश्लेषण नहीं कर पा रहा हूँ।";
+            if ($response->failed()) {
+                Log::error("Groq API Error: " . $response->body());
+                return "Maafi chahta hoon, main abhi samajh nahi pa raha hoon. Kripya dobara puchein.";
             }
 
-            return $data['choices'][0]['message']['content'] ?? 'कोई सलाह नहीं मिल सकी।';
+            $data = $response->json();
+            return $data['choices'][0]['message']['content'] ?? 'No response from AI';
 
         } catch (\Exception $e) {
-            Log::error("Groq Exception: " . $e->getMessage());
-            return "तकनीकी समस्या!";
+            Log::error("Groq Service Exception: " . $e->getMessage());
+            return "Technical issue! Dobara try karein.";
         }
     }
 }
