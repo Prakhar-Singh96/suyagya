@@ -143,20 +143,29 @@
 
     <!-- Meta Pixel Code -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '799436573082052');
-    fbq('track', 'PageView');
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '799436573082052');
+        fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1"
-    /></noscript>
+            src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
     {{-- ✅ FAVICON --}}
@@ -242,75 +251,121 @@
         <i class="las la-robot" style="font-size: 30px;"></i>
     </div>
 
-    <div id="astro-chat-window" style="position:fixed; bottom:100px; right:25px; width:350px; max-height:550px; background:white; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display:none; flex-direction:column; z-index:10000; border: 1px solid #e0e0e0; overflow:hidden;">
+    <div id="astro-chat-window"
+        style="position:fixed; bottom:100px; right:25px; width:350px; max-height:550px; background:white; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display:none; flex-direction:column; z-index:10000; border: 1px solid #e0e0e0; overflow:hidden;">
 
-    <div style="background:#673ab7; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-weight:bold;"><i class="las la-stars"></i> Suyagya Astro AI</span>
-        <span onclick="toggleChat()" style="cursor:pointer; font-size:20px;">&times;</span>
+        <div
+            style="background:#673ab7; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold;"><i class="las la-stars"></i> Suyagya Astro AI</span>
+            <span onclick="toggleChat()" style="cursor:pointer; font-size:20px;">&times;</span>
+        </div>
+
+        <div id="chat-content"
+            style="padding:15px; overflow-y:auto; flex-grow:1; background:#f9f9f9; max-height:400px;">
+            <div id="chat-messages-container">
+                <div class="bot-msg"
+                    style="background:#eee; padding:10px; border-radius:10px; margin-bottom:15px; font-size:14px;">
+                    Namaste! 🙏 Main aapka digital jyotish hoon. Apni kundali ke anusar sahi upay janne ke liye details
+                    bharein:
+                </div>
+
+                <div id="ai-response-text" style="white-space: pre-line; font-size: 14px; line-height: 1.6;"></div>
+            </div>
+
+            <div id="astro-form">
+                <div class="mb-2">
+                    <input type="text" id="user_name" class="form-control" placeholder="Aapka Naam">
+                </div>
+
+                <div class="mb-2">
+                    <label class="astro-label">📅 Janam Tareekh (Date of Birth)</label>
+                    <input type="date" id="dob" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="astro-label">⏰ Janam Samay (Time of Birth)</label>
+                    <input type="time" id="tob" class="form-control">
+                </div>
+
+                <div class="mb-2 position-relative">
+                    <label class="astro-label">🏙️ Birth City & State</label>
+                    <input type="text" id="birth_city" class="form-control"
+                        placeholder="Type your city (e.g. New Delhi)" oninput="searchCity(this.value)"
+                        autocomplete="off">
+
+                    <div id="city-suggestions" class="list-group position-absolute w-100"
+                        style="z-index: 1000; display: none; max-height: 200px; overflow-y: auto;">
+                    </div>
+                </div>
+
+                <input type="hidden" id="lat">
+                <input type="hidden" id="lng">
+
+                <button onclick="processAstroRequest()" id="submit-btn" class="btn btn-primary w-100"
+                    style="background:#673ab7; border:none; height: 45px; font-weight: bold;">
+                    Kundali Analysis Karein ✨
+                </button>
+            </div>
+
+            <div id="chat-loader" style="display:none; text-align:center; padding:20px;">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p style="font-size:12px; margin-top:10px;">Grahon ki ganana ho rahi hai...</p>
+            </div>
+
+            <div id="ai-result-area" style="display:none; margin-top:10px;">
+                <div class="input-group mb-2">
+                    <input type="text" id="user-followup-msg" class="form-control"
+                        placeholder="Kuch aur puchein...">
+                    <button onclick="sendFollowup()" class="btn btn-primary" style="background:#673ab7;"><i
+                            class="las la-paper-plane"></i></button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button onclick="shareOnWhatsApp()" class="btn btn-success btn-sm flex-grow-1">WhatsApp
+                        Share</button>
+                    <button onclick="resetChat()" class="btn btn-outline-secondary btn-sm">Reset</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="chat-content" style="padding:15px; overflow-y:auto; flex-grow:1; background:#f9f9f9; max-height:400px;">
-        <div id="chat-messages-container">
-            <div class="bot-msg" style="background:#eee; padding:10px; border-radius:10px; margin-bottom:15px; font-size:14px;">
-                Namaste! 🙏 Main aapka digital jyotish hoon. Apni kundali ke anusar sahi upay janne ke liye details bharein:
-            </div>
+    <style>
+        /* Images and Links Styling */
+        #ai-response-text img {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: block;
+            border: 1px solid #ddd;
+        }
 
-            <div id="ai-response-text" style="white-space: pre-line; font-size: 14px; line-height: 1.6;"></div>
-        </div>
+        #ai-response-text h3 {
+            font-size: 16px;
+            color: #673ab7;
+            margin-top: 15px;
+            font-weight: bold;
+        }
 
-        <div id="astro-form">
-            <div class="mb-2">
-                <input type="text" id="user_name" class="form-control" placeholder="Aapka Naam">
-            </div>
+        .buy-btn {
+            display: inline-block;
+            background: #673ab7;
+            color: white !important;
+            padding: 6px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 5px;
+        }
 
-            <div class="mb-2">
-                <label class="astro-label">📅 Janam Tareekh (Date of Birth)</label>
-                <input type="date" id="dob" class="form-control">
-            </div>
+        #chat-content::-webkit-scrollbar {
+            width: 4px;
+        }
 
-            <div class="mb-2">
-                <label class="astro-label">⏰ Janam Samay (Time of Birth)</label>
-                <input type="time" id="tob" class="form-control">
-            </div>
-
-            <div class="mb-2">
-                <input type="text" id="birth_city" class="form-control" placeholder="City (e.g. New Delhi)" onchange="getCoordinates()">
-            </div>
-
-            <input type="hidden" id="lat">
-            <input type="hidden" id="lng">
-
-            <button onclick="processAstroRequest()" id="submit-btn" class="btn btn-primary w-100" style="background:#673ab7; border:none; height: 45px; font-weight: bold;">
-                Kundali Analysis Karein ✨
-            </button>
-        </div>
-
-        <div id="chat-loader" style="display:none; text-align:center; padding:20px;">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p style="font-size:12px; margin-top:10px;">Grahon ki ganana ho rahi hai...</p>
-        </div>
-
-        <div id="ai-result-area" style="display:none; margin-top:10px;">
-            <div class="input-group mb-2">
-                <input type="text" id="user-followup-msg" class="form-control" placeholder="Kuch aur puchein...">
-                <button onclick="sendFollowup()" class="btn btn-primary" style="background:#673ab7;"><i class="las la-paper-plane"></i></button>
-            </div>
-            <div class="d-flex gap-2">
-                <button onclick="shareOnWhatsApp()" class="btn btn-success btn-sm flex-grow-1">WhatsApp Share</button>
-                <button onclick="resetChat()" class="btn btn-outline-secondary btn-sm">Reset</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* Images and Links Styling */
-    #ai-response-text img { max-width: 150px; border-radius: 10px; margin: 10px 0; display: block; border: 1px solid #ddd; }
-    #ai-response-text h3 { font-size: 16px; color: #673ab7; margin-top: 15px; font-weight: bold; }
-    .buy-btn { display: inline-block; background: #673ab7; color: white !important; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 12px; margin-top: 5px; }
-    #chat-content::-webkit-scrollbar { width: 4px; }
-    #chat-content::-webkit-scrollbar-thumb { background: #673ab7; border-radius: 10px; }
-</style>
+        #chat-content::-webkit-scrollbar-thumb {
+            background: #673ab7;
+            border-radius: 10px;
+        }
+    </style>
 
     {{-- ✅ WHATSAPP FLOATING BUTTON START --}}
     <a href="https://wa.me/917692005006?text=Hi%20Suyagya%20Team,%20I%20need%20help%20with%20a%20product."

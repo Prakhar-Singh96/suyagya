@@ -3544,3 +3544,15 @@ html {
     width: 20px;
     height: 20px;
 }
+
+#city-suggestions {
+    background: white;
+    border: 1px solid #673ab7;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.list-group-item-action:hover {
+    background-color: #f3e5f5; /* सुयज्ञ का हल्का बैंगनी रंग */
+    color: #673ab7;
+}

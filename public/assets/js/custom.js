@@ -2206,6 +2206,49 @@ function resetChat() {
     document.getElementById('lat').value = ""; // Reset Lat
 }
 
+async function searchCity(query) {
+    const suggestionBox = document.getElementById('city-suggestions');
+    if (query.length < 3) {
+        suggestionBox.style.display = 'none';
+        return;
+    }
+
+    // हम Nominatim (Free API) का इस्तेमाल कर रहे हैं
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        suggestionBox.innerHTML = '';
+        suggestionBox.style.display = 'block';
+
+        data.forEach(place => {
+            const cityName = place.address.city || place.address.town || place.address.village || place.display_name;
+            const stateName = place.address.state || "";
+
+            const item = document.createElement('button');
+            item.className = 'list-group-item list-group-item-action text-start';
+            item.style.fontSize = '12px';
+            item.innerHTML = `<strong>${cityName}</strong>, ${stateName}`;
+
+            // शहर चुनने पर क्या होगा
+            item.onclick = () => {
+                document.getElementById('birth_city').value = `${cityName}, ${stateName}`;
+                document.getElementById('lat').value = place.lat;
+                document.getElementById('lng').value = place.lon;
+                suggestionBox.style.display = 'none';
+
+                // बटन को एक्टिव करें
+                document.getElementById('submit-btn').disabled = false;
+            };
+            suggestionBox.appendChild(item);
+        });
+    } catch (error) {
+        console.error("City search error:", error);
+    }
+}
+
 
 
 
