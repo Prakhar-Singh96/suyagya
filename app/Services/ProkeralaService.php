@@ -45,59 +45,69 @@ class ProkeralaService
     }
 
     public function getFullAstroData($data)
-{
-    $token = $this->getAccessToken();
-    if (!$token) {
-        Log::error("Prokerala Error: Access Token is NULL");
-        return null;
-    }
+    {
+        $token = $this->getAccessToken();
+        if (!$token) {
+            Log::error("Prokerala Error: Access Token is NULL");
+            return null;
+        }
 
-    $datetime = $data['dob'] . 'T' . $data['tob'] . ':00+05:30';
-    $location = $data['lat'] . ',' . $data['lng'];
+        $datetime = $data['dob'] . 'T' . $data['tob'] . ':00+05:30';
+        $location = $data['lat'] . ',' . $data['lng'];
 
-    $planetsResponse = Http::withoutVerifying()->withToken($token)
-        ->get($this->baseUrl . '/astrology/planet-position', [
-            'datetime' => $datetime,
-            'coordinates' => $location,
-            'ayanamsa' => 1
-        ])->json();
+        $planetsResponse = Http::withoutVerifying()->withToken($token)
+            ->get($this->baseUrl . '/astrology/planet-position', [
+                'datetime' => $datetime,
+                'coordinates' => $location,
+                'ayanamsa' => 1
+            ])->json();
 
-    // 🔍 STEP 1: Log Raw Response
-    Log::info("STEP 1: Raw Planets API Response:", ['res' => $planetsResponse]);
+        // 🔍 STEP 1: Log Raw Response
+        Log::info("STEP 1: Raw Planets API Response:", ['res' => $planetsResponse]);
 
-    // प्रोकेराला के अलग-अलग वर्शन्स के लिए 'Deep Extraction'
-    $planetsList = $planetsResponse['data']['planet_position'] ??
-                   $planetsResponse['data']['planet-position'] ??
-                   $planetsResponse['data'] ?? [];
+        // 📜 2. Panchang API Call (यह लाइन मिसिंग थी)
+        $panchangResponse = Http::withoutVerifying()->withToken($token)
+            ->get($this->baseUrl . '/astrology/panchang', [
+                'datetime' => $datetime,
+                'coordinates' => $location,
+                'ayanamsa' => 1
+            ])->json();
 
-    Log::info("STEP 2: Extracted Planets List Count:", ['count' => count($planetsList)]);
+        Log::info("STEP 2: Raw Panchang Response:", ['res' => $panchangResponse]);
 
-    $userRashi = 'Unknown';
+        // प्रोकेराला के अलग-अलग वर्शन्स के लिए 'Deep Extraction'
+        $planetsList = $planetsResponse['data']['planet_position'] ??
+                    $planetsResponse['data']['planet-position'] ??
+                    $planetsResponse['data'] ?? [];
 
-    if (is_array($planetsList)) {
-        foreach ($planetsList as $planet) {
-            // 🌙 Moon Sign Search
-            if (isset($planet['name']) && $planet['name'] === 'Moon') {
-                $userRashi = $planet['rasi']['name'] ?? 'Unknown';
-                Log::info("STEP 3: Found Moon Sign:", ['rashi' => $userRashi]);
-                break;
+        Log::info("STEP 3: Extracted Planets List Count:", ['count' => count($planetsList)]);
+
+        $userRashi = 'Unknown';
+
+        if (is_array($planetsList)) {
+            foreach ($planetsList as $planet) {
+                // 🌙 Moon Sign Search
+                if (isset($planet['name']) && $planet['name'] === 'Moon') {
+                    $userRashi = $planet['rasi']['name'] ?? 'Unknown';
+                    Log::info("STEP 4: Found Moon Sign:", ['rashi' => $userRashi]);
+                    break;
+                }
             }
         }
+
+        // अगर चंद्रमा नहीं मिला तो Ascendant (पहला रिकॉर्ड) ट्राई करें
+        if ($userRashi === 'Unknown' && !empty($planetsList)) {
+            $firstRecord = reset($planetsList);
+            $userRashi = $firstRecord['rasi']['name'] ?? 'Unknown';
+            Log::warning("STEP 5: Moon not found, using Fallback Rashi:", ['rashi' => $userRashi]);
+        }
+
+        Log::info("STEP 6: Final Rashi Value being returned:", ['rashi' => $userRashi]);
+
+        return [
+            'planets'  => $planetsList,
+            'panchang' => $panchangResponse['data'] ?? [],
+            'rashi'    => $userRashi
+        ];
     }
-
-    // अगर चंद्रमा नहीं मिला तो Ascendant (पहला रिकॉर्ड) ट्राई करें
-    if ($userRashi === 'Unknown' && !empty($planetsList)) {
-        $firstRecord = reset($planetsList);
-        $userRashi = $firstRecord['rasi']['name'] ?? 'Unknown';
-        Log::warning("STEP 4: Moon not found, using Fallback Rashi:", ['rashi' => $userRashi]);
-    }
-
-    Log::info("STEP 5: Final Rashi Value being returned:", ['rashi' => $userRashi]);
-
-    return [
-        'planets'  => $planetsList,
-        'panchang' => $panchangResponse['data'] ?? [],
-        'rashi'    => $userRashi
-    ];
-}
 }

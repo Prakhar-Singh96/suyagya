@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Services\GeminiService;
 use App\Services\GroqService;
 use App\Services\ProkeralaService;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +17,7 @@ class AstroChatController extends Controller
         try {
             $astroDetails = $prokerala->getFullAstroData($request->all());
 
-            if (!$astroDetails) {
+            if (!$astroDetails || $astroDetails['rashi'] === 'Unknown') {
                 return response()->json(['message' => 'ज्योतिष डेटा प्राप्त नहीं हो सका।'], 500);
             }
 
@@ -26,51 +25,81 @@ class AstroChatController extends Controller
 
             // 💡 Vedic to English Mapping
             $rashiMap = [
-                'Mesha' => 'Aries', 'Vrishabha' => 'Taurus', 'Mithuna' => 'Gemini',
-                'Karka' => 'Cancer', 'Simha' => 'Leo', 'Kanya' => 'Virgo',
-                'Tula' => 'Libra', 'Vrischika' => 'Scorpio', 'Dhanu' => 'Sagittarius',
-                'Makara' => 'Capricorn', 'Kumbha' => 'Aquarius', 'Meena' => 'Pisces'
+                'Mesha' => 'Aries',
+                'Vrishabha' => 'Taurus',
+                'Mithuna' => 'Gemini',
+                'Karka' => 'Cancer',
+                'Simha' => 'Leo',
+                'Kanya' => 'Virgo',
+                'Tula' => 'Libra',
+                'Vrischika' => 'Scorpio',
+                'Dhanu' => 'Sagittarius',
+                'Makara' => 'Capricorn',
+                'Kumbha' => 'Aquarius',
+                'Meena' => 'Pisces'
             ];
 
-            // English name nikalein, agar map mein nahi hai toh wahi rehne dein
+            $panchangClean = [
+                'Tithi' => $astroDetails['panchang']['tithi'][0]['name'] ?? 'Not Available',
+                'Nakshatra' => $astroDetails['panchang']['nakshatra'][0]['name'] ?? 'Not Available',
+                'Yog' => $astroDetails['panchang']['yog'][0]['name'] ?? 'Not Available',
+                'Karan' => $astroDetails['panchang']['karan'][0]['name'] ?? 'Not Available',
+            ];
+
             $englishRashi = $rashiMap[$userRashi] ?? $userRashi;
 
-            // 2. Database Query (Dono naam se search karein taaki error na aaye)
+            // 🔍 1. Database Query: Ab 5 products aur Images/Price ke saath
             $recommendedProducts = Product::where('status', 1)
                 ->where(function ($q) use ($userRashi, $englishRashi) {
                     $q->where('astro_rashi', 'like', "%$userRashi%")
-                    ->orWhere('astro_rashi', 'like', "%$englishRashi%");
-                })->get(['name', 'slug', 'astro_planet', 'astro_benefits']);
+                        ->orWhere('astro_rashi', 'like', "%$englishRashi%");
+                })
+                ->inRandomOrder()
+                ->take(5)
+                ->get(['name', 'slug', 'astro_planet', 'astro_benefits', 'sale_price', 'main_image']);
 
             $productsData = $recommendedProducts->isNotEmpty()
                 ? json_encode($recommendedProducts)
-                : "No specific products found for rashi $userRashi. Suggest general spiritual items.";
+                : "Suggest general spiritual items like Rudraksha or Yantras.";
 
-            // 3. Gemini Prompt
+            // 🔍 2. Advanced Groq Prompt for Bold text, Images & Price
             $prompt = "
-            You are an expert Vedic Astrologer for 'Suyagya'.
-            Analyze this User Data:
-            - Name: {$request->name}
-            - Rashi: {$userRashi}
-            - Planet Positions: " . json_encode($astroDetails['planets']) . "
-            - Panchang: " . json_encode($astroDetails['panchang']) . "
+                You are an expert Vedic Astrologer for 'Suyagya'.
 
-            Store Products: " . $productsData . "
+                USER DATA:
+                - Name: {$request->name}
+                - Rashi: {$userRashi} ({$englishRashi})
+                - Planets: " . json_encode($astroDetails['planets']) . "
+                - Panchang: " . json_encode($panchangClean) . "
 
-            TASK:
-            1. User ko unki rashi ($userRashi) aur grah sthiti 1-2 line mein batayein.
-            2. Hamare store se 2 best products suggest karein.
-            3. Product link format: https://suyagya.com/product/slug
+                AVAILABLE PRODUCTS: $productsData
 
-            Tone: Spiritual & Professional. Language: Hinglish.
-        ";
+                STRICT TASK:
+                1. **Greeting**: Start with 'Namaste {$request->name} ji!'.
+
+                2. **Planet Analysis**: 'planets' data ka upyog karke batayein ki unka Moon sign (Rashi) kya hai aur unke mukhya grah (Sun/Jupiter) unke vyaktitva (personality) ko kaise prabhavit kar rahe hain.
+
+                3. **Panchang Insight**: 'panchang' data se unki Tithi ({$panchangClean['Tithi']}) aur Nakshatra ({$panchangClean['Nakshatra']}) ke bare mein 1-2 line ka vishesh mahatva (significance) batayein.
+
+                4. **Recommendations**: Suggest up to 5 best products. Use this EXACT Markdown format for each:
+                Product Name: **[Product Name Here]**
+                Image: https://suyagya.com/[main_image]
+                Price: ₹[sale_price]
+                Benefit: [1-line astro reason]
+                Buy Link: https://suyagya.com/product/[slug]
+
+                STRICT RULES:
+                - Image URL format must be: https://suyagya.com/[main_image] (Kyuki main_image column me path 'uploads/products/main/...' pehle se hai).
+                - Links ko active karne ke liye bina kisi bracket ke pura URL likhein.
+                - Tone: Expert Hinglish.
+            ";
 
             $reply = $groq->getAstroAdvice($prompt);
 
             return response()->json([
                 'status' => 'success',
                 'message' => $reply,
-                'debug_info' => ['rashi' => $userRashi]
+                'debug_info' => ['rashi' => $userRashi, 'count' => $recommendedProducts->count()]
             ]);
         } catch (\Exception $e) {
             Log::error("AstroBot CRITICAL Error: " . $e->getMessage());

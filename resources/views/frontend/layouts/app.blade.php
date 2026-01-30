@@ -219,7 +219,8 @@
     @endif
 
     {{-- 🎁 FLOATING LUCKY DRAW ICON --}}
-    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()" style="display: none; left: 20px; right: auto;">
+    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()"
+        style="display: none; left: 20px; right: auto;">
         <div class="icon-pulse">
             <i class="las la-gift"></i>
         </div>
@@ -271,7 +272,7 @@
 
             <div id="ai-result-area" style="display:none;">
                 <div id="ai-response-text"
-                    style="background:white; padding:12px; border-radius:10px; border-left:4px solid #673ab7; font-size:14px; line-height:1.6; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    style="background:white; padding:12px; border-radius:10px; border-left:4px solid #673ab7; font-size:14px; line-height:1.6; box-shadow: 0 2px 5px rgba(0,0,0,0.05); white-space: pre-line;">
                 </div>
 
                 <div class="mt-3 d-flex gap-2">

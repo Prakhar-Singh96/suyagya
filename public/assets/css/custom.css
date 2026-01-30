@@ -417,7 +417,8 @@ main {
 /* 3. Banner Image Styling (Desktop) */
 .home-banner-area .bnanner-img {
     width: 100%;
-    height: 100%; /* Container ko fill kare */
+    height: 100%;
+    /* Container ko fill kare */
     object-fit: cover;
     object-position: center;
     display: block;
@@ -429,16 +430,19 @@ main {
     /* 🔥 FIX: Mobile Container ka Ratio Square (1:1) karein */
     .home-banner-area {
         aspect-ratio: 1 / 1 !important;
-        max-height: none !important; /* Height limit hatayein */
+        max-height: none !important;
+        /* Height limit hatayein */
         height: auto !important;
     }
 
     /* Mobile Image Styling */
     .home-banner-area .bnanner-img {
         width: 100% !important;
-        height: 100% !important; /* Container ke barabar height */
+        height: 100% !important;
+        /* Container ke barabar height */
         aspect-ratio: 1 / 1;
-        object-fit: cover !important; /* Pura area cover kare */
+        object-fit: cover !important;
+        /* Pura area cover kare */
     }
 }
 
@@ -450,14 +454,16 @@ main {
 #heroSlider {
     width: 100%;
     height: 100%;
-    display: flex; /* Taki images side-by-side load hon (Vertical stack na ho) */
-    overflow: hidden; /* Extra images bahar na dikhein */
+    display: flex;
+    /* Taki images side-by-side load hon (Vertical stack na ho) */
+    overflow: hidden;
+    /* Extra images bahar na dikhein */
 }
 
 /* 2. Slider ke andar har element ki height 100% honi chahiye */
 #heroSlider .slick-list,
 #heroSlider .slick-track,
-#heroSlider > div {
+#heroSlider>div {
     height: 100%;
 }
 
@@ -471,12 +477,12 @@ main {
 
 /* 4. 🔥 SABSE ZAROORI: Javascript load hone se pehle extra slides chhupa dein */
 /* (Ye line "Layout Shift" ko 0 kar degi) */
-#heroSlider:not(.slick-initialized) > div:not(:first-child) {
+#heroSlider:not(.slick-initialized)>div:not(:first-child) {
     display: none !important;
 }
 
 /* Agar Slick Slider use nahi kar rahe (General fix) */
-#heroSlider > div {
+#heroSlider>div {
     flex-shrink: 0;
     width: 100%;
 }
@@ -563,7 +569,7 @@ main {
     }
 
     .navbar-brand img {
-        height:60px !important;
+        height: 60px !important;
     }
 
     #mainMenu {
@@ -883,6 +889,7 @@ main {
 .product-details {
     margin-top: 12px;
 }
+
 .product-details .product-title {
     font-size: 17px !important;
 }
@@ -2609,14 +2616,19 @@ main {
 .rating-input i {
     transition: transform 0.2s;
 }
+
 .rating-input i:hover {
     transform: scale(1.2);
 }
+
 .rating-input .las {
-    color: #ffc107; /* Fill Color */
+    color: #ffc107;
+    /* Fill Color */
 }
+
 .rating-input .lar {
-    color: #ccc; /* Empty Color */
+    color: #ccc;
+    /* Empty Color */
 }
 
 /* Modal Styling */
@@ -2627,15 +2639,20 @@ main {
 
 /* Masonry Grid for Reviews */
 .review-masonry-grid {
-    column-count: 4; /* Desktop पर 4 कॉलम */
-    column-gap: 1.5rem; /* कॉलम के बीच गैप */
+    column-count: 4;
+    /* Desktop पर 4 कॉलम */
+    column-gap: 1.5rem;
+    /* कॉलम के बीच गैप */
 }
 
 .review-masonry-item {
-    display: inline-block; /* कार्ड को टूटने से बचाए */
+    display: inline-block;
+    /* कार्ड को टूटने से बचाए */
     width: 100%;
-    margin-bottom: 1.5rem; /* नीचे वाले कार्ड से दूरी */
-    break-inside: avoid; /* कार्ड को कॉलम के बीच कटने से रोके */
+    margin-bottom: 1.5rem;
+    /* नीचे वाले कार्ड से दूरी */
+    break-inside: avoid;
+    /* कार्ड को कॉलम के बीच कटने से रोके */
 }
 
 /* Responsive: Tablet पर 2 कॉलम */
@@ -2654,13 +2671,15 @@ main {
 
 /* Fix for Slick Slider 1px Width Issue */
 .category-slider .slick-slide {
-    height: auto; /* Prevent collapse */
+    height: auto;
+    /* Prevent collapse */
 }
 
 /* Category Image Hover Effect */
 .category-item:hover .img-circle {
     transform: scale(1.05);
-    border-color: #C19A6B !important; /* Gold/Earth color */
+    border-color: #C19A6B !important;
+    /* Gold/Earth color */
 }
 
 /* Custom Arrow Styling */
@@ -2677,13 +2696,18 @@ main {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: all 0.3s;
 }
 
-.category-scroll-wrapper .slick-prev { left: -10px; }
-.category-scroll-wrapper .slick-next { right: -10px; }
+.category-scroll-wrapper .slick-prev {
+    left: -10px;
+}
+
+.category-scroll-wrapper .slick-next {
+    right: -10px;
+}
 
 .category-scroll-wrapper .slick-prev:hover,
 .category-scroll-wrapper .slick-next:hover {
@@ -2710,22 +2734,27 @@ nav .d-none.flex-sm-fill.d-sm-flex {
 }
 
 /* बटन को Static करें ताकि मेनू स्क्रीन के हिसाब से खुले, बटन के हिसाब से नहीं */
-    .nav-item.dropdown {
-        position: static !important;
-    }
+.nav-item.dropdown {
+    position: static !important;
+}
 
-    /* मेनू को स्क्रीन के बीच में (Center) लाएं */
-    .japam-mega-menu {
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 1200px !important; /* Width fixed rakhein */
-        max-width: 95vw !important; /* Screen se bahar na jaye */
-    }
+/* मेनू को स्क्रीन के बीच में (Center) लाएं */
+.japam-mega-menu {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 1200px !important;
+    /* Width fixed rakhein */
+    max-width: 95vw !important;
+    /* Screen se bahar na jaye */
+}
+
 /* 1. Active Page (Jo select hai) */
 .pagination .page-item.active .page-link {
     background-color: #ffcc66 !important;
-    border-color: #ffcc66 !important; /* Border ka color bhi same karna padega */
-    color: #000000 !important;       /* Text Green */
+    border-color: #ffcc66 !important;
+    /* Border ka color bhi same karna padega */
+    color: #000000 !important;
+    /* Text Green */
     font-weight: bold;
 }
 
@@ -2738,7 +2767,8 @@ nav .d-none.flex-sm-fill.d-sm-flex {
 
 /* 3. Normal Pages (Jo select nahi hain) */
 .pagination .page-item .page-link {
-    color: #333 !important; /* Dark Grey Text */
+    color: #333 !important;
+    /* Dark Grey Text */
 }
 
 /* 4. Normal Pages Hover */
@@ -2790,7 +2820,8 @@ nav .d-none.flex-sm-fill.d-sm-flex {
 }
 
 .track-step.active .icon {
-    border-color: #28a745; /* Green Color */
+    border-color: #28a745;
+    /* Green Color */
     background-color: #28a745;
     color: #fff;
 }
@@ -2811,33 +2842,34 @@ nav .d-none.flex-sm-fill.d-sm-flex {
 }
 
 /* Connect active line (Jugaad for simple CSS) */
-.track-step.active ~ .track-step .icon {
-    border-color: #e9ecef; /* Inactive future steps */
+.track-step.active~.track-step .icon {
+    border-color: #e9ecef;
+    /* Inactive future steps */
 }
 
-.nav-wishlist-icon span.icon-la.lar
- {
+.nav-wishlist-icon span.icon-la.lar {
     font-size: 24px;
 }
 
 /*mobile header*/
 /* Desktop - Hide mobile menu */
-@media (min-width: 992px){
-  .Mobile-Header{
-    display:none !important;
-  }
+@media (min-width: 992px) {
+    .Mobile-Header {
+        display: none !important;
+    }
 }
 
 /* Mobile / Tablet */
-@media (max-width: 992px){
-  .Mobile-Header{
-    display:block;
-  }
+@media (max-width: 992px) {
+    .Mobile-Header {
+        display: block;
+    }
 
-header.z-1020.shadow-sm {
-    display: none;
+    header.z-1020.shadow-sm {
+        display: none;
+    }
 }
-}
+
 .mobileHeader {
     display: flex;
     width: 100%;
@@ -2848,10 +2880,12 @@ header.z-1020.shadow-sm {
     justify-content: space-between;
     padding: 10px 12px;
 }
-.mobileHeader > * {
+
+.mobileHeader>* {
     width: 33.3%;
     text-align: center;
 }
+
 .HeaderLeft {
     display: flex;
     align-items: center;
@@ -2862,10 +2896,12 @@ header.z-1020.shadow-sm {
     border: none;
     background: none;
 }
+
 .HeaderLeft .nav-search-icon a {
     font-size: 24px;
     color: #000;
 }
+
 .HeaderRight {
     display: flex;
     align-items: center;
@@ -2888,7 +2924,7 @@ header.z-1020.shadow-sm {
 .Mobile-Header a.btn,
 .Mobile-Header .btn {
     position: relative;
-    padding:  12px 0px;
+    padding: 12px 0px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -2898,29 +2934,34 @@ header.z-1020.shadow-sm {
     text-transform: uppercase;
     transition: all 250ms ease-in-out;
     z-index: 1;
-        font-weight: 500;
+    font-weight: 500;
     border-bottom: solid 1px #eee;
     border-radius: 0;
 }
+
 .Mobile-Header aside#mega-menu--mobile .mega__container[data-active-depth="1"] .mega__header {
-    right:-100%;
+    right: -100%;
 }
+
 .Mobile-Header aside#mega-menu--mobile nav.navigation a.btn .btn__icon svg {
     width: 10px;
     height: 10px;
 }
+
 .Mobile-Header .btn .btn__icon,
 .Mobile-Header .btn .btn__label {
     pointer-events: none;
 }
 
 
- .HeaderLeft .nav-search-icon {
+.HeaderLeft .nav-search-icon {
     margin: 0;
 }
+
 .HeaderRight .ms-4 {
     margin-left: 12px !important;
 }
+
 .Mobile-Header aside#mega-menu--mobile .mega__container {
     width: 100%;
     height: 100vh;
@@ -2946,22 +2987,25 @@ header.z-1020.shadow-sm {
     top: 10px;
     width: 100%;
     z-index: 1;
-transition: all 350ms ease-in-out;
+    transition: all 350ms ease-in-out;
     right: auto;
 }
+
 .categoriesHeading {
-        text-align: center;
+    text-align: center;
     padding-top: 10px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
 }
+
 .categoriesHeading h5 {
     margin: 0;
     width: calc(100% - 20px);
 }
+
 #mega-menu--mobile {
-  position: fixed;
+    position: fixed;
     top: 85px;
     left: -100%;
     max-width: 100%;
@@ -2973,28 +3017,32 @@ transition: all 350ms ease-in-out;
     z-index: 1000;
     overflow: auto;
 }
+
 #menuButton .icon-close .la.la-close {
     font-size: 20px;
     font-weight: bold;
 }
+
 /* When active, slide in */
 #mega-menu--mobile.active {
-  left: 0;
+    left: 0;
 }
+
 #menuButton .icon-close {
-  display: none;
+    display: none;
 }
 
 /* When menu open, toggle icons */
 #menuButton.active .icon-menu {
-  display: none;
+    display: none;
 }
 
 #menuButton.active .icon-close {
-  display: inline;
+    display: inline;
 }
+
 .Mobile-Header aside#mega-menu--mobile .mega__header .mega__controls {
-        width: 100%;
+    width: 100%;
     height: 100%;
     display: flex;
     justify-content: start;
@@ -3003,7 +3051,7 @@ transition: all 350ms ease-in-out;
 
 .Mobile-Header aside#mega-menu--mobile .screen-back-btn {
 
-   font-size: 14px;
+    font-size: 14px;
     text-transform: capitalize;
     display: flex;
     align-items: center;
@@ -3084,118 +3132,138 @@ transition: all 350ms ease-in-out;
 #mega-menu--mobile .navigation.hidden {
     display: none !important;
 }
-.all-catagorys > section:first-child,
-.all-catagorys > section:last-child{
+
+.all-catagorys>section:first-child,
+.all-catagorys>section:last-child {
     background-color: #f7f1de;
 }
-.after-none:after{
+
+.after-none:after {
     display: none;
 }
+
 @media (max-width: 767px) {
     .footer-list {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  .footer-heading.after-none{
-      margin-bottom: 10px;
-  }
-   .footer-list li:first-child{
-    margin-top: 15px;
-}
-.footer-heading {
-    padding-top: 20px !important;
-    border-top: solid 1px #eeeeee3d;
-    margin: 0;
-}
-.footer-social-icons {
-    padding-left: 0;
-    justify-content: center;
-    margin-top: 30px;
-}
-  .footer-list.active {
-    max-height: 500px; /* enough for items */
-  }
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
 
-  .footer-heading {
-    cursor: pointer;
-    position: relative;
-  }
+    .footer-heading.after-none {
+        margin-bottom: 10px;
+    }
 
-  /* Optional arrow icon */
-  .footer-heading::after {
-    content: "+";
-    position: absolute;
-    right: 0;
-    font-size: 18px;
-    transition: transform 0.3s ease;
-  }
+    .footer-list li:first-child {
+        margin-top: 15px;
+    }
 
-  .footer-heading.active::after {
-    content: "−";
-  }
- div#heroSlider {
-    box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -4px rgba(0, 0, 0, .1);
-}
-.faq-item {
-    border: none;
-    border-radius: 0px;
-    overflow: hidden;
-    box-shadow: none;
-}
-.faq-btn::before {
-    content: "\f107";
-    font-family: 'Line Awesome Free';
-    font-weight: 900;
-    position: absolute;
-    right: 5px;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #D97846;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #D97846;
-    font-size: 12px;
-    transition: transform 0.3s ease, background 0.3s;
-}
-.accordion-button {
-    font-size: 13px;
-}
-div#heroSlider .bnanner-img {
-    object-fit: cover;
-    height: 400px;
-}
-.product-details .product-title {
-    font-size: 15px !important;
-    text-decoration: none;
-}
-.fancy-heading-box h2 {
-    text-align: center;
-    font-size: 21px;
-    line-height: 1.5;
-}
-.d-flex.justify-content-between.align-items-center.mb-4 h2.h3.fw-bold.text-dark.m-0
- {
-    font-size: 18px;
-}
-/* 🔴 MOBILE MENU FIX: Hide inactive sub-menus */
-.Mobile-Header aside#mega-menu--mobile nav.navigation.hidden {
-    display: none !important;
-}
+    .footer-heading {
+        padding-top: 20px !important;
+        border-top: solid 1px #eeeeee3d;
+        margin: 0;
+    }
+
+    .footer-social-icons {
+        padding-left: 0;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .footer-list.active {
+        max-height: 500px;
+        /* enough for items */
+    }
+
+    .footer-heading {
+        cursor: pointer;
+        position: relative;
+    }
+
+    /* Optional arrow icon */
+    .footer-heading::after {
+        content: "+";
+        position: absolute;
+        right: 0;
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .footer-heading.active::after {
+        content: "−";
+    }
+
+    div#heroSlider {
+        box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -4px rgba(0, 0, 0, .1);
+    }
+
+    .faq-item {
+        border: none;
+        border-radius: 0px;
+        overflow: hidden;
+        box-shadow: none;
+    }
+
+    .faq-btn::before {
+        content: "\f107";
+        font-family: 'Line Awesome Free';
+        font-weight: 900;
+        position: absolute;
+        right: 5px;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #D97846;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #D97846;
+        font-size: 12px;
+        transition: transform 0.3s ease, background 0.3s;
+    }
+
+    .accordion-button {
+        font-size: 13px;
+    }
+
+    div#heroSlider .bnanner-img {
+        object-fit: cover;
+        height: 400px;
+    }
+
+    .product-details .product-title {
+        font-size: 15px !important;
+        text-decoration: none;
+    }
+
+    .fancy-heading-box h2 {
+        text-align: center;
+        font-size: 21px;
+        line-height: 1.5;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-4 h2.h3.fw-bold.text-dark.m-0 {
+        font-size: 18px;
+    }
+
+    /* 🔴 MOBILE MENU FIX: Hide inactive sub-menus */
+    .Mobile-Header aside#mega-menu--mobile nav.navigation.hidden {
+        display: none !important;
+    }
 }
 
 /* 3. CATEGORY SCROLL IMAGE FIX (No Overlap) */
 /* Inline style hatakar yahan define karein */
 .category-circle-wrapper {
-    width: 110px !important;  /* Thoda chota kiya taki overlap na ho */
+    width: 110px !important;
+    /* Thoda chota kiya taki overlap na ho */
     height: 110px !important;
     border-radius: 50% !important;
     overflow: hidden;
     margin: 0 auto 10px auto;
-    border: 2px solid #C19A6B; /* Gold Border */
-    padding: 3px; /* Border aur Image ke beech gap */
+    border: 2px solid #C19A6B;
+    /* Gold Border */
+    padding: 3px;
+    /* Border aur Image ke beech gap */
     background: #fff;
     display: flex;
     align-items: center;
@@ -3221,11 +3289,16 @@ div#heroSlider .bnanner-img {
 @media (max-width: 767px) {
     div#heroSlider .bnanner-img {
         width: 100% !important;
-        height: auto !important; /* Fixed height hatayein */
-        min-height: 350px; /* Kam se kam itna bada dikhe */
-        aspect-ratio: 1 / 1; /* Agar image square (400x400) hai to ye ratio maintain karega */
-        object-fit: contain !important; /* Image ko katne se bachayega */
-        background-color: #f4f4f4; /* Agar image choti hai to peeche grey color */
+        height: auto !important;
+        /* Fixed height hatayein */
+        min-height: 350px;
+        /* Kam se kam itna bada dikhe */
+        aspect-ratio: 1 / 1;
+        /* Agar image square (400x400) hai to ye ratio maintain karega */
+        object-fit: contain !important;
+        /* Image ko katne se bachayega */
+        background-color: #f4f4f4;
+        /* Agar image choti hai to peeche grey color */
     }
 }
 
@@ -3242,10 +3315,13 @@ div#heroSlider .bnanner-img {
     background-color: #fff;
     transition: all 0.2s;
 }
+
 .coupon-card:hover {
-    border-color: #ff6f00; /* Gold/Orange */
+    border-color: #ff6f00;
+    /* Gold/Orange */
     background-color: #fffbf2;
 }
+
 .coupon-code-box {
     border: 1px dashed #ff6f00;
     background-color: #fff8e1;
@@ -3257,6 +3333,7 @@ div#heroSlider .bnanner-img {
     display: inline-block;
     margin-right: 8px;
 }
+
 .btn-apply-coupon {
     font-size: 12px;
     font-weight: 700;
@@ -3267,10 +3344,12 @@ div#heroSlider .bnanner-img {
     border-radius: 4px;
     transition: 0.2s;
 }
+
 .btn-apply-coupon:hover {
     background-color: #ff6f00;
     color: white;
 }
+
 /* Success Box */
 .coupon-success-box {
     background-color: #e8f5e9;
@@ -3283,6 +3362,7 @@ div#heroSlider .bnanner-img {
     justify-content: space-between;
     align-items: center;
 }
+
 .remove-coupon-btn {
     color: #d32f2f;
     font-weight: 600;
@@ -3293,16 +3373,20 @@ div#heroSlider .bnanner-img {
 .hover-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .hover-lift:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
+
 .transition-zoom {
     transition: transform 0.5s ease;
 }
+
 .blog-card:hover .transition-zoom {
     transform: scale(1.05);
 }
+
 .hover-primary:hover {
     color: #c09867 !important;
 }
@@ -3311,48 +3395,65 @@ div#heroSlider .bnanner-img {
 
 /* ======================== */
 /* Card Base */
-    .chit-card {
-        background: white;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        height: 110px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        position: relative;
-        overflow: hidden;
-    }
+.chit-card {
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
 
-    /* Hover Effect */
-    .chit-card:hover {
-        transform: translateY(-8px) scale(1.05);
-        box-shadow: 0 10px 20px rgba(255, 111, 0, 0.2) !important;
-        border-color: #ff6f00 !important;
-    }
+/* Hover Effect */
+.chit-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 111, 0, 0.2) !important;
+    border-color: #ff6f00 !important;
+}
 
-    /* Entry Animation (Ek-ek karke aayenge) */
-    .chit-wrapper {
+/* Entry Animation (Ek-ek karke aayenge) */
+.chit-wrapper {
+    opacity: 0;
+    animation: fadeInUp 0.5s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
         opacity: 0;
-        animation: fadeInUp 0.5s forwards;
-    }
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        transform: translateY(20px);
     }
 
-    /* Floating Animation (Hawa me tairna) */
-    .chit-icon i {
-        animation: float 3s ease-in-out infinite;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+}
+
+/* Floating Animation (Hawa me tairna) */
+.chit-icon i {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
     }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
 
 /* Global Fix for Horizontal Scroll */
-body, html {
+body,
+html {
     overflow-x: hidden;
     width: 100%;
 }
@@ -3360,5 +3461,52 @@ body, html {
 @font-face {
     font-family: 'AapkaFontName';
     src: url('font.woff2');
-    font-display: swap;  /* ✅ Ye Line zaroor lagayein */
+    font-display: swap;
+    /* ✅ Ye Line zaroor lagayein */
+}
+
+
+/* 1. इमेज को सही साइज में रखने के लिए */
+#ai-response-text img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+}
+
+/* 2. 'Buy Now' लिंक को बटन जैसा दिखाने के लिए */
+#ai-response-text a {
+    display: inline-block;
+    background-color: #673ab7;
+    /* Suyagya Theme Color */
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none !important;
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* 3. Product Name (Headings) के लिए */
+#ai-response-text h3 {
+    font-size: 16px;
+    color: #333;
+    margin-top: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* 4. Scrollbar को सुंदर बनाने के लिए */
+#chat-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+#chat-content::-webkit-scrollbar-thumb {
+    background: #673ab7;
+    border-radius: 10px;
 }

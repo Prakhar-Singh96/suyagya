@@ -2127,12 +2127,36 @@ async function processAstroRequest() {
 
         document.getElementById('chat-loader').style.display = 'none';
         document.getElementById('ai-result-area').style.display = 'block';
-        document.getElementById('ai-response-text').innerText = result.message;
+        // 💡 सुधार 1: .innerText की जगह .innerHTML का उपयोग करें
+        // 💡 सुधार 2: formatAstroResponse फंक्शन का उपयोग करके टेक्स्ट को HTML में बदलें
+        let formattedMsg = formatAstroResponse(result.message);
+        document.getElementById('ai-response-text').innerHTML = formattedMsg;
 
     } catch (err) {
         alert("सर्वर एरर! कृपया दोबारा प्रयास करें।");
         resetChat();
     }
+}
+
+// 💡 नया फंक्शन: जो इमेज और लिंक्स को असली HTML में बदल देगा
+function formatAstroResponse(text) {
+    if (!text) return "";
+
+    return text
+        // 1. Image Fix: ![alt](url) -> <img src="url">
+        .replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:100%; border-radius:10px; margin:10px 0;">')
+
+        // 2. Link Fix: [text](url) -> <a href="url" target="_blank">text</a>
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="buy-btn">$1</a>')
+
+        // 3. Bold Fix: **text** -> <b>text</b>
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+
+        // 4. Heading Fix: ### text -> <h3>text</h3>
+        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+
+        // 5. Line Breaks Fix
+        .replace(/\n/g, '<br>');
 }
 
 // WhatsApp Share & Reset Functions (No change needed here)
