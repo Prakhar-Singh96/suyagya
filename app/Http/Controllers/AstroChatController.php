@@ -13,12 +13,13 @@ class AstroChatController extends Controller
     public function getAstroAdvice(Request $request, ProkeralaService $prokerala, GroqService $groq)
     {
         try {
-            $astroDetails = null;
+            // 1. डिफॉल्ट वैल्यूज सेट करें ताकि कोड क्रैश न हो
+            $astroDetails = ['planets' => []];
             $userRashi = $request->user_rashi ?? 'Unknown';
-            $panchangData = "";
+            $panchangClean = ['Tithi' => 'Not Available', 'Nakshatra' => 'Not Available'];
 
-            // 💡 पहली बार में कुंडली डेटा निकालें
-            if ($request->has('dob') && $request->dob != null) {
+            // 💡 पहली बार में कुंडली डेटा निकालें (Initial Request)
+            if ($request->has('dob') && !empty($request->dob)) {
                 $astroDetails = $prokerala->getFullAstroData($request->all());
                 $userRashi = $astroDetails['rashi'] ?? 'Unknown';
 
@@ -28,7 +29,6 @@ class AstroChatController extends Controller
                     'Yog' => $astroDetails['panchang']['yog'][0]['name'] ?? 'Not Available',
                     'Karan' => $astroDetails['panchang']['karan'][0]['name'] ?? 'Not Available',
                 ];
-                $panchangData = json_encode($panchangClean);
             }
 
             // 💡 प्रोडक्ट मैपिंग (Vedic to English)
@@ -38,20 +38,26 @@ class AstroChatController extends Controller
             // 🔍 डेटाबेस से 5 प्रोडक्ट्स
             $recommendedProducts = Product::where('status', 1)
                 ->where(function ($q) use ($userRashi, $englishRashi) {
-                    $q->where('astro_rashi', 'like', "%$userRashi%")->orWhere('astro_rashi', 'like', "%$englishRashi%");
+                    $q->where('astro_rashi', 'like', "%$userRashi%")
+                      ->orWhere('astro_rashi', 'like', "%$englishRashi%");
                 })->inRandomOrder()->take(5)->get(['name', 'slug', 'price', 'main_image']);
 
-            $productsJson = json_encode($recommendedProducts);
+            $productsData = $recommendedProducts->isNotEmpty() ? json_encode($recommendedProducts) : "General Spiritual Items";
 
             // 🧠 डाइनैमिक सिस्टम प्रॉम्ट
             $systemPrompt = "You are 'Suyagya Astro AI'.
-            - Current User Rashi: $userRashi.
-            - Planets: " . json_encode($astroDetails['planets'] ?? []) . "
-            - Panchang: $panchangData.
-            - Products: $productsJson.
+            USER DATA:
+            - Name: {$request->name}
+            - Rashi: {$userRashi} ({$englishRashi})
+            - Planets: " . json_encode($astroDetails['planets']) . "
+            - Panchang: " . json_encode($panchangClean) . "
+
+            AVAILABLE PRODUCTS: $productsData
 
             INSTRUCTIONS:
-            1. Agar ye pehla message hai, toh Planet Analysis aur Panchang Insight (Tithi/Nakshatra) zaroor dein.
+            1. Greeting: 'Namaste {$request->name} ji!'.
+            2. Astro Analysis: Planet Positions aur Panchang (Tithi: {$panchangClean['Tithi']}, Nakshatra: {$panchangClean['Nakshatra']}) samjhayein.
+            3. Recommendations: Suggest up to 5 products.
             2. Recommendations: Har product ko is format mein dikhayein:
                ### **[Product Name]**
                ![Image](https://suyagya.com/[main_image])
