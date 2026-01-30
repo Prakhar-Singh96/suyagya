@@ -36,7 +36,7 @@ class ProkeralaService
 
             // 💡 यहाँ चेक करें कि टोकन मिल रहा है या नहीं
             if (!isset($data['access_token'])) {
-                \Log::error("Prokerala Auth Failed: ", $data);
+                Log::error("Prokerala Auth Failed: ", $data);
                 return null;
             }
 
@@ -45,39 +45,59 @@ class ProkeralaService
     }
 
     public function getFullAstroData($data)
-    {
-        $token = $this->getAccessToken();
-        if (!$token) return null;
-
-        $datetime = $data['dob'] . 'T' . $data['tob'] . ':00+05:30';
-        $location = $data['lat'] . ',' . $data['lng'];
-
-        // 🪐 1. Planets Position - ayanamsa जोड़ें
-        $planets = Http::withToken($token)
-            ->get($this->baseUrl . '/astrology/planet-position', [
-                'datetime' => $datetime,
-                'coordinates' => $location,
-                'ayanamsa' => 1 // 👈 यह जोड़ना अनिवार्य है
-            ])->json();
-
-        // 📅 2. Panchang - ayanamsa जोड़ें
-        $panchang = Http::withToken($token)
-            ->get($this->baseUrl . '/astrology/panchang', [
-                'datetime' => $datetime,
-                'coordinates' => $location,
-                'ayanamsa' => 1 // 👈 यह जोड़ना अनिवार्य है
-            ])->json();
-
-        // 💡 Debugging के लिए: अगर डेटा नहीं आ रहा तो लॉग में चेक करें
-        if (!isset($planets['data']) || !isset($panchang['data'])) {
-            \Log::error("Prokerala API Error Response: ", ['planets' => $planets, 'panchang' => $panchang]);
-            return null;
-        }
-
-        return [
-            'planets'  => $planets['data'] ?? [],
-            'panchang' => $panchang['data'] ?? [],
-            'rashi'    => $planets['data'][0]['rashi'] ?? 'Unknown'
-        ];
+{
+    $token = $this->getAccessToken();
+    if (!$token) {
+        Log::error("Prokerala Error: Access Token is NULL");
+        return null;
     }
+
+    $datetime = $data['dob'] . 'T' . $data['tob'] . ':00+05:30';
+    $location = $data['lat'] . ',' . $data['lng'];
+
+    $planetsResponse = Http::withoutVerifying()->withToken($token)
+        ->get($this->baseUrl . '/astrology/planet-position', [
+            'datetime' => $datetime,
+            'coordinates' => $location,
+            'ayanamsa' => 1
+        ])->json();
+
+    // 🔍 STEP 1: Log Raw Response
+    Log::info("STEP 1: Raw Planets API Response:", ['res' => $planetsResponse]);
+
+    // प्रोकेराला के अलग-अलग वर्शन्स के लिए 'Deep Extraction'
+    $planetsList = $planetsResponse['data']['planet_position'] ??
+                   $planetsResponse['data']['planet-position'] ??
+                   $planetsResponse['data'] ?? [];
+
+    Log::info("STEP 2: Extracted Planets List Count:", ['count' => count($planetsList)]);
+
+    $userRashi = 'Unknown';
+
+    if (is_array($planetsList)) {
+        foreach ($planetsList as $planet) {
+            // 🌙 Moon Sign Search
+            if (isset($planet['name']) && $planet['name'] === 'Moon') {
+                $userRashi = $planet['rasi']['name'] ?? 'Unknown';
+                Log::info("STEP 3: Found Moon Sign:", ['rashi' => $userRashi]);
+                break;
+            }
+        }
+    }
+
+    // अगर चंद्रमा नहीं मिला तो Ascendant (पहला रिकॉर्ड) ट्राई करें
+    if ($userRashi === 'Unknown' && !empty($planetsList)) {
+        $firstRecord = reset($planetsList);
+        $userRashi = $firstRecord['rasi']['name'] ?? 'Unknown';
+        Log::warning("STEP 4: Moon not found, using Fallback Rashi:", ['rashi' => $userRashi]);
+    }
+
+    Log::info("STEP 5: Final Rashi Value being returned:", ['rashi' => $userRashi]);
+
+    return [
+        'planets'  => $planetsList,
+        'panchang' => $panchangResponse['data'] ?? [],
+        'rashi'    => $userRashi
+    ];
+}
 }

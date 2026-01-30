@@ -50,6 +50,37 @@ use App\Http\Controllers\Seller\Auth\LoginController as SellerLoginController;
 |
 */
 
+Route::get('/fix-astro-data', function () {
+    $astroMapping = [
+        '1 Mukhi' => ['planet' => 'Sun (Surya)', 'rashi' => 'Leo (Simha)', 'benefits' => 'Self-confidence, leadership, and power.'],
+        '2 Mukhi' => ['planet' => 'Moon (Chandra)', 'rashi' => 'Cancer (Karka)', 'benefits' => 'Emotional stability and harmony in relationships.'],
+        '3 Mukhi' => ['planet' => 'Mars (Mangal)', 'rashi' => 'Aries, Scorpio', 'benefits' => 'Success and energy, removes laziness.'],
+        '4 Mukhi' => ['planet' => 'Mercury (Budh)', 'rashi' => 'Gemini, Virgo', 'benefits' => 'Communication, memory, and intelligence.'],
+        '5 Mukhi' => ['planet' => 'Jupiter (Guru)', 'rashi' => 'Sagittarius, Pisces', 'benefits' => 'Good health, peace, and spiritual growth.'],
+        '6 Mukhi' => ['planet' => 'Venus (Shukra)', 'rashi' => 'Taurus, Libra', 'benefits' => 'Focus, willpower, and artistic success.'],
+        '7 Mukhi' => ['planet' => 'Saturn (Shani)', 'rashi' => 'Capricorn, Aquarius', 'benefits' => 'Wealth, prosperity, and career growth.'],
+        'Yellow Sapphire' => ['planet' => 'Jupiter (Guru)', 'rashi' => 'Sagittarius, Pisces', 'benefits' => 'Wisdom, fortune, and marital bliss.'],
+        'Blue Sapphire' => ['planet' => 'Saturn (Shani)', 'rashi' => 'Capricorn, Aquarius', 'benefits' => 'Protection from evil and rapid success.'],
+        'Ruby' => ['planet' => 'Sun (Surya)', 'rashi' => 'Leo (Simha)', 'benefits' => 'Vitality, leadership, and professional success.'],
+        'Coral' => ['planet' => 'Mars (Mangal)', 'rashi' => 'Aries, Scorpio', 'benefits' => 'Courage, physical strength, and overcoming obstacles.'],
+        'Emerald' => ['planet' => 'Mercury (Budh)', 'rashi' => 'Gemini, Virgo', 'benefits' => 'Business growth and clear communication.'],
+        'Tiger Eye' => ['planet' => 'Sun & Mars', 'rashi' => 'Leo, Aries', 'benefits' => 'Protection and courage.'],
+    ];
+
+    foreach (\App\Models\Product::all() as $product) {
+        foreach ($astroMapping as $keyword => $data) {
+            if (str_contains(strtolower($product->name), strtolower($keyword))) {
+                $product->update([
+                    'astro_planet'   => $data['planet'],
+                    'astro_rashi'    => $data['rashi'],
+                    'astro_benefits' => $data['benefits']
+                ]);
+            }
+        }
+    }
+    return "Products Checked & Updated!";
+});
+
 Route::get('/', [HomeController::class, 'index']);
 
 // Product Listing Pages
