@@ -236,21 +236,13 @@
         @include('frontend.modals.game_modal')
     @endif
 
-    {{-- 🎁 FLOATING LUCKY DRAW ICON --}}
-    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()"
-        style="display: none; left: 20px; right: auto;">
-        <div class="icon-pulse">
-            <i class="las la-gift"></i>
-        </div>
-        <span class="lucky-text">Win Prize</span>
-    </div>
 
     <div id="chat-launcher" onclick="toggleChat()"
-        style="position:fixed; bottom:110px; right:25px; background:#673ab7; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:99; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        style="position:fixed; bottom:90px; right:20px; background:#673ab7; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:99; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
         <i class="las la-robot" style="font-size: 30px;"></i>
     </div>
 
-    <div id="astro-chat-window" style="position:fixed; bottom:110px; right:20px; width:350px; max-height:550px; background:white; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display:none; flex-direction:column; z-index:10000; border: 1px solid #e0e0e0; overflow:hidden;">
+    <div id="astro-chat-window" style="position:fixed; bottom:100px; right:25px; width:350px; max-height:550px; background:white; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display:none; flex-direction:column; z-index:10000; border: 1px solid #e0e0e0; overflow:hidden;">
 
     <div style="background:#673ab7; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-weight:bold;"><i class="las la-stars"></i> Suyagya Astro AI</span>
@@ -327,6 +319,15 @@
     </a>
     {{-- ❌ WHATSAPP FLOATING BUTTON END --}}
 
+    {{-- 🎁 FLOATING LUCKY DRAW ICON --}}
+    <div id="luckyFloatingIcon" class="lucky-float-btn" onclick="reopenLuckyDraw()"
+        style="display: none; left: 20px; right: auto;">
+        <div class="icon-pulse">
+            <i class="las la-gift"></i>
+        </div>
+        <span class="lucky-text">Win Prize</span>
+    </div>
+
     {{-- CSS for Floating Buttons (Game & Whatsapp) --}}
     <style>
         .jump-anim {
@@ -348,9 +349,9 @@
         /* 🎁 Floating Game Icon */
         .lucky-float-btn {
             position: fixed;
-            bottom: 100px;
+            bottom: 25px;
             /* Above Whatsapp */
-            right: 20px;
+            right: 25px;
             z-index: 99;
             width: 60px;
             height: 60px;
@@ -408,8 +409,8 @@
             position: fixed;
             width: 60px;
             height: 60px;
-            bottom: 25px;
-            right: 25px;
+            bottom: 20px;
+            right: 20px;
             background-color: #25d366;
             color: #FFF;
             border-radius: 50px;
@@ -448,7 +449,7 @@
         /* Mobile Fixes */
         @media (max-width: 768px) {
             .lucky-float-btn {
-                bottom: 90px;
+                bottom: 25px;
                 right: 15px;
                 width: 55px;
                 height: 55px;
@@ -463,8 +464,8 @@
             }
 
             .whatsapp-float {
-                width: 50px;
-                height: 50px;
+                width: 60px;
+                height: 60px;
                 bottom: 20px;
                 right: 20px;
                 font-size: 28px;
