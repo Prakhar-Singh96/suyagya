@@ -3,7 +3,7 @@
 @section('content')
 
     {{-- Title Section --}}
-    <div class="py-5 text-center border-bottom">
+    <div class="py-3 text-center border-bottom">
         <div class="container">
             <h1 class="font-heading fw-bold text-dark mb-2">
                 {{ isset($subCategory) ? $subCategory->name : $category->name }}
@@ -11,11 +11,11 @@
             <p class="text-muted small mb-0" style="max-width: 600px; margin: 0 auto;">
                 {{ isset($subCategory) ? $subCategory->description : $category->description }}
             </p>
-            <p class="text-muted small mb-0">{{ $products->total() }} products</p>
+            {{-- <p class="text-muted small mb-0">{{ $products->total() }} products</p> --}}
         </div>
     </div>
 
-    <div class="container py-5">
+    <div class="container py-3">
         <div class="row">
 
             {{-- SIDEBAR --}}
@@ -29,7 +29,7 @@
                      3. Added inline style 'max-width: 600px; width: 100%;' (taaki upar wale text ke barabar choda ho).
                 --}}
                 <button class="btn btn-outline-dark d-lg-none mb-3 d-flex justify-content-between align-items-center"
-                        style="width: 40%;"
+                        style="width: 50%;"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#mobileFilterCollapse"
@@ -61,7 +61,7 @@
                             @endif
 
                             {{-- Price Filter --}}
-                            <div class="filter-group border-bottom py-3">
+                            <div class="filter-group border-bottom py-2">
                                 <a class="d-flex justify-content-between align-items-center text-dark text-decoration-none fw-bold mb-3"
                                     data-bs-toggle="collapse" href="#collapsePrice" role="button">
                                     Price <i class="las la-angle-down"></i>
@@ -92,7 +92,7 @@
 
                             {{-- Dynamic Filters --}}
                             @foreach ($filters as $filter)
-                                <div class="filter-group border-bottom py-3">
+                                <div class="filter-group border-bottom py-2">
                                     <a class="d-flex justify-content-between align-items-center text-dark text-decoration-none fw-bold mb-2"
                                         data-bs-toggle="collapse" href="#collapse{{ $filter->id }}" role="button">
                                         {{ $filter->name }}
@@ -152,7 +152,7 @@
                         <div class="dropdown">
                             <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded"
                                 href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                                style="background: #fff; min-width: 160px; display: flex; justify-content: space-between; align-items: center;">
+                                style="background: #fff; display: flex; justify-content: space-between; align-items: center;">
                                 <span><span class="text-muted fw-normal me-1">Sort by:</span> {{ $sortLabel }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-1" style="min-width: 160px;">
