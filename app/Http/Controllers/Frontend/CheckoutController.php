@@ -455,10 +455,11 @@ class CheckoutController extends Controller
 
     public function applyCoupon(Request $request)
     {
-        $code = $request->code;
+        $code = strtoupper($request->code); // कोड को हमेशा CAPS में रखें
 
         // 🔥 FIX: Ensure cartTotal is treated as a float
         $cartTotal = (float) str_replace(',', '', $request->cart_total);
+        $user = Auth::user();
 
         // 1. Coupon Find karo
         $coupon = Coupon::where('code', $code)->where('status', 1)->first();
@@ -466,6 +467,17 @@ class CheckoutController extends Controller
         // 2. Validation
         if (!$coupon) {
             return response()->json(['status' => false, 'message' => 'Invalid Coupon Code']);
+        }
+
+        // 🎯 मुख्य लॉजिक: अगर कूपन WELCOME10 है, तो ऑर्डर चेक करें
+        if ($code === 'WELCOME10') {
+            $orderCount = \App\Models\Order::where('user_id', $user->id)
+                ->where('status', '!=', 'cancelled')
+                ->count();
+
+            if ($orderCount > 0) {
+                return response()->json(['status' => false, 'message' => 'Ye coupon sirf aapke pehle order ke liye hai!']);
+            }
         }
 
         // Expiry Check (Agar NULL nahi hai tabhi check karo)
@@ -570,5 +582,30 @@ class CheckoutController extends Controller
 
         \Log::warning('Order Cancel Condition Failed'); // Fail Log
         return response()->json(['status' => false]);
+    }
+
+    public function applyWelcomeCoupon(Request $request)
+    {
+        $user = Auth::user();
+
+        // 1. चेक करें क्या यूज़र ने पहले कभी ऑर्डर किया है
+        $orderCount = \App\Models\Order::where('user_id', $user->id)
+            ->where('status', '!=', 'cancelled') // कैंसल ऑर्डर को न गिनें
+            ->count();
+
+        if ($orderCount == 0) {
+            $coupon = \App\Models\Coupon::where('code', 'WELCOME10')
+                ->where('status', 1)
+                ->first();
+
+            if ($coupon) {
+                return response()->json([
+                    'status' => 'success',
+                    'coupon' => $coupon,
+                    'message' => 'Welcome discount auto-applied!'
+                ]);
+            }
+        }
+        return response()->json(['status' => 'not_eligible']);
     }
 }

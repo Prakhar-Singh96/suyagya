@@ -738,6 +738,8 @@ function openDirectCheckout(btn) {
                 $('#new_address_form').show();
             }
             $('#user_phone_display').text(data.user_phone);
+            // 🔥 यहाँ जोड़ें: कूपन ऑटो-अप्लाई करें
+            applyCouponDirect('WELCOME10');
             showStep('address');
         });
     } else {
@@ -947,6 +949,9 @@ function verifyCheckoutOtp() {
             // Hide Login Step
             $('#step_login').hide();
 
+            // 🚀 सुधार 1: मेटा टैग को '1' सेट करें ताकि बाकी फंक्शन जान सकें कि यूजर लॉगिन है
+            $('meta[name="is-logged-in"]').attr('content', '1');
+
             // Fetch User Data & Address
             $.get("/checkout/get-user-data", function (data) {
 
@@ -966,8 +971,9 @@ function verifyCheckoutOtp() {
                 // Show Next Step
                 $('#step_address').fadeIn();
 
-                // Update Auth State
-                $('meta[name="is-logged-in"]').attr('content', '1');
+                // 🚀 सुधार 2: नया यूजर लॉगिन होते ही WELCOME10 अपने आप अप्लाई करें
+                // हम सीधे applyCouponDirect कॉल करेंगे क्योंकि अभी-अभी लॉगिन हुआ है
+                applyCouponDirect('WELCOME10');
             });
 
         } else {
@@ -1400,25 +1406,42 @@ let appliedGamingAmount = 0;
 function fetchCoupons() {
     $('#coupon_list_box').slideToggle();
 
+    // 🚀 सुधार: मेटा टैग से ताज़ा लॉगिन स्टेटस लें
+    const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
+
     $.ajax({
-        url: "{{ route('get.coupons') }}",
+        url: "/checkout/get-coupons", // अपनी रूट URL पक्का करें
         type: "GET",
         success: function (response) {
             let html = '';
-            if (response.length > 0) {
-                response.forEach(c => {
+
+            // फ़िल्टर करें: अगर लॉगिन नहीं है, तो 'WELCOME10' हटा दें
+            const filteredCoupons = response.filter(c => {
+                if (c.code === 'WELCOME10' && !isLoggedIn) {
+                    return false;
+                }
+                return true;
+            });
+
+            if (filteredCoupons.length > 0) {
+                filteredCoupons.forEach(c => {
                     html += `
                         <div class="d-flex justify-content-between align-items-center bg-white border rounded p-2 mb-2">
                             <div>
                                 <strong class="text-uppercase text-primary border border-primary px-2 rounded small me-2">${c.code}</strong>
-                                <small class="text-muted d-block mt-1" style="font-size:10px;">${c.type == 'fixed' ? 'Flat ₹' + c.value + ' OFF' : c.value + '% OFF'}</small>
+                                <small class="text-muted d-block mt-1" style="font-size:10px;">
+                                    ${c.type === 'fixed' || c.type === 'flat' ? 'Flat ₹' + c.value + ' OFF' : c.value + '% OFF'}
+                                </small>
                             </div>
-                            <button class="btn btn-sm btn-outline-dark py-0" onclick="$('#coupon_code').val('${c.code}'); applyCoupon();">Apply</button>
+                            <button class="btn btn-sm btn-outline-dark py-1 px-3 fw-bold"
+                                    onclick="$('#coupon_code').val('${c.code}'); applyCouponManual();">
+                                APPLY
+                            </button>
                         </div>
                     `;
                 });
             } else {
-                html = '<p class="text-center small text-muted">No coupons available.</p>';
+                html = '<p class="text-center small text-muted py-3">No coupons available at this moment.</p>';
             }
             $('#coupon_list_box').html(html);
         }
@@ -1772,6 +1795,8 @@ function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
                 $('#new_address_form').show();
             }
             $('#user_phone_display').text(data.user_phone);
+            // 🔥 यहाँ जोड़ें: कूपन ऑटो-अप्लाई करें
+            applyCouponDirect('WELCOME10');
             showStep('address');
         });
     } else {
@@ -1827,7 +1852,15 @@ function applyCouponManual() {
 // 3. Main Apply Function
 // 3. Main Apply Function
 function applyCouponDirect(code) {
-    $('#coupon_msg').hide();
+    const msg = $('#coupon_msg');
+    msg.hide().removeClass('text-success text-danger');
+
+    // 🚀 सुरक्षा चेक: बिना लॉगिन के WELCOME10 अप्लाई करने पर रोक
+    const isLoggedIn = $('meta[name="is-logged-in"]').attr('content') === '1';
+    if (code.toUpperCase() === 'WELCOME10' && !isLoggedIn) {
+        msg.text('WELCOME10 coupon not applied. Please login first!').addClass('text-danger').show();
+        return;
+    }
     $('#coupon_code').val(code);
 
     // Ensure route is correct
