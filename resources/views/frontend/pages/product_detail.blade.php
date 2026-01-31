@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                        border: 1px solid #eee;
-                        padding: 15px;
-                        border-radius: 8px;
-                        margin-bottom: 20px;
-                        background-color: #f7f1de;
-                    } */
+                            border: 1px solid #eee;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-bottom: 20px;
+                            background-color: #f7f1de;
+                        } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -116,23 +116,23 @@
 
         /* Mobile Adjustments */
         /* @media (max-width: 768px) {
-                                                        .product-slider-container {
-                                                            height: 455px !important;
-                                                            aspect-ratio: 1 / 1;
-                                                            width: 100%;
-                                                        }
+                                                            .product-slider-container {
+                                                                height: 455px !important;
+                                                                aspect-ratio: 1 / 1;
+                                                                width: 100%;
+                                                            }
 
-                                                        .product-slider-container img,
-                                                        .product-slider-container video {
-                                                            width: 100%;
-                                                            height: 100%;
-                                                            object-fit: cover;
-                                                        }
+                                                            .product-slider-container img,
+                                                            .product-slider-container video {
+                                                                width: 100%;
+                                                                height: 100%;
+                                                                object-fit: cover;
+                                                            }
 
-                                                        .product-images {
-                                                            top: 0 !important;
-                                                        }
-                                                    } */
+                                                            .product-images {
+                                                                top: 0 !important;
+                                                            }
+                                                        } */
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
             overflow: hidden;
@@ -452,7 +452,9 @@
                                     <option value="adjustable">Free/Adjustable</option>
                                 </select>
                                 <a href="{{ route('ring.size.guide') }}"
-                                    class="small text-primary text-decoration-underline ms-3">Size Chart</a>
+                                    class="small text-primary text-decoration-underline ms-3 fw-bold">
+                                    Find Your Size
+                                </a>
                             </div>
                         </div>
 
@@ -1078,7 +1080,7 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.razorpay.com/widgets/affordability/affordability.js"></script>
+    <script src="https://cdn.razorpay.com/widgets/affordability/affordability.js"></script>
     <script>
         // --- 🟢 RAZORPAY WIDGET CONFIGURATION ---
         const rzpKey = "rzp_live_S0zZ2YEhXKBKxb"; // Aapki Live Key
@@ -1136,7 +1138,7 @@
 
             // 🔥 FIX: Page load hote hi Variant ka Stock check karo
             const variantSelect = document.getElementById('variant_select');
-            if(variantSelect) {
+            if (variantSelect) {
                 variantSelect.dispatchEvent(new Event('change'));
             }
         });
@@ -1278,21 +1280,21 @@
                 const qtyInput = document.getElementById('qty_input');
                 const cartBtn = document.querySelector('.btn-warning'); // Add to cart button
 
-                if(qtyInput) {
+                if (qtyInput) {
                     qtyInput.setAttribute('max', stock); // Max limit set ki
                     qtyInput.value = 1; // Reset value to 1
                 }
 
                 // 🔥 HANDLE OUT OF STOCK
-                if(stock < 1) {
-                    if(qtyInput) qtyInput.value = 0;
-                    if(cartBtn) {
+                if (stock < 1) {
+                    if (qtyInput) qtyInput.value = 0;
+                    if (cartBtn) {
                         cartBtn.disabled = true;
                         cartBtn.innerText = "Out of Stock";
                         cartBtn.style.opacity = "0.6";
                     }
                 } else {
-                    if(cartBtn) {
+                    if (cartBtn) {
                         cartBtn.disabled = false;
                         cartBtn.innerText = "ADD TO CART";
                         cartBtn.style.opacity = "1";

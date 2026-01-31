@@ -100,6 +100,16 @@
         .size-table tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
+        /* मोबाइल के लिए कैनवास और ग्रिड बैकग्राउंड का साइज एडजस्ट करें */
+        @media (max-width: 767px) {
+            #ring-size-canvas,
+            .position-relative.d-inline-block.mb-4 div[style*="width: 300px"] {
+                width: 320px !important;
+                height: 320px !important;
+            }
+            .fs-1 { font-size: 3rem !important; } /* मोबाइल पर साइज नंबर बड़ा दिखे */
+        }
     </style>
 @endsection
 
@@ -422,16 +432,23 @@
         const displaySize = document.getElementById('displaySize');
 
         // 🔥 SCALE BADHA DIYA (4.5) taki ring screen par badi dikhe aur text uske andar aa jaye
-        const PIXELS_PER_MM = 4.5;
+        // 🔥 SCALE FIX: Mobile के लिए scale बढ़ा दिया गया है
+        let PIXELS_PER_MM = window.innerWidth < 768 ? 7.5 : 4.5;
+
+        // अगर स्क्रीन साइज बदले तो ऑटो-एडजस्ट करने के लिए
+        window.addEventListener('resize', () => {
+            PIXELS_PER_MM = window.innerWidth < 768 ? 7.5 : 4.5;
+            drawRing(slider.value);
+        });
 
         function drawRing(size) {
             const data = ringData[size];
             if (!data) return;
 
-            const diameterMm = data.mm;
-            const radiusPx = (diameterMm / 2) * PIXELS_PER_MM;
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
+            const diameterMm = data.mm;
+            const radiusPx = (diameterMm / 2) * PIXELS_PER_MM;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
