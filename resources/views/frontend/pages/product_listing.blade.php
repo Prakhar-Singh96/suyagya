@@ -1,12 +1,10 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-
     {{-- Title Section --}}
     <div class="py-3 text-center border-bottom">
         <div class="container">
-            <h1 class="font-heading fw-bold text-dark mb-o">
-                {{ isset($subCategory) ? $subCategory->name : $category->name }}
+            <h1 class="font-heading fw-bold text-dark mb-0">{{ isset($subCategory) ? $subCategory->name : $category->name }}
             </h1>
             <p class="text-muted fw-bold small mb-0">({{ $products->total() }} products)</p>
             <p class="text-muted fw-bold small mb-0" style="max-width: 600px; margin: 0 auto;">
@@ -17,125 +15,17 @@
 
     <div class="container py-3">
         <div class="row">
-
-            <div class="col-lg-3">
-                {{-- Mobile Filter Collapse (Hidden on Desktop) --}}
-                <div class="collapse d-lg-block mb-4" id="mobileFilterCollapse">
-                    <div class="filter-sidebar border rounded p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold mb-0 text-uppercase ls-1 d-none d-lg-block">Filters</h6>
-                            @if (request()->has('filter') || request()->has('min_price'))
-                                <a href="{{ url()->current() }}"
-                                    class="text-danger x-small text-decoration-none fw-bold ms-auto ms-lg-0">Clear All</a>
-                            @endif
-                        </div>
-                        {{-- Form content remains same --}}
-                        <form id="filterForm" action="" method="GET">
-                            @if (request('sort'))
-                                <input type="hidden" name="sort" value="{{ request('sort') }}">
-                            @endif
-
-                            {{-- Price Filter --}}
-                            <div class="filter-group border-bottom py-2">
-                                <a class="d-flex justify-content-between align-items-center text-dark text-decoration-none fw-bold mb-3"
-                                    data-bs-toggle="collapse" href="#collapsePrice" role="button">
-                                    Price <i class="las la-angle-down"></i>
-                                </a>
-
-                                <div class="collapse show" id="collapsePrice">
-                                    <div class="d-flex align-items-center gap-2 mb-3">
-                                        <div class="position-relative w-100">
-                                            <span class="position-absolute text-muted small"
-                                                style="left: 8px; top: 7px;">₹</span>
-                                            <input type="number" name="min_price" id="input-min"
-                                                class="price-input-box ps-3" placeholder="0"
-                                                value="{{ request('min_price') }}">
-                                        </div>
-                                        <span class="text-muted">-</span>
-                                        <div class="position-relative w-100">
-                                            <span class="position-absolute text-muted small"
-                                                style="left: 8px; top: 7px;">₹</span>
-                                            <input type="number" name="max_price" id="input-max"
-                                                class="price-input-box ps-3" placeholder="Max"
-                                                value="{{ request('max_price') }}">
-                                        </div>
-                                        <button type="submit" class="btn btn-dark btn-sm rounded-1 px-3">
-                                            <i class="las la-angle-right"></i>
-                                        </button>
-                                    </div>
-                                    <div class="px-2 pb-2">
-                                        <div id="price-slider"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Dynamic Filters --}}
-                            @foreach ($filters as $filter)
-                                <div class="filter-group border-bottom py-2">
-                                    <a class="d-flex justify-content-between align-items-center text-dark text-decoration-none fw-bold mb-2"
-                                        data-bs-toggle="collapse" href="#collapse{{ $filter->id }}" role="button">
-                                        {{ $filter->name }}
-                                        <i class="las la-angle-down"></i>
-                                    </a>
-                                    <div class="collapse show" id="collapse{{ $filter->id }}">
-                                        <div class="filter-options mt-2">
-                                            @foreach ($filter->filterValues as $value)
-                                                <div
-                                                    class="form-check mb-1 d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        @php
-                                                            $isChecked = false;
-                                                            if (
-                                                                request('filter') &&
-                                                                isset(request('filter')[$filter->id])
-                                                            ) {
-                                                                $isChecked = in_array(
-                                                                    $value->id,
-                                                                    request('filter')[$filter->id],
-                                                                );
-                                                            }
-                                                        @endphp
-                                                        <input class="form-check-input filter-checkbox shadow-none"
-                                                            type="checkbox" name="filter[{{ $filter->id }}][]"
-                                                            value="{{ $value->id }}" id="val_{{ $value->id }}"
-                                                            {{ $isChecked ? 'checked' : '' }}
-                                                            onchange="this.form.submit()">
-                                                        <label class="form-check-label text-muted small ms-1"
-                                                            for="val_{{ $value->id }}">
-                                                            {{ $value->value }}
-                                                        </label>
-                                                    </div>
-                                                    <span class="text-muted x-small">({{ $value->products_count }})</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            {{-- 🟢 PRODUCT GRID --}}
-            <div class="col-lg-9">
-                {{-- Toolbar --}}
-                {{-- 🟢 TOOLBAR: मोबाइल के लिए बेहतर अलाइनमेंट --}}
-                {{-- 🟢 TOOLBAR: डेस्कटॉप पर राइट अलाइन और मोबाइल पर फुल विड्थ --}}
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2 border-bottom">
-
-                    {{-- 📱 मोबाइल फिल्टर बटन: सिर्फ मोबाइल (d-lg-none) पर दिखेगा --}}
-                    <button
-                        class="btn btn-white border d-lg-none d-flex justify-content-between align-items-center py-2 px-3"
-                        style="width: auto; height: 40px; font-size: 14px; background: #fff;" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#mobileFilterCollapse">
-                        <span class="fw-bold"><i class="las la-filter me-1"></i> Filters</span>
-                        <i class="las la-angle-down ms-2"></i>
+            {{-- 🟢 TOOLBAR: मोबाइल के लिए 'Filter & Sort' बटन --}}
+            <div class="col-12 mb-4">
+                <div class="d-flex align-items-center gap-2 pb-2">
+                    {{-- 📱 मोबाइल फिल्टर बटन --}}
+                    <button class="btn btn-white border d-lg-none d-flex align-items-center py-2 px-3 shadow-sm rounded-3"
+                        type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilterSidebar">
+                        <span class="fw-bold">Filter & Sort <i class="las la-sliders-h ms-2"></i></span>
                     </button>
 
-                    {{-- 🏷️ सॉर्टिंग ड्रॉपडाउन: डेस्कटॉप पर राइट साइड में रहेगा --}}
-                    <div class="dropdown ms-auto" style="width: auto; height: 40px; font-size: 14px; background: #fff;">
+                    {{-- 🏷️ डेस्कटॉप सॉर्टिंग --}}
+                    <div class="dropdown ms-auto d-none d-lg-block">
                         @php
                             $sortOptions = [
                                 'newest' => 'Newest',
@@ -145,25 +35,39 @@
                                 'price_desc' => 'Price: High-Low',
                             ];
                             $currentSort = request('sort', 'newest');
-                            $sortLabel = $sortOptions[$currentSort] ?? 'Newest';
                         @endphp
-
-                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded d-flex justify-content-between align-items-center"
-                            href="#" role="button" data-bs-toggle="dropdown"
-                            style="background: #fff; height: 40px; width: 100%;">
-                            <span><span class="text-muted fw-normal me-1">Sort by:</span> {{ $sortLabel }}</span>
+                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded bg-white shadow-sm"
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            Sort by: {{ $sortOptions[$currentSort] ?? 'Newest' }}
                         </a>
-
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-1">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                             @foreach ($sortOptions as $key => $label)
-                                <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light text-dark fw-bold' : '' }}"
+                                <li><a class="dropdown-item small {{ $currentSort == $key ? 'active' : '' }}"
                                         href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a>
                                 </li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
+            </div>
 
+            {{-- 🖥️ DESKTOP SIDEBAR --}}
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="filter-sidebar border rounded p-3 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0 text-uppercase">Filters</h6>
+                        @if (request()->has('filter') || request()->has('min_price'))
+                            <a href="{{ url()->current() }}" class="text-danger x-small fw-bold">Clear All</a>
+                        @endif
+                    </div>
+                    <form action="" method="GET">
+                        @include('frontend.includes.filter_form_content')
+                    </form>
+                </div>
+            </div>
+
+            {{-- 🟢 PRODUCT GRID --}}
+            <div class="col-lg-9">
                 @if ($products->count() > 0)
                     <div class="row g-3">
                         @foreach ($products as $product)
@@ -243,22 +147,15 @@
                             </div>
                         @endforeach
                     </div>
-                    <div class="mt-5 d-flex justify-content-center">
-                        {{ $products->links('pagination::bootstrap-5') }}
-                    </div>
+                    <div class="mt-5 d-flex justify-content-center">{{ $products->links('pagination::bootstrap-5') }}</div>
                 @else
                     <div class="text-center py-5">
-                        <div class="mb-3"><i class="las la-search fs-1 text-muted"></i></div>
-                        <h4 class="h5">No products found</h4>
-                        <p class="text-muted">Try removing some filters to see results.</p>
-                        <a href="{{ url()->current() }}" class="btn btn-dark rounded-0 px-4">Clear Filters</a>
+                        <h4>No products found</h4>
                     </div>
                 @endif
             </div>
-
         </div>
     </div>
-
     @php
         $dTitle = '';
         $dContent = '';
@@ -279,59 +176,122 @@
         'storyContent' => $dContent,
     ])
 
+    {{-- 📱 MOBILE FILTER SIDEBAR (Japam Style Offcanvas) --}}
+    <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileFilterSidebar">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold">Filter & Sort</h5>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <form action="" method="GET" class="p-4 h-100 d-flex flex-column">
+                {{-- मोबाइल सॉर्टिंग --}}
+                <div class="mb-4">
+                    <label class="fw-bold mb-2">Sort By</label>
+                    <select name="sort" class="form-select border shadow-none" onchange="this.form.submit()">
+                        @foreach ($sortOptions as $key => $label)
+                            <option value="{{ $key }}" {{ $currentSort == $key ? 'selected' : '' }}>
+                                {{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                @include('frontend.includes.filter_form_content')
+
+                {{-- Sticky Footer Button --}}
+                <div class="mt-auto pt-4 pb-2">
+                    <button type="submit" class="btn btn-dark w-100 py-3 fw-bold text-uppercase rounded-3">
+                        Show {{ $products->total() }} Results
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
+
+@section('styles')
+    <style>
+        #mobileFilterSidebar {
+            width: 85%;
+            max-width: 400px;
+        }
+
+        .filter-group label {
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #000;
+            border-color: #000;
+        }
+
+        /* स्लाइडर को दिखने लायक ऊँचाई और मार्जिन दें */
+        /* स्लाइडर को दिखने लायक ऊँचाई दें */
+        .price-slider {
+            margin-top: 10px;
+        }
+    </style>
 @endsection
 
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var slider = document.getElementById('price-slider');
-            var inputMin = document.getElementById('input-min');
-            var inputMax = document.getElementById('input-max');
+            // 🚀 सभी स्लाइडर (डेस्कटॉप + मोबाइल) को एक साथ पकड़ें
+            var sliders = document.querySelectorAll('.price-slider');
+            var minInputs = document.querySelectorAll('input[name="min_price"]');
+            var maxInputs = document.querySelectorAll('input[name="max_price"]');
 
-            if (slider) {
-                var minVal = parseInt("{{ request('min_price', 0) }}");
-                var maxVal = parseInt("{{ request('max_price', 10000) }}");
+            var minVal = parseInt("{{ request('min_price', 0) }}");
+            var maxVal = parseInt("{{ request('max_price', 10000) }}");
 
-                noUiSlider.create(slider, {
-                    start: [minVal, maxVal || 10000],
-                    connect: true,
-                    range: {
-                        'min': 0,
-                        'max': 20000
-                    },
-                    step: 100,
-                    format: {
-                        to: function(value) {
-                            return Math.round(value);
+            // हर स्लाइडर के लिए अलग से इन्सटेंस बनाएँ
+            sliders.forEach(function(slider) {
+                if (slider) {
+                    noUiSlider.create(slider, {
+                        start: [minVal, maxVal],
+                        connect: true,
+                        range: {
+                            'min': 0,
+                            'max': 20000
                         },
-                        from: function(value) {
-                            return Number(value);
+                        step: 100,
+                        format: {
+                            to: function(value) {
+                                return Math.round(value);
+                            },
+                            from: function(value) {
+                                return Number(value);
+                            }
                         }
-                    }
-                });
+                    });
 
-                slider.noUiSlider.on('update', function(values, handle) {
-                    var value = values[handle];
-                    if (handle === 0) {
-                        if (inputMin) inputMin.value = value;
-                    } else {
-                        if (inputMax) inputMax.value = value;
-                    }
-                });
+                    // अपडेट लॉजिक: एक स्लाइडर हिलेगा तो दोनों इनपुट अपडेट होंगे
+                    slider.noUiSlider.on('update', function(values, handle) {
+                        var value = values[handle];
+                        if (handle === 0) {
+                            minInputs.forEach(input => {
+                                input.value = value;
+                            });
+                        } else {
+                            maxInputs.forEach(input => {
+                                input.value = value;
+                            });
+                        }
+                    });
 
-                if (inputMin) {
-                    inputMin.addEventListener('change', function() {
-                        slider.noUiSlider.set([this.value, null]);
+                    // इनपुट बदलने पर स्लाइडर भी हिले
+                    minInputs.forEach(input => {
+                        input.addEventListener('change', function() {
+                            slider.noUiSlider.set([this.value, null]);
+                        });
+                    });
+                    maxInputs.forEach(input => {
+                        input.addEventListener('change', function() {
+                            slider.noUiSlider.set([null, this.value]);
+                        });
                     });
                 }
-                if (inputMax) {
-                    inputMax.addEventListener('change', function() {
-                        slider.noUiSlider.set([null, this.value]);
-                    });
-                }
-            }
+            });
         });
     </script>
 @endsection
