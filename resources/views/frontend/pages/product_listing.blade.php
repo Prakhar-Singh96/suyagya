@@ -108,53 +108,42 @@
             {{-- 🟢 PRODUCT GRID --}}
             <div class="col-lg-9">
                 {{-- Toolbar --}}
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
-                    {{-- <span class="text-muted small">{{ $products->total() }} products found</span> --}}
-                    {{-- 📱 Mobile Filter Button --}}
-                    <button class="btn btn-outline-dark d-lg-none justify-content-between align-items-center py-2 px-3"
-                            style="width: 40%; font-size: 14px;"
+                {{-- 🟢 TOOLBAR: मोबाइल के लिए बेहतर अलाइनमेंट --}}
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2 border-bottom">
+
+                    {{-- 📱 मोबाइल फिल्टर बटन --}}
+                    <button class="btn btn-white border d-lg-none d-flex justify-content-between align-items-center py-2 px-3"
+                            style="flex: 1; min-width: 140px; font-size: 14px; background: #fff;"
                             type="button"
                             data-bs-toggle="collapse"
-                            data-bs-target="#mobileFilterCollapse"
-                            aria-expanded="false">
-                        <span class="fw-bold"><i class="las la-filter me-1"></i> Show Filters</span>
+                            data-bs-target="#mobileFilterCollapse">
+                        <span class="fw-bold"><i class="las la-filter me-1"></i> Filters</span>
                         <i class="las la-angle-down ms-2"></i>
                     </button>
-                    <div class="d-flex align-items-center">
+
+                    {{-- 🏷️ सॉर्टिंग ड्रॉपडाउन --}}
+                    <div class="dropdown" style="flex: 1; min-width: 140px;">
                         @php
                             $sortOptions = [
                                 'newest' => 'Newest',
                                 'oldest' => 'Oldest',
                                 'best-selling' => 'Best Selling',
-                                'price_asc' => 'Price: Low to High',
-                                'price_desc' => 'Price: High to Low',
+                                'price_asc' => 'Price: Low-High',
+                                'price_desc' => 'Price: High-Low',
                             ];
                             $currentSort = request('sort', 'newest');
                             $sortLabel = $sortOptions[$currentSort] ?? 'Newest';
                         @endphp
-
-                        <div class="dropdown">
-                            <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded"
-                                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                                style="background: #fff; display: flex; justify-content: space-between; align-items: center;">
-                                <span><span class="text-muted fw-normal me-1">Sort by:</span> {{ $sortLabel }}</span>
-                            </a>
-                            <ul class="dropdown-menu justify-content-between align-items-center" style="min-width: 165px;">
-                                <li><a class="dropdown-item small {{ $currentSort == 'newest' ? 'active bg-light text-dark fw-bold' : '' }}"
-                                        href="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}">Newest</a></li>
-                                <li><a class="dropdown-item small {{ $currentSort == 'oldest' ? 'active bg-light text-dark fw-bold' : '' }}"
-                                        href="{{ request()->fullUrlWithQuery(['sort' => 'oldest']) }}">Oldest</a></li>
-                                <li><a class="dropdown-item small {{ $currentSort == 'best-selling' ? 'active bg-light text-dark fw-bold' : '' }}"
-                                        href="{{ request()->fullUrlWithQuery(['sort' => 'best-selling']) }}">Best
-                                        Selling</a></li>
-                                <li><a class="dropdown-item small {{ $currentSort == 'price_asc' ? 'active bg-light text-dark fw-bold' : '' }}"
-                                        href="{{ request()->fullUrlWithQuery(['sort' => 'price_asc']) }}">Price: Low to
-                                        High</a></li>
-                                <li><a class="dropdown-item small {{ $currentSort == 'price_desc' ? 'active bg-light text-dark fw-bold' : '' }}"
-                                        href="{{ request()->fullUrlWithQuery(['sort' => 'price_desc']) }}">Price: High to
-                                        Low</a></li>
-                            </ul>
-                        </div>
+                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded w-100 d-flex justify-content-between align-items-center"
+                        href="#" role="button" data-bs-toggle="dropdown" style="background: #fff; height: 40px;">
+                            <span><span class="text-muted fw-normal me-1 d-none d-sm-inline">Sort:</span> {{ $sortLabel }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end w-100 shadow-sm border-0 mt-1">
+                            @foreach($sortOptions as $key => $label)
+                                <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light text-dark fw-bold' : '' }}"
+                                    href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a></li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
 

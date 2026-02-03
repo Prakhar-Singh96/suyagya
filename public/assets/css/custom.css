@@ -3556,3 +3556,33 @@ html {
     background-color: #f3e5f5; /* सुयज्ञ का हल्का बैंगनी रंग */
     color: #673ab7;
 }
+
+@media (max-width: 991px) {
+    /* मोबाइल पर फिल्टर को कार्ड जैसा लुक दें */
+    #mobileFilterCollapse .filter-sidebar {
+        background: #fff;
+        margin-top: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 100;
+    }
+
+    /* चेकबॉक्स के टेक्स्ट को थोड़ा बड़ा करें ताकि क्लिक करने में आसानी हो */
+    .form-check-label {
+        font-size: 13px !important;
+        padding-top: 2px;
+    }
+
+    /* बटन की ऊंचाई एक जैसी रखें */
+    .btn-outline-dark, .dropdown-toggle {
+        height: 40px;
+        border-color: #dee2e6 !important;
+    }
+}
+
+/* डेस्कटॉप पर फिल्टर हमेशा खुला रहे */
+@media (min-width: 992px) {
+    #mobileFilterCollapse.collapse:not(.show) {
+        display: block !important;
+    }
+}
