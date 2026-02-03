@@ -25,7 +25,8 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold mb-0 text-uppercase ls-1 d-none d-lg-block">Filters</h6>
                             @if (request()->has('filter') || request()->has('min_price'))
-                                <a href="{{ url()->current() }}" class="text-danger x-small text-decoration-none fw-bold ms-auto ms-lg-0">Clear All</a>
+                                <a href="{{ url()->current() }}"
+                                    class="text-danger x-small text-decoration-none fw-bold ms-auto ms-lg-0">Clear All</a>
                             @endif
                         </div>
                         {{-- Form content remains same --}}
@@ -44,15 +45,19 @@
                                 <div class="collapse show" id="collapsePrice">
                                     <div class="d-flex align-items-center gap-2 mb-3">
                                         <div class="position-relative w-100">
-                                            <span class="position-absolute text-muted small" style="left: 8px; top: 7px;">₹</span>
-                                            <input type="number" name="min_price" id="input-min" class="price-input-box ps-3"
-                                                placeholder="0" value="{{ request('min_price') }}">
+                                            <span class="position-absolute text-muted small"
+                                                style="left: 8px; top: 7px;">₹</span>
+                                            <input type="number" name="min_price" id="input-min"
+                                                class="price-input-box ps-3" placeholder="0"
+                                                value="{{ request('min_price') }}">
                                         </div>
                                         <span class="text-muted">-</span>
                                         <div class="position-relative w-100">
-                                            <span class="position-absolute text-muted small" style="left: 8px; top: 7px;">₹</span>
-                                            <input type="number" name="max_price" id="input-max" class="price-input-box ps-3"
-                                                placeholder="Max" value="{{ request('max_price') }}">
+                                            <span class="position-absolute text-muted small"
+                                                style="left: 8px; top: 7px;">₹</span>
+                                            <input type="number" name="max_price" id="input-max"
+                                                class="price-input-box ps-3" placeholder="Max"
+                                                value="{{ request('max_price') }}">
                                         </div>
                                         <button type="submit" class="btn btn-dark btn-sm rounded-1 px-3">
                                             <i class="las la-angle-right"></i>
@@ -75,18 +80,26 @@
                                     <div class="collapse show" id="collapse{{ $filter->id }}">
                                         <div class="filter-options mt-2">
                                             @foreach ($filter->filterValues as $value)
-                                                <div class="form-check mb-1 d-flex justify-content-between align-items-center">
+                                                <div
+                                                    class="form-check mb-1 d-flex justify-content-between align-items-center">
                                                     <div>
                                                         @php
                                                             $isChecked = false;
-                                                            if (request('filter') && isset(request('filter')[$filter->id])) {
-                                                                $isChecked = in_array($value->id, request('filter')[$filter->id]);
+                                                            if (
+                                                                request('filter') &&
+                                                                isset(request('filter')[$filter->id])
+                                                            ) {
+                                                                $isChecked = in_array(
+                                                                    $value->id,
+                                                                    request('filter')[$filter->id],
+                                                                );
                                                             }
                                                         @endphp
                                                         <input class="form-check-input filter-checkbox shadow-none"
                                                             type="checkbox" name="filter[{{ $filter->id }}][]"
                                                             value="{{ $value->id }}" id="val_{{ $value->id }}"
-                                                            {{ $isChecked ? 'checked' : '' }} onchange="this.form.submit()">
+                                                            {{ $isChecked ? 'checked' : '' }}
+                                                            onchange="this.form.submit()">
                                                         <label class="form-check-label text-muted small ms-1"
                                                             for="val_{{ $value->id }}">
                                                             {{ $value->value }}
@@ -109,20 +122,20 @@
             <div class="col-lg-9">
                 {{-- Toolbar --}}
                 {{-- 🟢 TOOLBAR: मोबाइल के लिए बेहतर अलाइनमेंट --}}
+                {{-- 🟢 TOOLBAR: डेस्कटॉप पर राइट अलाइन और मोबाइल पर फुल विड्थ --}}
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2 border-bottom">
 
-                    {{-- 📱 मोबाइल फिल्टर बटन --}}
-                    <button class="btn btn-white border d-lg-none d-flex justify-content-between align-items-center py-2 px-3"
-                            style="flex: 1; min-width: 140px; font-size: 14px; background: #fff;"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#mobileFilterCollapse">
+                    {{-- 📱 मोबाइल फिल्टर बटन: सिर्फ मोबाइल (d-lg-none) पर दिखेगा --}}
+                    <button
+                        class="btn btn-white border d-lg-none d-flex justify-content-between align-items-center py-2 px-3"
+                        style="flex: 1; min-width: 140px; font-size: 14px; background: #fff;" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mobileFilterCollapse">
                         <span class="fw-bold"><i class="las la-filter me-1"></i> Filters</span>
                         <i class="las la-angle-down ms-2"></i>
                     </button>
 
-                    {{-- 🏷️ सॉर्टिंग ड्रॉपडाउन --}}
-                    <div class="dropdown" style="flex: 1; min-width: 140px;">
+                    {{-- 🏷️ सॉर्टिंग ड्रॉपडाउन: डेस्कटॉप पर राइट साइड में रहेगा --}}
+                    <div class="dropdown ms-auto" style="min-width: 180px;">
                         @php
                             $sortOptions = [
                                 'newest' => 'Newest',
@@ -134,14 +147,18 @@
                             $currentSort = request('sort', 'newest');
                             $sortLabel = $sortOptions[$currentSort] ?? 'Newest';
                         @endphp
-                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded w-100 d-flex justify-content-between align-items-center"
-                        href="#" role="button" data-bs-toggle="dropdown" style="background: #fff; height: 40px;">
-                            <span><span class="text-muted fw-normal me-1 d-none d-sm-inline">Sort:</span> {{ $sortLabel }}</span>
+
+                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded d-flex justify-content-between align-items-center"
+                            href="#" role="button" data-bs-toggle="dropdown"
+                            style="background: #fff; height: 40px; width: 100%;">
+                            <span><span class="text-muted fw-normal me-1">Sort by:</span> {{ $sortLabel }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end w-100 shadow-sm border-0 mt-1">
-                            @foreach($sortOptions as $key => $label)
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-1">
+                            @foreach ($sortOptions as $key => $label)
                                 <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light text-dark fw-bold' : '' }}"
-                                    href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a></li>
+                                        href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
@@ -154,7 +171,8 @@
                                 <div class="product-card h-100 position-relative">
                                     <div class="img-box mb-3 position-relative overflow-hidden rounded-0">
                                         <a href="{{ route('product.detail', $product->slug) }}">
-                                            <img src="{{ asset($product->main_image) }}" alt="{{ $product->main_image_alt ?? $product->name }}"
+                                            <img src="{{ asset($product->main_image) }}"
+                                                alt="{{ $product->main_image_alt ?? $product->name }}"
                                                 class="img-fluid w-100 object-fit-cover" style="aspect-ratio: 1/1;">
                                         </a>
                                         @if ($product->discount > 0)
