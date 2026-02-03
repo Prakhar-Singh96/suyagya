@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                            border: 1px solid #eee;
-                            padding: 15px;
-                            border-radius: 8px;
-                            margin-bottom: 20px;
-                            background-color: #f7f1de;
-                        } */
+                                border: 1px solid #eee;
+                                padding: 15px;
+                                border-radius: 8px;
+                                margin-bottom: 20px;
+                                background-color: #f7f1de;
+                            } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -116,23 +116,23 @@
 
         /* Mobile Adjustments */
         /* @media (max-width: 768px) {
-                                                            .product-slider-container {
-                                                                height: 455px !important;
-                                                                aspect-ratio: 1 / 1;
-                                                                width: 100%;
-                                                            }
+                                                                .product-slider-container {
+                                                                    height: 455px !important;
+                                                                    aspect-ratio: 1 / 1;
+                                                                    width: 100%;
+                                                                }
 
-                                                            .product-slider-container img,
-                                                            .product-slider-container video {
-                                                                width: 100%;
-                                                                height: 100%;
-                                                                object-fit: cover;
-                                                            }
+                                                                .product-slider-container img,
+                                                                .product-slider-container video {
+                                                                    width: 100%;
+                                                                    height: 100%;
+                                                                    object-fit: cover;
+                                                                }
 
-                                                            .product-images {
-                                                                top: 0 !important;
-                                                            }
-                                                        } */
+                                                                .product-images {
+                                                                    top: 0 !important;
+                                                                }
+                                                            } */
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
             overflow: hidden;
@@ -404,10 +404,10 @@
                         <input type="hidden" id="sel_type" value="{{ $defType }}">
 
                         {{-- 2. SIZE (RATTI) - Fixed to show ALL available sizes --}}
-                        <div class="gem-option-group">
+                        {{-- <div class="gem-option-group">
                             <span class="gem-option-title">Size (Ratti)</span>
                             <div class="gem-btn-wrapper" id="ratti_group">
-                                {{-- 🔥 FIX: Removed 'where type loose'. Now shows unique sizes from ALL variants --}}
+                                {{-- 🔥 FIX: Removed 'where type loose'. Now shows unique sizes from ALL variants
                                 @foreach ($gemVariants->unique('ratti_size')->sortBy('ratti_size') as $gv)
                                     <div class="gem-btn gem-ratti-btn {{ (string) $gv->ratti_size == (string) $defRatti ? 'active' : '' }}"
                                         onclick="updateGemState('ratti', '{{ $gv->ratti_size }}', this)">
@@ -415,11 +415,11 @@
                                     </div>
                                 @endforeach
                             </div>
-                        </div>
-                        <input type="hidden" id="sel_ratti" value="{{ $defRatti }}">
+                        </div> --}}
+                        {{-- <input type="hidden" id="sel_ratti" value="{{ $defRatti }}"> --}}
 
                         {{-- 3. MATERIAL (Dynamic Visibility) --}}
-                        <div class="gem-option-group" id="material_section"
+                        {{-- <div class="gem-option-group" id="material_section"
                             style="display: {{ $defType == 'loose' ? 'none' : 'block' }};">
                             <span class="gem-option-title">Material</span>
                             <div class="gem-btn-wrapper">
@@ -437,7 +437,7 @@
                                 @endif
                             </div>
                         </div>
-                        <input type="hidden" id="sel_mat" value="{{ $defMat }}">
+                        <input type="hidden" id="sel_mat" value="{{ $defMat }}"> --}}
 
                         {{-- 4. RING SIZE (Only show if Type is Ring) --}}
                         <div class="gem-option-group" id="ring_size_section"
@@ -451,8 +451,10 @@
                                     @endfor
                                     <option value="adjustable">Free/Adjustable</option>
                                 </select>
+                                {{-- Updated Link with Icon --}}
                                 <a href="{{ route('ring.size.guide') }}"
-                                    class="small text-primary text-decoration-underline ms-3 fw-bold">
+                                    class="small text-primary text-decoration-none ms-3 fw-bold d-flex align-items-center hover-underline">
+                                    <i class="las la-ruler-combined me-1" style="font-size: 1.2rem;"></i>
                                     Find Your Size
                                 </a>
                             </div>
