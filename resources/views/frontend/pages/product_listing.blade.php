@@ -128,14 +128,14 @@
                     {{-- 📱 मोबाइल फिल्टर बटन: सिर्फ मोबाइल (d-lg-none) पर दिखेगा --}}
                     <button
                         class="btn btn-white border d-lg-none d-flex justify-content-between align-items-center py-2 px-3"
-                        style="flex: 1; min-width: 140px; font-size: 14px; background: #fff;" type="button"
+                        style="width: auto; height: 40px; font-size: 14px; background: #fff;" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mobileFilterCollapse">
                         <span class="fw-bold"><i class="las la-filter me-1"></i> Filters</span>
                         <i class="las la-angle-down ms-2"></i>
                     </button>
 
                     {{-- 🏷️ सॉर्टिंग ड्रॉपडाउन: डेस्कटॉप पर राइट साइड में रहेगा --}}
-                    <div class="dropdown ms-auto" style="min-width: 180px;">
+                    <div class="dropdown ms-auto" style="width: auto; height: 40px; font-size: 14px; background: #fff;">
                         @php
                             $sortOptions = [
                                 'newest' => 'Newest',
