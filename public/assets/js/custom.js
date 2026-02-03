@@ -720,6 +720,10 @@ function openDirectCheckout(btn) {
     }
     $('#final_gaming_coupon_code').val(appliedGamingCode);
 
+    // 🚀 सुधार: मोडल खुलते ही प्रीपेड डिस्काउंट हटा दें
+    prepaidDiscount = 0;
+    $('#row_prepaid_discount').remove();
+
     // 10. 🔥 CALCULATE TOTAL
     calculateFinalTotal();
 
@@ -747,10 +751,25 @@ function openDirectCheckout(btn) {
     }
 }
 
-// Helper: Switch Steps
+// 2. 🔄 STEP SWITCHER (इसे पूरी तरह से रिप्लेस करें)
 function showStep(step) {
+    console.log("Current Step:", step); // 👈 ब्राउज़र कंसोल (F12) में चेक करें
+
     $('#step_login, #step_address, #step_payment').hide();
     $('#step_' + step).fadeIn();
+
+    if (step === 'payment') {
+        console.log("Entering Payment Step... Triggering Razorpay");
+        // विज़ुअली रेडियो बटन टिक करें
+        $('#rzp').prop('checked', true);
+        // डिस्काउंट लॉजिक चलाएं
+        handlePaymentMethodChange('RAZORPAY');
+    } else {
+        // बाकी स्टेप्स पर बिल साफ़ रखें
+        prepaidDiscount = 0;
+        $('#row_prepaid_discount').remove();
+        calculateFinalTotal();
+    }
 }
 
 // Global variable for Checkout Modal Input
@@ -1103,11 +1122,7 @@ function useSavedAddress() {
     // Set Hidden Field ID
     $('#final_address_id').val(selectedId);
 
-    // Switch to Payment
-    $('#step_address').fadeOut(200, function () {
-        $('#modalTitle').text('Make Payment');
-        $('#step_payment').fadeIn(200).removeClass('d-none');
-    });
+    showStep('payment');
 }
 
 // ⚡ SMART ADDRESS LOGIC (Auto-Fill if Exists)
@@ -1208,6 +1223,15 @@ function processPayment() {
     $('#final_coupon_code').val(appliedCouponCode);
     $('#final_gaming_coupon_code').val(appliedGamingCode);
 
+    let ringSize = $('#ring_size_input').val() || null;
+
+    let currentMethod = $('input[name="payment_method"]:checked').val();
+    if (currentMethod === 'RAZORPAY') {
+        prepaidDiscount = 25; // 🛡️ सुरक्षा कवच: पेमेंट के समय पक्का करें कि ₹25 ही कट रहे हैं
+    } else {
+        prepaidDiscount = 0;
+    }
+
     // 2. Form Data Collect
     var formData = {
         _token: $('meta[name="csrf-token"]').attr('content'),
@@ -1218,9 +1242,12 @@ function processPayment() {
         is_siddh: $('#final_is_siddh').val(),
         address_id: $('#final_address_id').val(),
 
-        // ✅ Send BOTH Coupon Codes
-        coupon_code: appliedCouponCode,          // Admin Coupon
-        gaming_coupon_code: appliedGamingCode    // 🔥 Game Coupon (Ye add kiya hai)
+        // ✅ ये कॉलम्स बैकएंड (Controller) में इस्तेमाल होंगे
+        ring_size: ringSize,
+        coupon_code: appliedCouponCode,
+        gaming_coupon_code: appliedGamingCode,
+
+        prepaid_discount: prepaidDiscount
     };
 
     $.post("/checkout/place-order", formData, function (res) {
@@ -1776,6 +1803,10 @@ function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
     }
     $('#final_gaming_coupon_code').val(appliedGamingCode);
 
+    // 🚀 सुधार: मोडल खुलते ही प्रीपेड डिस्काउंट हटा दें
+    prepaidDiscount = 0;
+    $('#row_prepaid_discount').remove();
+
     // 11. 🔥 FINAL CALCULATION (Use Master Function)
     // Ye line sabse zaruri hai taki 'To Pay' update ho jaye
     calculateFinalTotal();
@@ -2048,30 +2079,57 @@ function moveToCart(productId) {
     }
 }
 
-// 🔢 CALCULATE FINAL TOTAL (Central Logic)
-function calculateFinalTotal() {
-    // 1. Get Admin Discount (Read from UI)
-    let adminDiscount = 0;
+let prepaidDiscount = 0; // 🚀 सुधार: शुरू में 0 रखें
 
-    // Check if Admin Coupon box is visible
+function handlePaymentMethodChange(method) {
+    console.log("Payment Method Changed To:", method);
+    $('.pay-radio').prop('checked', false);
+    $('#row_prepaid_discount').remove(); // डुप्लिकेट रोकने के लिए
+
+    if (method === 'RAZORPAY') {
+        $('#rzp').prop('checked', true);
+        prepaidDiscount = 25;
+
+        // डाइनैमिक HTML रो जोड़ें
+        let prepaidHtml = `
+            <div class="d-flex justify-content-between mb-1 small text-success fw-bold" id="row_prepaid_discount">
+                <span><i class="las la-check-circle"></i> Prepaid Offer (Online Pay)</span>
+                <span id="bill_prepaid_discount">- ₹25</span>
+            </div>`;
+
+        // इसे कूपन रो से पहले डालें
+        if($('#row_coupon_discount').length) {
+            $(prepaidHtml).insertBefore('#row_coupon_discount');
+        } else {
+            // अगर कूपन रो न हो तो सबटोटल के बाद डालें
+            $(prepaidHtml).insertAfter('#bill_subtotal');
+        }
+    } else {
+        $('#cod').prop('checked', true);
+        prepaidDiscount = 0;
+    }
+
+    calculateFinalTotal(); // हिसाब अपडेट करें
+}
+
+// 🔢 CALCULATE FINAL TOTAL (सुरक्षा कवच के साथ)
+function calculateFinalTotal() {
+    let adminDiscount = 0;
     if ($('#coupon_applied_box').is(':visible')) {
-        // Text ex: "₹ 125" -> Remove non-digits -> 125
         let text = $('#saved_amount_text').text().replace(/[^\d.]/g, '');
         adminDiscount = parseFloat(text) || 0;
     }
 
-    // 2. Get Game Discount (From Global Variable)
     let gameDiscount = window.appliedGamingAmount || 0;
 
-    // 3. Calculate Final
-    let totalDiscount = gameDiscount + adminDiscount;
+    let currentPrepaid = ($('#step_payment').is(':visible')) ? prepaidDiscount : 0;
+
+    let totalDiscount = gameDiscount + adminDiscount + prepaidDiscount;
     let finalPayable = currentCartTotal - totalDiscount;
 
-    // Safety Check
     if (finalPayable < 0) finalPayable = 0;
 
-    // 4. Update UI
-    let fmtTotal = finalPayable.toLocaleString('en-IN');
+    let fmtTotal = Math.round(finalPayable).toLocaleString('en-IN');
     $('#bill_final_total').text('₹' + fmtTotal);
     $('#btn_pay_amount').text('₹' + fmtTotal);
 }

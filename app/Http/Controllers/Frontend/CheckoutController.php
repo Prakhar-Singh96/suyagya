@@ -169,148 +169,120 @@ class CheckoutController extends Controller
         // -----------------------------
         // 2. PREPARE ORDER ITEMS & CALCULATE TOTAL
         // -----------------------------
+        // $orderItemsData = [];
+        // $totalAmount = 0;
+        // 2. PREPARE ITEMS & CALCULATE TOTALS
+        // 2. PREPARE ITEMS & CALCULATE TOTALS
         $orderItemsData = [];
-        $totalAmount = 0;
+        $subtotal = 0;   // कुल सेलिंग प्राइस (Price * Qty)
+        $totalMrp = 0;   // कुल MRP (MRP * Qty) - बिना सिद्धार्थ के
+        $totalSiddhCharge = 0; // कुल सिद्धार्थ चार्ज
 
         if ($request->buy_mode == 'direct') {
             $product = Product::findOrFail($request->product_id);
             $qty = $request->quantity;
+            // 🔥 सिद्धार्थ अमाउंट अलग से कैलकुलेट करें
             $isSiddh = $request->is_siddh ?? 0;
+            $siddhAmountPerItem = ($isSiddh == 1) ? ($product->siddh_price ?? 0) : 0;
 
-            //$price = $product->price;
-            $price = round($product->price);
-            if ($isSiddh == 1) {
-                $price += $product->siddh_price;
-            }
-
-            $totalAmount = $price * $qty;
+            $subtotal = round($product->price) * $qty;
+            $totalMrp = round($product->mrp_price ?? $product->price) * $qty;
+            $totalSiddhCharge = $siddhAmountPerItem * $qty;
 
             $orderItemsData[] = [
-                'product_id' => $product->id,
+                'product_id'   => $product->id,
                 'product_name' => $product->name,
-                'quantity' => $qty,
-                'price' => $price,
-                'is_siddh' => $isSiddh
+                'quantity'     => $qty,
+                'price'        => round($product->price), // 👈 सिर्फ असली सेलिंग प्राइस
+                'mrp_price'    => round($product->mrp_price ?? $product->price), // 👈 शुद्ध MRP
+                'is_siddh'     => $isSiddh,
+                'siddh_amount' => $siddhAmountPerItem, // 👈 अलग से सिद्धार्थ चार्ज
+                'ring_size'    => $request->ring_size
             ];
         } else {
             $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
-
-            if ($cartItems->isEmpty()) {
-                return response()->json(['status' => false, 'message' => 'Cart is empty!']);
-            }
-
             foreach ($cartItems as $item) {
-                //$price = $item->product->price;
-                $price = round($item->product->price);
-                $isSiddh = $item->is_siddh;
+                $qty = $item->quantity;
+                $isSiddh = $item->is_siddh ?? 0;
+                $siddhAmountPerItem = ($isSiddh == 1) ? ($item->product->siddh_price ?? 0) : 0;
 
-                if ($isSiddh == 1) {
-                    $price += $item->product->siddh_price;
-                }
-
-                $totalAmount += $price * $item->quantity;
+                $subtotal += round($item->product->price) * $qty;
+                $totalMrp += round($item->product->mrp_price ?? $item->product->price) * $qty;
+                $totalSiddhCharge += $siddhAmountPerItem * $qty;
 
                 $orderItemsData[] = [
-                    'product_id' => $item->product_id,
+                    'product_id'   => $item->product_id,
                     'product_name' => $item->product->name,
-                    'quantity' => $item->quantity,
-                    'price' => $price,
-                    'is_siddh' => $isSiddh
+                    'quantity'     => $qty,
+                    'price'        => round($item->product->price),
+                    'mrp_price'    => round($item->product->mrp_price ?? $item->product->price),
+                    'is_siddh'     => $isSiddh,
+                    'siddh_amount' => $siddhAmountPerItem,
+                    'ring_size'    => $item->ring_size
                 ];
             }
         }
 
-        // -----------------------------
-        // A. APPLY ADMIN COUPON (Manual)
-        // -----------------------------
+        // 3. APPLY DISCOUNTS
+        $adminDiscount = 0;
+        $gameDiscount = 0;
+
+        // A. Admin Coupon Discount
         if ($request->coupon_code) {
             $coupon = Coupon::where('code', $request->coupon_code)->where('status', 1)->first();
-
-            if ($coupon) {
-                // Check Expiry
-                if (!($coupon->expires_at && Carbon::now()->gt($coupon->expires_at))) {
-                    $discount = 0;
-                    if ($coupon->type == 'fixed') {
-                        $discount = $coupon->value;
-                    } else {
-                        $discount = ($totalAmount * $coupon->value) / 100;
-                    }
-
-                    if ($discount > $totalAmount) {
-                        $discount = $totalAmount;
-                    }
-                    $totalAmount = $totalAmount - $discount;
-                }
+            if ($coupon && !($coupon->expires_at && Carbon::now()->gt($coupon->expires_at))) {
+                $adminDiscount = ($coupon->type == 'fixed') ? $coupon->value : ($subtotal * $coupon->value) / 100;
             }
         }
 
-        // ============================================================
-        // 🔥 B. APPLY GAMING COUPON (Automatic) -> YE CODE ADD KIA HAI
-        // ============================================================
-        $usedGameCouponId = null; // Store ID to mark used later for COD
-
+        $usedGameCouponId = null;
+        // B. Gaming Coupon Discount
         if ($request->gaming_coupon_code) {
-            $luckyCoupon = \App\Models\UserCoupon::where('code', $request->gaming_coupon_code)
-                ->where('user_id', Auth::id())
-                ->where('is_used', 0)
-                ->first();
-
+            $luckyCoupon = \App\Models\UserCoupon::where('code', $request->gaming_coupon_code)->where('user_id', $user->id)->where('is_used', 0)->first();
             if ($luckyCoupon) {
                 $gameDiscount = $luckyCoupon->amount;
-
-                // Total amount minus karo (Ensure negative na ho)
-                if ($gameDiscount > $totalAmount) {
-                    $gameDiscount = $totalAmount;
-                }
-
-                $totalAmount -= $gameDiscount;
-
-                // ID store karlo taaki COD me isko 'used' mark kar sakein
-                $usedGameCouponId = $luckyCoupon->id;
+                $usedGameCouponId = $luckyCoupon->id; // ✅ यहाँ ID मिल जाएगी
             }
         }
-        // ============================================================
 
+        $prepaidDiscount = ($request->payment_method == 'RAZORPAY') ? 25 : 0;
 
-        // -----------------------------
-        // 3. CREATE ORDER IN DATABASE
-        // -----------------------------
+        // 🚀 फाइनल टोटल में प्रीपेड डिस्काउंट भी घटाएं
+        $finalTotal = max(0, ($subtotal - ($adminDiscount + $gameDiscount)) + $totalSiddhCharge - $prepaidDiscount);
+
+        // 4. CREATE ORDER
         $order = Order::create([
-            'order_number' => 'ORD-' . strtoupper(Str::random(10)),
-            'user_id' => $user->id,
+            'order_number'     => 'ORD-' . strtoupper(Str::random(10)),
+            'user_id'          => $user->id,
             'shipping_address' => $finalAddress->toArray(),
-            'total_amount' => $totalAmount, // ✅ Final amount after both discounts
-            'payment_method' => $request->payment_method,
-            'status' => 'pending',
-            'payment_status' => 'pending'
+            'mrp_total'        => $totalMrp,         // 👈 शुद्ध MRP का जोड़
+            'coupon_discount'  => $adminDiscount,
+            'gaming_discount'  => $gameDiscount,
+            'prepaid_discount'  => $prepaidDiscount, // ✅ नया कॉलम यहाँ सेव होगा
+            'coupon_code'      => $request->coupon_code,
+            'total_amount'     => $finalTotal,      // 👈 शुद्ध पेयबल अमाउंट
+            'payment_method'   => $request->payment_method,
+            'status'           => 'pending',
+            'payment_status'   => 'pending'
         ]);
 
-        // -----------------------------
-        // 4. SAVE ORDER ITEMS
-        // -----------------------------
+        // 5. SAVE ORDER ITEMS
         foreach ($orderItemsData as $itemData) {
             $order->items()->create($itemData);
         }
-
         // -----------------------------
-        // 5. PAYMENT HANDLING
+        // 5. PAYMENT HANDLING (RAZORPAY FIXED)
         // -----------------------------
-
-        // ✅ RAZORPAY LOGIC
         if ($request->payment_method == 'RAZORPAY') {
-
             $paymentSetting = PaymentSetting::first();
-
             if (!$paymentSetting || !$paymentSetting->key_id) {
                 return response()->json(['status' => false, 'message' => 'Payment Gateway Not Configured']);
             }
 
-            $apiKey = $paymentSetting->key_id;
-            $apiSecret = $paymentSetting->key_secret;
+            $api = new Api($paymentSetting->key_id, $paymentSetting->key_secret);
 
-            $api = new Api($apiKey, $apiSecret);
-
-            $finalAmountInPaise = (int) round($totalAmount * 100);
+            // 🚀 यहाँ सुधार: अब $finalTotal का इस्तेमाल हो रहा है
+            $finalAmountInPaise = (int) round($finalTotal * 100);
 
             $rzpOrder = $api->order->create([
                 'receipt'         => (string) $order->id,
@@ -321,8 +293,8 @@ class CheckoutController extends Controller
 
             return response()->json([
                 'status' => 'razorpay',
-                'key' => $apiKey,
-                'amount' => $totalAmount * 100,
+                'key' => $paymentSetting->key_id,
+                'amount' => $finalAmountInPaise, // Paises for Frontend JS
                 'currency' => 'INR',
                 'name' => 'Suyagya Store',
                 'description' => 'Order #' . $order->order_number,
@@ -337,25 +309,16 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // ✅ COD LOGIC
+        // 🟢 COD LOGIC
         else {
-            // Cart Clear
             if ($request->buy_mode == 'cart') {
                 Cart::where('user_id', $user->id)->delete();
             }
-
-            // 🔥 GAMING COUPON MARK USED (Only for COD here)
-            // Razorpay ke liye verifyPayment me mark hoga
             if ($usedGameCouponId) {
                 \App\Models\UserCoupon::where('id', $usedGameCouponId)->update(['is_used' => 1]);
             }
-
             $this->sendOrderEmail($order->id);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Order Placed Successfully via COD!'
-            ]);
+            return response()->json(['status' => 'success', 'message' => 'Order Placed Successfully via COD!']);
         }
     }
 
@@ -582,30 +545,5 @@ class CheckoutController extends Controller
 
         \Log::warning('Order Cancel Condition Failed'); // Fail Log
         return response()->json(['status' => false]);
-    }
-
-    public function applyWelcomeCoupon(Request $request)
-    {
-        $user = Auth::user();
-
-        // 1. चेक करें क्या यूज़र ने पहले कभी ऑर्डर किया है
-        $orderCount = \App\Models\Order::where('user_id', $user->id)
-            ->where('status', '!=', 'cancelled') // कैंसल ऑर्डर को न गिनें
-            ->count();
-
-        if ($orderCount == 0) {
-            $coupon = \App\Models\Coupon::where('code', 'WELCOME10')
-                ->where('status', 1)
-                ->first();
-
-            if ($coupon) {
-                return response()->json([
-                    'status' => 'success',
-                    'coupon' => $coupon,
-                    'message' => 'Welcome discount auto-applied!'
-                ]);
-            }
-        }
-        return response()->json(['status' => 'not_eligible']);
     }
 }

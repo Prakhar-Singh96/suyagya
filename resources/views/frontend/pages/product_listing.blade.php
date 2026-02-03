@@ -5,56 +5,30 @@
     {{-- Title Section --}}
     <div class="py-3 text-center border-bottom">
         <div class="container">
-            <h1 class="font-heading fw-bold text-dark mb-2">
+            <h1 class="font-heading fw-bold text-dark mb-o">
                 {{ isset($subCategory) ? $subCategory->name : $category->name }}
             </h1>
-            <p class="text-muted small mb-0" style="max-width: 600px; margin: 0 auto;">
+            <p class="text-muted fw-bold small mb-0">({{ $products->total() }} products)</p>
+            <p class="text-muted fw-bold small mb-0" style="max-width: 600px; margin: 0 auto;">
                 {{ isset($subCategory) ? $subCategory->description : $category->description }}
             </p>
-            {{-- <p class="text-muted small mb-0">{{ $products->total() }} products</p> --}}
         </div>
     </div>
 
     <div class="container py-3">
         <div class="row">
 
-            {{-- SIDEBAR --}}
-            <div class="col-lg-3 mb-4">
-
-                {{-- 📱 Mobile Filter Toggle Button --}}
-                {{--
-                     👉 CHANGES MADE:
-                     1. Removed 'w-100' (taaki full width na rhe).
-                     2. Added 'mx-auto' (taaki button center me aa jaye).
-                     3. Added inline style 'max-width: 600px; width: 100%;' (taaki upar wale text ke barabar choda ho).
-                --}}
-                <button class="btn btn-outline-dark d-lg-none mb-3 d-flex justify-content-between align-items-center"
-                        style="width: 50%;"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#mobileFilterCollapse"
-                        aria-expanded="false"
-                        aria-controls="mobileFilterCollapse">
-                    <span class="fw-bold"><i class="las la-filter me-1"></i> Show Filters</span>
-                    <i class="las la-angle-down"></i>
-                </button>
-
-                {{-- Sidebar Container (Desktop: Always visible, Mobile: Hidden/Collapsible) --}}
-                <div class="collapse d-lg-block" id="mobileFilterCollapse">
-
-                    {{-- STYLING FOR DESKTOP CARD LOOK --}}
+            <div class="col-lg-3">
+                {{-- Mobile Filter Collapse (Hidden on Desktop) --}}
+                <div class="collapse d-lg-block mb-4" id="mobileFilterCollapse">
                     <div class="filter-sidebar border rounded p-3">
-
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            {{-- Hide 'Filters' text on mobile, Show on Desktop --}}
                             <h6 class="fw-bold mb-0 text-uppercase ls-1 d-none d-lg-block">Filters</h6>
-
                             @if (request()->has('filter') || request()->has('min_price'))
-                                {{-- Align Clear All to right on mobile --}}
                                 <a href="{{ url()->current() }}" class="text-danger x-small text-decoration-none fw-bold ms-auto ms-lg-0">Clear All</a>
                             @endif
                         </div>
-
+                        {{-- Form content remains same --}}
                         <form id="filterForm" action="" method="GET">
                             @if (request('sort'))
                                 <input type="hidden" name="sort" value="{{ request('sort') }}">
@@ -134,8 +108,18 @@
             {{-- 🟢 PRODUCT GRID --}}
             <div class="col-lg-9">
                 {{-- Toolbar --}}
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                    <span class="text-muted small">{{ $products->total() }} products found</span>
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+                    {{-- <span class="text-muted small">{{ $products->total() }} products found</span> --}}
+                    {{-- 📱 Mobile Filter Button --}}
+                    <button class="btn btn-outline-dark d-lg-none justify-content-between align-items-center py-2 px-3"
+                            style="width: 40%; font-size: 14px;"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#mobileFilterCollapse"
+                            aria-expanded="false">
+                        <span class="fw-bold"><i class="las la-filter me-1"></i> Show Filters</span>
+                        <i class="las la-angle-down ms-2"></i>
+                    </button>
                     <div class="d-flex align-items-center">
                         @php
                             $sortOptions = [
@@ -155,7 +139,7 @@
                                 style="background: #fff; display: flex; justify-content: space-between; align-items: center;">
                                 <span><span class="text-muted fw-normal me-1">Sort by:</span> {{ $sortLabel }}</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-1" style="min-width: 160px;">
+                            <ul class="dropdown-menu justify-content-between align-items-center" style="min-width: 165px;">
                                 <li><a class="dropdown-item small {{ $currentSort == 'newest' ? 'active bg-light text-dark fw-bold' : '' }}"
                                         href="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}">Newest</a></li>
                                 <li><a class="dropdown-item small {{ $currentSort == 'oldest' ? 'active bg-light text-dark fw-bold' : '' }}"

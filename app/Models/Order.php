@@ -12,13 +12,10 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_number',
-        'user_id',
-        'shipping_address', // JSON Data
-        'total_amount',
-        'payment_method',
-        'payment_status',
-        'status'
+        'order_number', 'user_id', 'shipping_address',
+        'total_amount', 'mrp_total', 'coupon_discount',
+        'gaming_discount', 'prepaid_discount', 'coupon_code', 'payment_method',
+        'payment_status', 'status'
     ];
 
     // 💡 CASTING: Automatically convert JSON to Array

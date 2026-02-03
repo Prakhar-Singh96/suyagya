@@ -124,7 +124,6 @@
                         </div>
 
 
-
                         {{-- Final Amount --}}
 
                         <div class="border-top my-2"></div>
@@ -401,38 +400,28 @@
 
 
 
+                        {{-- Razorpay Option --}}
                         <label class="d-flex align-items-center p-3 mb-2 border rounded-3 cursor-pointer bg-white"
-                            onclick="$('.pay-radio').prop('checked', false); $('#rzp').prop('checked', true);">
-
+                            onclick="handlePaymentMethodChange('RAZORPAY')"> {{-- 👈 नया फंक्शन --}}
                             <input type="radio" class="form-check-input me-3 pay-radio" name="payment_method"
                                 id="rzp" value="RAZORPAY" checked>
-
                             <div class="flex-grow-1">
-
                                 <span class="fw-bold d-block small">UPI / Cards / Netbanking</span>
-
-                                {{-- <small class="text-success x-small fw-bold">Extra 10% OFF</small> --}}
-
+                                {{-- यह लाइन अब यूजर को दिखेगी और काम भी करेगी --}}
+                                <small class="text-success x-small fw-bold">Prepaid Order: ₹25/- instant
+                                    discount</small>
                             </div>
-
                             <img src="https://cdn.razorpay.com/static/assets/logo/payment.svg" height="16">
-
                         </label>
 
-
-
+                        {{-- COD Option --}}
                         <label class="d-flex align-items-center p-3 mb-4 border rounded-3 cursor-pointer bg-white"
-                            onclick="$('.pay-radio').prop('checked', false); $('#cod').prop('checked', true);">
-
+                            onclick="handlePaymentMethodChange('COD')"> {{-- 👈 नया फंक्शन --}}
                             <input type="radio" class="form-check-input me-3 pay-radio" name="payment_method"
                                 id="cod" value="COD">
-
                             <div class="flex-grow-1">
-
                                 <span class="fw-bold d-block small">Cash on Delivery</span>
-
                             </div>
-
                         </label>
 
 

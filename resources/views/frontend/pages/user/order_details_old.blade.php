@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container py-5">
+
         {{-- Back Button --}}
         <div class="mb-4">
             <a href="{{ route('user.orders') }}" class="text-decoration-none text-dark fw-bold">
@@ -11,6 +12,7 @@
 
         <div class="row">
             <div class="col-lg-8">
+
                 {{-- 📦 Order Items --}}
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3">
@@ -21,48 +23,51 @@
                             <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
                                 <div class="me-3">
                                     <img src="{{ asset($item->product->main_image ?? 'assets/img/placeholder.jpg') }}"
-                                        width="80" class="rounded border bg-light">
+                                         width="80" class="rounded border bg-light">
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1 fw-bold text-dark">{{ $item->product_name }}</h6>
+
                                     <div class="small text-muted mb-2">
                                         <span>Qty: {{ $item->quantity }}</span>
-                                        @if ($item->ring_size)
-                                            <span class="ms-3 border-start ps-3 text-dark"><strong>Size:</strong>
-                                                {{ $item->ring_size }}</span>
+
+                                        {{-- 💍 Ring Size Display (New) --}}
+                                        @if($item->ring_size)
+                                            <span class="ms-3 border-start ps-3 text-dark">
+                                                <strong>Size:</strong> {{ $item->ring_size }}
+                                            </span>
                                         @endif
                                     </div>
 
-                                    {{-- ✨ Siddh Details --}}
+                                    {{-- ✨ Siddh Details (New) --}}
                                     @if ($item->is_siddh)
                                         <div class="mt-1">
-                                            <span class="badge bg-warning text-dark x-small"><i class="las la-star"></i>
-                                                Siddh Enabled</span>
-                                            <small class="text-muted ms-1">(Incl.
-                                                ₹{{ number_format($item->siddh_amount, 2) }})</small>
+                                            <span class="badge bg-warning text-dark x-small">
+                                                <i class="las la-star"></i> Siddh Enabled
+                                            </span>
+                                            <small class="text-muted ms-1">(Incl. ₹{{ number_format($item->siddh_amount, 2) }})</small>
                                         </div>
                                     @endif
                                 </div>
                                 <div class="text-end">
-                                    {{-- 🚀 सुधार: आइटम लेवल पर MRP और Discount --}}
-                                    <p class="text-muted text-decoration-line-through small mb-0">
-                                        ₹{{ number_format($item->mrp_price, 2) }}</p>
                                     <p class="fw-bold mb-0">₹{{ number_format($item->price, 2) }}</p>
+                                    {{-- Selling Price vs Base Price logic here --}}
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
 
-                {{-- Order Status (Same as your code) --}}
+                {{-- 🚚 Order Tracking Timeline --}}
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3">
                         <h5 class="mb-0 fw-bold">Order Status</h5>
                     </div>
                     <div class="card-body">
                         @if ($order->status == 'cancelled')
-                            <div class="alert alert-danger text-center"><i class="las la-times-circle fs-2"></i>
-                                <h5 class="mt-2">Cancelled</h5>
+                            <div class="alert alert-danger text-center">
+                                <i class="las la-times-circle fs-2"></i>
+                                <h5 class="mt-2">This Order has been Cancelled</h5>
                             </div>
                         @else
                             <div class="track-container">
@@ -72,13 +77,11 @@
                                     <div class="text">Order Placed</div>
                                     <div class="date">{{ date('d M', strtotime($order->created_at)) }}</div>
                                 </div>
-                                <div
-                                    class="track-step {{ in_array($order->status, ['processing', 'shipped', 'delivered']) ? 'active' : '' }}">
+                                <div class="track-step {{ in_array($order->status, ['processing', 'shipped', 'delivered']) ? 'active' : '' }}">
                                     <div class="icon"><i class="las la-cog"></i></div>
                                     <div class="text">Processing</div>
                                 </div>
-                                <div
-                                    class="track-step {{ in_array($order->status, ['shipped', 'delivered']) ? 'active' : '' }}">
+                                <div class="track-step {{ in_array($order->status, ['shipped', 'delivered']) ? 'active' : '' }}">
                                     <div class="icon"><i class="las la-shipping-fast"></i></div>
                                     <div class="text">Shipped</div>
                                 </div>
@@ -93,70 +96,58 @@
             </div>
 
             <div class="col-lg-4">
-                {{-- 💰 💳 BILLING SUMMARY (Updated with Siddh Row) --}}
-                <div class="card border-0 shadow-sm mb-4 bg-light">
+
+                {{-- 💰 💳 BILLING SUMMARY (New & Detailed) --}}
+                <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3 border-0">
                         <h6 class="mb-0 fw-bold">Payment Details</h6>
                     </div>
-                    <div class="card-body pt-0">
-                        {{-- Total MRP (Pure MRP without Siddh) --}}
+                    <div class="card-body bg-light-subtle pt-0">
+                        {{-- Total MRP --}}
                         <div class="d-flex justify-content-between mb-2 small">
                             <span class="text-muted">Total MRP</span>
                             <span class="text-dark">₹{{ number_format($order->mrp_total, 2) }}</span>
                         </div>
 
-                        {{-- Product Discount --}}
+                        {{-- Product Discount (MRP - Subtotal before coupons) --}}
                         @php
-                            $sellingPriceSubtotal = $order->items->sum(fn($i) => $i->price * $i->quantity);
-                            $productDiscount = $order->mrp_total - $sellingPriceSubtotal;
+                            $sellingPriceTotal = $order->items->sum(fn($i) => $i->price * $i->quantity);
+                            $productDiscount = $order->mrp_total - $sellingPriceTotal;
                         @endphp
-                        @if ($productDiscount > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-success">
-                                <span>Product Discount</span>
-                                <span>- ₹{{ number_format($productDiscount, 2) }}</span>
-                            </div>
+
+                        @if($productDiscount > 0)
+                        <div class="d-flex justify-content-between mb-2 small text-success">
+                            <span>Product Discount</span>
+                            <span>- ₹{{ number_format($productDiscount, 2) }}</span>
+                        </div>
                         @endif
 
-                        {{-- 🎁 Admin Coupon --}}
-                        @if ($order->coupon_discount > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-primary">
-                                <span>Coupon ({{ $order->coupon_code }})</span>
-                                <span>- ₹{{ number_format($order->coupon_discount, 2) }}</span>
-                            </div>
+                        {{-- 🎁 Admin Coupon Discount --}}
+                        @if($order->coupon_discount > 0)
+                        <div class="d-flex justify-content-between mb-2 small text-primary">
+                            <span>Coupon ({{ $order->coupon_code }})</span>
+                            <span>- ₹{{ number_format($order->coupon_discount, 2) }}</span>
+                        </div>
                         @endif
 
                         {{-- 🎮 Gaming Reward --}}
-                        @if ($order->gaming_discount > 0)
-                            <div class="d-flex justify-content-between mb-2 small fw-bold text-info">
-                                <span>Game Reward</span>
-                                <span>- ₹{{ number_format($order->gaming_discount, 2) }}</span>
-                            </div>
+                        @if($order->gaming_discount > 0)
+                        <div class="d-flex justify-content-between mb-2 small fw-bold text-info">
+                            <span><i class="las la-gamepad"></i> Game Reward</span>
+                            <span>- ₹{{ number_format($order->gaming_discount, 2) }}</span>
+                        </div>
                         @endif
 
-                        {{-- 🚀 नया: प्रीपेड डिस्काउंट रो --}}
-                        @if (isset($order->prepaid_discount) && $order->prepaid_discount > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-success fw-bold">
-                                <span>Prepaid Order Discount</span>
-                                <span>- ₹{{ number_format($order->prepaid_discount, 2) }}</span>
-                            </div>
-                        @endif
+                        <hr class="my-3 opacity-10">
 
-                        {{-- 🚀 सुधार: सिद्धार्थ चार्ज को अलग से दिखाएं --}}
-                        @php $totalSiddh = $order->items->sum(fn($i) => $i->siddh_amount * $i->quantity); @endphp
-                        @if ($totalSiddh > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-dark fw-bold">
-                                <span>Siddh Protection Charge</span>
-                                <span>+ ₹{{ number_format($totalSiddh, 2) }}</span>
-                            </div>
-                        @endif
-
-                        <hr class="my-3 border-dark opacity-10">
+                        {{-- Final Amount --}}
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="fw-bold mb-0">Total Paid</h5>
                             <h5 class="fw-bold text-primary mb-0">₹{{ number_format($order->total_amount, 2) }}</h5>
                         </div>
                     </div>
                 </div>
+
                 {{-- Order Summary Info --}}
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
@@ -185,14 +176,14 @@
                         @if ($addr)
                             <p class="mb-1 fw-bold">{{ $addr['name'] ?? 'N/A' }}</p>
                             <p class="mb-1 small text-muted">{{ $addr['address_line1'] ?? '' }}</p>
-                            <p class="mb-1 small text-muted">{{ $addr['city'] ?? '' }}, {{ $addr['state'] ?? '' }} -
-                                {{ $addr['pincode'] ?? '' }}</p>
+                            <p class="mb-1 small text-muted">{{ $addr['city'] ?? '' }}, {{ $addr['state'] ?? '' }} - {{ $addr['pincode'] ?? '' }}</p>
                             <p class="mb-0 small"><strong>Phone:</strong> {{ $addr['phone'] ?? '' }}</p>
                         @else
                             <p class="text-muted">Address not available</p>
                         @endif
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
