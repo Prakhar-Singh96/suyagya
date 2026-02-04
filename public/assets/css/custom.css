@@ -3586,3 +3586,15 @@ html {
         display: block !important;
     }
 }
+
+.see-more-btn {
+    transition: all 0.3s ease;
+    font-size: 12px;
+    color: #ff6f00 !important; /* आपकी ब्रांड थीम का रंग */
+}
+.see-more-btn:hover {
+    text-decoration: underline !important;
+}
+.filter-item {
+    transition: opacity 0.3s ease;
+}

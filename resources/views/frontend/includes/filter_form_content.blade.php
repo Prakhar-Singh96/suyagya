@@ -35,23 +35,39 @@
         </a>
         <div class="collapse show" id="collapse{{ $filter->id }}">
             <div class="filter-options mt-2">
-                @foreach ($filter->filterValues as $value)
-                    @php
-                        $isChecked = request('filter') && isset(request('filter')[$filter->id]) && in_array($value->id, request('filter')[$filter->id]);
-                    @endphp
-                    <div class="form-check mb-2 d-flex justify-content-between align-items-center">
-                        <div>
-                            <input class="form-check-input filter-checkbox shadow-none" type="checkbox"
-                                   name="filter[{{ $filter->id }}][]" value="{{ $value->id }}"
-                                   id="val_{{ $value->id }}" {{ $isChecked ? 'checked' : '' }}
-                                   onchange="this.form.submit()">
-                            <label class="form-check-label text-muted small ms-1" for="val_{{ $value->id }}">
-                                {{ $value->value }}
-                            </label>
+                @php $count = 0; @endphp
+
+                {{-- 🚀 5 से ज्यादा होने पर 'see-more-container' में जाएगा --}}
+                <div class="filter-list-container" id="filter_list_{{ $filter->id }}">
+                    @foreach ($filter->filterValues as $value)
+                        @php
+                            $isChecked = request('filter') && isset(request('filter')[$filter->id]) && in_array($value->id, request('filter')[$filter->id]);
+                            $count++;
+                        @endphp
+
+                        <div class="form-check mb-2 d-flex justify-content-between align-items-center filter-item {{ $count > 5 ? 'd-none hidden-item' : '' }}">
+                            <div>
+                                <input class="form-check-input filter-checkbox shadow-none" type="checkbox"
+                                       name="filter[{{ $filter->id }}][]" value="{{ $value->id }}"
+                                       id="val_{{ $value->id }}" {{ $isChecked ? 'checked' : '' }}
+                                       onchange="this.form.submit()">
+                                <label class="form-check-label text-muted small ms-1" for="val_{{ $value->id }}">
+                                    {{ $value->value }}
+                                </label>
+                            </div>
+                            <span class="text-muted x-small">({{ $value->products_count }})</span>
                         </div>
-                        <span class="text-muted x-small">({{ $value->products_count }})</span>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
+
+                {{-- 🚀 अगर 5 से ज्यादा आइटम्स हैं, तो ही बटन दिखाओ --}}
+                @if ($filter->filterValues->count() > 5)
+                    <a href="javascript:void(0);"
+                       class="text-primary small fw-bold text-decoration-none mt-2 d-inline-block see-more-btn"
+                       onclick="toggleFilterItems(this, 'filter_list_{{ $filter->id }}')">
+                       + See More
+                    </a>
+                @endif
             </div>
         </div>
     </div>

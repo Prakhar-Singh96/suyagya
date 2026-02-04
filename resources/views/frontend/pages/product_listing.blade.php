@@ -242,7 +242,7 @@
             var maxInputs = document.querySelectorAll('input[name="max_price"]');
 
             var minVal = parseInt("{{ request('min_price', 0) }}");
-            var maxVal = parseInt("{{ request('max_price', 10000) }}");
+            var maxVal = parseInt("{{ request('max_price', 20000) }}");
 
             // हर स्लाइडर के लिए अलग से इन्सटेंस बनाएँ
             sliders.forEach(function(slider) {
@@ -252,7 +252,7 @@
                         connect: true,
                         range: {
                             'min': 0,
-                            'max': 20000
+                            'max': 200000
                         },
                         step: 100,
                         format: {
