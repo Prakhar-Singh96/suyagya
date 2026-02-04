@@ -96,43 +96,45 @@
 
         /* 📱 RESPONSIVE SLIDER FIX */
         .product-slider-container {
-            height: 622px;
-            /* Fixed height for Desktop */
+            width: 100%;
+            height: 600px; /* डेस्कटॉप के लिए */
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #fff;
             overflow: hidden;
-            /* Prevent spillover */
+            position: relative;
+            border-radius: 12px; /* थोड़ा प्रीमियम लुक देने के लिए */
         }
 
         .product-slider-container img,
         .product-slider-container video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            /* Default for Desktop */
+            width: 100%; /* इमेज को पूरी चौड़ाई में फैलाएं */
+            height: 100%;
+            object-fit: cover; /* 🚀 यही वो लाइन है जो साइड का गैप ख़त्म करेगी */
+            object-position: center;
         }
 
-        /* Mobile Adjustments */
-        /* @media (max-width: 768px) {
-                                                                .product-slider-container {
-                                                                    height: 455px !important;
-                                                                    aspect-ratio: 1 / 1;
-                                                                    width: 100%;
-                                                                }
 
-                                                                .product-slider-container img,
-                                                                .product-slider-container video {
-                                                                    width: 100%;
-                                                                    height: 100%;
-                                                                    object-fit: cover;
-                                                                }
+        /* मोबाइल के लिए जादुई सुधार */
+        @media (max-width: 991px) {
+            .product-slider-container {
+                height: auto !important; /* मोबाइल पर हाइट कंटेंट के हिसाब से होगी */
+                aspect-ratio: 1 / 1; /* इमेज को एकदम चौकोर (Square) रखेगा */
+            }
 
-                                                                .product-images {
-                                                                    top: 0 !important;
-                                                                }
-                                                            } */
+            .product-slider-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* गैप हटाएगा */
+            }
+
+            .product-images {
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+
         /* 🔥 ZOOM STYLES */
         .product-slider-container {
             overflow: hidden;
@@ -215,7 +217,7 @@
                             <a href="{{ asset($product->product_main_image) }}" class="glightbox"
                                 data-gallery="product-gallery">
                                 <img src="{{ asset($product->product_main_image) }}"
-                                    class="img-fluid w-100 h-100 object-fit-contain zoom-img"
+                                    class="img-fluid zoom-img"
                                     alt="{{ $product->product_main_image_alt ?? $product->name }}">
                             </a>
                         </div>
@@ -989,28 +991,32 @@
         </section>
     @endif
 
-    <section class="py-5 bg-white shadow-sm" style="--bs-bg-opacity: 0 !important; background-color: #f7f1de !important;">
-        <div class="container" style="width: 80%;">
-            <h4 class="text-dark fw-bold mb-4 ps-3">Shop by Category</h4>
-            <!-- FIXED Category Carousel -->
-            <div class="w-100 position-relative">
-                <div id="categoryScroll" class="category-slider d-flex align-items-center">
-                    @foreach ($categories as $category)
-                        <div class="carousel-box px-2">
-                            <div class="category-scroll-item text-center">
-                                <a class="d-block" href="{{ url('category/' . $category['slug']) }}">
-                                    <div class="mega-icon mx-auto mb-2">
-                                        <img src="{{ asset($category->icon_image) }}" class="img-fluid"
-                                            alt="{{ $category['icon_alt'] ?? $category['name'] }}">
-                                    </div>
-                                    <span class="small fw-semibold text-dark">{{ $category['name'] }}</span>
-                                </a>
-                            </div>
+    <section class="py-4 shadow-sm">
+        <div class="container">
+
+            {{-- Slider Container --}}
+            <div id="categoryScroll" class="category-slider" style="opacity: 0; transition: opacity 0.5s;">
+                @foreach ($categories as $category)
+                    <div class="px-2">
+                        <div class="text-center category-item">
+                            <a href="{{ url('category/' . $category['slug']) }}" class="text-decoration-none d-block">
+
+                                {{-- Image Circle (Updated Class) --}}
+                                <div class="category-circle-wrapper">
+                                    <img src="{{ asset($category->icon_image) }}"
+                                        alt="{{ $category['icon_alt'] ?? $category['name'] }}">
+                                </div>
+
+                                {{-- Name --}}
+                                <span class="small fw-bold text-dark d-block">
+                                    {{ $category['name'] }}
+                                </span>
+                            </a>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
-            <!-- END FIXED Carousel -->
+
         </div>
     </section>
 
@@ -1427,9 +1433,9 @@
         // --------------------------------------------------------
         // 🏦 DYNAMIC EMI CALCULATOR (No Cost EMI Logic)
         // --------------------------------------------------------
-        document.addEventListener('DOMContentLoaded', function() {
-            calculateEMI(); // Page load hote hi calculate karein
-        });
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     calculateEMI(); // Page load hote hi calculate karein
+        // });
 
         // function calculateEMI() {
         //     // 1. Current Price uthao
@@ -1475,8 +1481,7 @@
                 originalUpdatePrices(price, mrp);
             }
 
-            // Phir EMI calculate karo
-            setTimeout(calculateEMI, 100);
+            renderRazorpayWidget(price);
         };
 
         // 1. Initialize Lightbox (Click to Enlarge)
