@@ -26,7 +26,7 @@
     </div>
 </div>
 
-{{-- Dynamic Filters (Mukhi, Bead, etc.) --}}
+{{-- Dynamic Filters --}}
 @foreach ($filters as $filter)
     <div class="filter-group border-bottom py-3">
         <a class="d-flex justify-content-between align-items-center text-dark text-decoration-none fw-bold mb-2"
