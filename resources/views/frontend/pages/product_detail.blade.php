@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                                border: 1px solid #eee;
-                                padding: 15px;
-                                border-radius: 8px;
-                                margin-bottom: 20px;
-                                background-color: #f7f1de;
-                            } */
+                                    border: 1px solid #eee;
+                                    padding: 15px;
+                                    border-radius: 8px;
+                                    margin-bottom: 20px;
+                                    background-color: #f7f1de;
+                                } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -94,45 +94,62 @@
             background-color: #d4af37;
         }
 
-        /* 📱 RESPONSIVE SLIDER FIX */
+        /* 🖼️ PRODUCT IMAGE SLIDER CONTAINER */
         .product-slider-container {
-            width: 100%;
-            height: 600px; /* डेस्कटॉप के लिए */
-            display: flex;
+            width: 100% !important;
+            height: 600px;
+            /* डेस्कटॉप के लिए फिक्स्ड हाइट */
+            display: flex !important;
+            /* Slick के साथ flex के लिए */
             align-items: center;
             justify-content: center;
             background-color: #fff;
             overflow: hidden;
             position: relative;
-            border-radius: 12px; /* थोड़ा प्रीमियम लुक देने के लिए */
         }
 
-        .product-slider-container img,
-        .product-slider-container video {
-            width: 100%; /* इमेज को पूरी चौड़ाई में फैलाएं */
-            height: 100%;
-            object-fit: cover; /* 🚀 यही वो लाइन है जो साइड का गैप ख़त्म करेगी */
-            object-position: center;
+        /* 🖥️ डेस्कटॉप के लिए ख़ास सुधार: सफ़ेद जगह हटाएँ */
+        @media (min-width: 992px) {
+
+            .product-slider-container img,
+            .product-slider-container video {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                /* 🚀 यही वो लाइन है जो साइड का गैप ख़त्म करेगी */
+                object-position: center;
+            }
         }
 
-
-        /* मोबाइल के लिए जादुई सुधार */
+        /* 📱 मोबाइल के लिए: जैसा पहले सेट किया था */
         @media (max-width: 991px) {
             .product-slider-container {
-                height: auto !important; /* मोबाइल पर हाइट कंटेंट के हिसाब से होगी */
-                aspect-ratio: 1 / 1; /* इमेज को एकदम चौकोर (Square) रखेगा */
+                height: auto !important;
+                aspect-ratio: 1 / 1 !important;
+                /* मोबाइल पर एकदम चौकोर */
+                width: 100% !important;
             }
 
-            .product-slider-container img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover; /* गैप हटाएगा */
+            .product-slider-container img,
+            .product-slider-container video {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                /* गैप हटाएगा */
             }
+        }
 
-            .product-images {
-                position: relative !important;
-                top: 0 !important;
-            }
+        /* ⬅️ Arrow Buttons का बैकग्राउंड और पोजीशन फिक्स */
+        .slick-prev.custom-arrow,
+        .slick-next.custom-arrow {
+            z-index: 5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         /* 🔥 ZOOM STYLES */
@@ -216,8 +233,7 @@
                         <div class="product-slider-container zoom-container">
                             <a href="{{ asset($product->product_main_image) }}" class="glightbox"
                                 data-gallery="product-gallery">
-                                <img src="{{ asset($product->product_main_image) }}"
-                                    class="img-fluid zoom-img"
+                                <img src="{{ asset($product->product_main_image) }}" class="img-fluid zoom-img"
                                     alt="{{ $product->product_main_image_alt ?? $product->name }}">
                             </a>
                         </div>
@@ -247,7 +263,7 @@
                                         <a href="{{ asset($img->image) }}" class="glightbox"
                                             data-gallery="product-gallery">
                                             <img src="{{ asset($img->image) }}"
-                                                class="img-fluid w-100 h-100 object-fit-contain zoom-img"
+                                                class="img-fluid zoom-img"
                                                 alt="{{ $img->alt ?? $product->name }}">
                                         </a>
                                     @endif
