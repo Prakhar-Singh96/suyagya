@@ -18,63 +18,58 @@
             {{-- 🟢 सब-कैटेगरी और सॉर्टिंग को एक ही लाइन में लाने वाला टूलबार --}}
             {{-- 🟢 मास्टर टूलबार: सब कुछ एक ही लाइन में --}}
             <div class="col-12 mb-4">
-                <div
-                    class="d-flex align-items-center justify-content-between border-bottom pb-3 flex-wrap flex-md-nowrap gap-3">
+            {{-- 🟢 मोबाइल पर कॉलम (Stack) और डेस्कटॉप पर रो (Row) --}}
+            <div class="d-flex flex-column d-lg-flex flex-lg-row align-items-center justify-content-between border-bottom pb-3 gap-3">
 
-                    {{-- 1. मोबाइल फिल्टर बटन (सिर्फ मोबाइल पर दिखेगा) --}}
-                    <button class="btn btn-white border d-lg-none d-flex align-items-center py-2 px-3 shadow-sm rounded-3"
-                        type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilterSidebar">
-                        <span class="fw-bold"><i class="las la-sliders-h"></i> Filter & Sort</span>
+                {{-- 1. मोबाइल फिल्टर बटन: अब यह चिप्स के ऊपर या साइड में सही से अलाइन होगा --}}
+                <div class="w-100 d-flex justify-content-between align-items-center d-lg-none">
+                    <button class="btn btn-white border d-flex align-items-center py-2 px-3 shadow-sm rounded-3"
+                            type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilterSidebar">
+                        <span class="fw-bold"><i class="las la-sliders-h me-1"></i> Filter & Sort</span>
                     </button>
+                </div>
 
-                    {{-- 🚀 2. सेंटर चिप्स (Sub-Categories) --}}
-                    <div class="subcategory-nav-container d-flex align-items-center justify-content-center flex-grow-1 overflow-auto mx-2"
-                        style="white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                {{-- 🚀 2. सेंटर चिप्स: मोबाइल पर फुल विड्थ स्क्रॉल और डेस्कटॉप पर सेंटर --}}
+                <div class="subcategory-nav-container d-flex align-items-center justify-content-start justify-content-lg-center flex-grow-1 overflow-auto w-100"
+                     style="white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none;">
 
-                        <div class="d-flex gap-2">
-                            {{-- बदलाव यहाँ है: हम check करेंगे कि method_exists है या नहीं --}}
-                            @if (isset($category) && method_exists($category, 'subCategories') && $category->subCategories->count() > 0)
-                                <a href="{{ route('products.category', $category->slug) }}"
-                                    class="chip-item {{ !isset($subCategory) ? 'active' : '' }}">
-                                    All
+                    <div class="d-flex gap-2 pe-3"> {{-- pe-3 ताकि आखिरी चिप कटे नहीं --}}
+                        @if(isset($category) && method_exists($category, 'subCategories') && $category->subCategories->count() > 0)
+                            <a href="{{ route('products.category', $category->slug) }}"
+                               class="chip-item {{ !isset($subCategory) ? 'active' : '' }}">
+                                All
+                            </a>
+
+                            @foreach($category->subCategories as $sc)
+                                <a href="{{ route('products.subcategory', ['cat_slug' => $category->slug, 'sub_slug' => $sc->slug]) }}"
+                                   class="chip-item {{ (isset($subCategory) && $subCategory->id == $sc->id) ? 'active' : '' }}">
+                                    {{ $sc->name }}
                                 </a>
-
-                                @foreach ($category->subCategories as $sc)
-                                    <a href="{{ route('products.subcategory', ['cat_slug' => $category->slug, 'sub_slug' => $sc->slug]) }}"
-                                        class="chip-item {{ isset($subCategory) && $subCategory->id == $sc->id ? 'active' : '' }}">
-                                        {{ $sc->name }}
-                                    </a>
-                                @endforeach
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- 3. सॉर्टिंग ड्रॉपडाउन (राइट साइड) --}}
-                    <div class="dropdown d-none d-lg-block">
-                        @php
-                            $sortOptions = [
-                                'newest' => 'Newest',
-                                'oldest' => 'Oldest',
-                                'best-selling' => 'Best Selling',
-                                'price_asc' => 'Price: Low-High',
-                                'price_desc' => 'Price: High-Low',
-                            ];
-                            $currentSort = request('sort', 'newest');
-                        @endphp
-                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 px-3 rounded bg-white shadow-sm d-flex align-items-center"
-                            href="#" role="button" data-bs-toggle="dropdown" style="height: 40px; min-width: 160px;">
-                            Sort by: {{ $sortOptions[$currentSort] ?? 'Newest' }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                            @foreach ($sortOptions as $key => $label)
-                                <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light' : '' }}"
-                                        href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a>
-                                </li>
                             @endforeach
-                        </ul>
+                        @endif
                     </div>
                 </div>
+
+                {{-- 3. डेस्कटॉप सॉर्टिंग ड्रॉपडाउन (सिर्फ डेस्कटॉप पर) --}}
+                <div class="dropdown d-none d-lg-block">
+                    @php
+                        $sortOptions = ['newest' => 'Newest', 'oldest' => 'Oldest', 'best-selling' => 'Best Selling', 'price_asc' => 'Price: Low-High', 'price_desc' => 'Price: High-Low'];
+                        $currentSort = request('sort', 'newest');
+                    @endphp
+                    <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 px-3 rounded bg-white shadow-sm d-flex align-items-center"
+                       href="#" role="button" data-bs-toggle="dropdown" style="height: 40px; min-width: 150px;">
+                        Sort by: {{ $sortOptions[$currentSort] ?? 'Newest' }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                        @foreach ($sortOptions as $key => $label)
+                            <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light' : '' }}"
+                                   href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+
             </div>
+        </div>
 
             {{-- 🖥️ DESKTOP SIDEBAR --}}
             <div class="col-lg-3 d-none d-lg-block">
@@ -255,35 +250,43 @@
             margin-top: 10px;
         }
 
-        /* बटन्स (Chips) का स्टाइल */
-        .chip-item {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 50px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            color: #333;
-            text-decoration: none !important;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
+        /* कंटेनर को पूरी चौड़ाई दें और स्क्रॉल छुपाएं */
+    .subcategory-nav-container {
+        scrollbar-width: none; /* Firefox */
+    }
+    .subcategory-nav-container::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
 
-        .chip-item:hover {
-            border-color: #ff6f00;
-            color: #ff6f00;
-        }
+    /* चिप्स का स्टाइल */
+    .chip-item {
+        display: inline-block;
+        padding: 7px 18px;
+        border-radius: 50px;
+        border: 1px solid #e0e0e0;
+        background-color: #fff;
+        color: #444;
+        text-decoration: none !important;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
 
-        .chip-item.active {
-            background-color: #ffcc66;
-            color: #000000;
-            border-color: #f7f1de;
+    /* मोबाइल पर चिप्स को कटने से बचाने के लिए */
+    @media (max-width: 991px) {
+        .subcategory-nav-container {
+            padding: 5px 0;
+            margin: 0 -15px; /* कंटेनर के बाहर तक स्क्रॉल करने के लिए */
+            padding-left: 15px; /* पहली चिप को गैप देने के लिए */
         }
+    }
 
-        /* स्क्रॉल बार छुपाने के लिए */
-        .subcategory-nav-container::-webkit-scrollbar {
-            display: none;
-        }
+    .chip-item.active {
+        background-color: #000;
+        color: #fff;
+        border-color: #000;
+    }
     </style>
 @endsection
 
