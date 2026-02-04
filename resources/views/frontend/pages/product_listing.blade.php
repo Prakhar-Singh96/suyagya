@@ -27,22 +27,26 @@
                         <span class="fw-bold"><i class="las la-sliders-h"></i> Filter & Sort</span>
                     </button>
 
-                    {{-- 2. सेंटर चिप्स (Sub-Categories) --}}
-                    <div class="subcategory-nav-container d-flex align-items-center justify-content-center gap-2 overflow-auto mx-auto"
-                        style="white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-grow: 1;">
-                        @if (isset($category) && $category->subCategories->count() > 0)
-                            <a href="{{ route('products.category', $category->slug) }}"
-                                class="chip-item {{ !isset($subCategory) ? 'active' : '' }}">
-                                All
-                            </a>
+                    {{-- 🚀 2. सेंटर चिप्स (Sub-Categories) --}}
+                    <div class="subcategory-nav-container d-flex align-items-center justify-content-center flex-grow-1 overflow-auto mx-2"
+                        style="white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
 
-                            @foreach ($category->subCategories as $sc)
-                                <a href="{{ route('products.subcategory', ['cat_slug' => $category->slug, 'sub_slug' => $sc->slug]) }}"
-                                    class="chip-item {{ isset($subCategory) && $subCategory->id == $sc->id ? 'active' : '' }}">
-                                    {{ $sc->name }}
+                        <div class="d-flex gap-2">
+                            {{-- बदलाव यहाँ है: हम check करेंगे कि method_exists है या नहीं --}}
+                            @if (isset($category) && method_exists($category, 'subCategories') && $category->subCategories->count() > 0)
+                                <a href="{{ route('products.category', $category->slug) }}"
+                                    class="chip-item {{ !isset($subCategory) ? 'active' : '' }}">
+                                    All
                                 </a>
-                            @endforeach
-                        @endif
+
+                                @foreach ($category->subCategories as $sc)
+                                    <a href="{{ route('products.subcategory', ['cat_slug' => $category->slug, 'sub_slug' => $sc->slug]) }}"
+                                        class="chip-item {{ isset($subCategory) && $subCategory->id == $sc->id ? 'active' : '' }}">
+                                        {{ $sc->name }}
+                                    </a>
+                                @endforeach
+                            @endif
+                        </div>
                     </div>
 
                     {{-- 3. सॉर्टिंग ड्रॉपडाउन (राइट साइड) --}}
