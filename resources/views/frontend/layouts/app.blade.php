@@ -16,7 +16,7 @@
         $metaDesc =
             'Shop genuine Rudraksha, Gemstones, and spiritual jewelry at Suyagya. Certified products with lab reports.';
         $metaKeys = 'rudraksha, gemstones, spiritual jewelry, mala, suyagya';
-        $ogImage = asset('og-images/default-og.jpg');
+        $ogImage = asset('img/default-og.jpg');
         $currentUrl = url()->current();
 
         // 2. PRODUCT Detail Page
@@ -103,13 +103,15 @@
             $metaTitle = 'Track Order | Suyagya';
             $metaDesc = 'Track Your Order Here.';
         }
-        // 7. HOME Page
-        elseif (isset($homeSettings) && !empty($homeSettings)) {
-            $metaTitle = $homeSettings->meta_title ?? $metaTitle;
-            $metaDesc = $homeSettings->meta_description ?? $metaDesc;
-            $metaKeys = $homeSettings->meta_keywords ?? $metaKeys;
-            if ($homeSettings->og_image) {
-                $ogImage = asset($homeSettings->og_image);
+        // 7. HOME Page (Corrected logic)
+        elseif (Request::path() == '/' || Route::is('home') || Route::is('frontend.home')) {
+            if (isset($homeSettings) && !empty($homeSettings)) {
+                $metaTitle = $homeSettings->meta_title ?? $metaTitle;
+                $metaDesc = $homeSettings->meta_description ?? $metaDesc;
+                $metaKeys = $homeSettings->meta_keywords ?? $metaKeys;
+                if ($homeSettings->og_image) {
+                    $ogImage = asset($homeSettings->og_image);
+                }
             }
         }
     @endphp
