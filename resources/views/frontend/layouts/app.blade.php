@@ -869,6 +869,17 @@
             });
         }
     </script>
+    <script>
+        (function() {
+            var url = new URL(window.location.href);
+            if (url.searchParams.has('srsltid')) {
+                url.searchParams.delete('srsltid');
+                // साफ़ URL तैयार करें (अगर कोई और पैरामीटर नहीं है तो '?' भी हटा देगा)
+                var cleanUrl = url.pathname + (url.search ? url.search : '');
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        })();
+    </script>
 </body>
 
 </html>
