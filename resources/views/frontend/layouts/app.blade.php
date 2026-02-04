@@ -128,9 +128,16 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{ $metaTitle }}" />
     <meta property="og:description" content="{{ $metaDesc }}" />
-    <meta property="og:image" content="{{ $ogImage }}" />
+    {{-- <meta property="og:image" content="{{ $ogImage }}" /> --}}
     <meta property="og:url" content="{{ $currentUrl }}" />
     <meta property="og:site_name" content="Suyagya" />
+
+    {{-- 🚀 ये 4 लाइनें WhatsApp के लिए ब्रह्मास्त्र हैं --}}
+    <meta property="og:image" content="{{ $ogImage }}" />
+    <meta property="og:image:secure_url" content="{{ $ogImage }}" />
+    <meta property="og:image:type" content="image/png" /> {{-- अगर इमेज jpg है तो image/jpeg लिखें --}}
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     {{-- ✅ TWITTER CARD --}}
     <meta name="twitter:card" content="summary_large_image">
