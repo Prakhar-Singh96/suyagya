@@ -188,7 +188,7 @@ class ProductListingController extends Controller
 
     public function categoryProducts(Request $request, $slug)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
+        $category = Category::where('slug', $slug)->with('subCategories')->firstOrFail();
         $query = $this->getProductsQuery($request, ['category_id' => $category->id]);
         $products = $query->paginate(12)->withQueryString();
         $filters = $this->getDynamicFilters(['category_id' => $category->id]);

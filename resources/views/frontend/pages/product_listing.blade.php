@@ -15,17 +15,38 @@
 
     <div class="container py-3">
         <div class="row">
-            {{-- 🟢 TOOLBAR: मोबाइल के लिए 'Filter & Sort' बटन --}}
+            {{-- 🟢 सब-कैटेगरी और सॉर्टिंग को एक ही लाइन में लाने वाला टूलबार --}}
+            {{-- 🟢 मास्टर टूलबार: सब कुछ एक ही लाइन में --}}
             <div class="col-12 mb-4">
-                <div class="d-flex align-items-center gap-2 pb-2">
-                    {{-- 📱 मोबाइल फिल्टर बटन --}}
+                <div
+                    class="d-flex align-items-center justify-content-between border-bottom pb-3 flex-wrap flex-md-nowrap gap-3">
+
+                    {{-- 1. मोबाइल फिल्टर बटन (सिर्फ मोबाइल पर दिखेगा) --}}
                     <button class="btn btn-white border d-lg-none d-flex align-items-center py-2 px-3 shadow-sm rounded-3"
                         type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilterSidebar">
-                        <span class="fw-bold">Filter & Sort <i class="las la-sliders-h ms-2"></i></span>
+                        <span class="fw-bold"><i class="las la-sliders-h"></i> Filter & Sort</span>
                     </button>
 
-                    {{-- 🏷️ डेस्कटॉप सॉर्टिंग --}}
-                    <div class="dropdown ms-auto d-none d-lg-block">
+                    {{-- 2. सेंटर चिप्स (Sub-Categories) --}}
+                    <div class="subcategory-nav-container d-flex align-items-center justify-content-center gap-2 overflow-auto mx-auto"
+                        style="white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-grow: 1;">
+                        @if (isset($category) && $category->subCategories->count() > 0)
+                            <a href="{{ route('products.category', $category->slug) }}"
+                                class="chip-item {{ !isset($subCategory) ? 'active' : '' }}">
+                                All
+                            </a>
+
+                            @foreach ($category->subCategories as $sc)
+                                <a href="{{ route('products.subcategory', ['cat_slug' => $category->slug, 'sub_slug' => $sc->slug]) }}"
+                                    class="chip-item {{ isset($subCategory) && $subCategory->id == $sc->id ? 'active' : '' }}">
+                                    {{ $sc->name }}
+                                </a>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    {{-- 3. सॉर्टिंग ड्रॉपडाउन (राइट साइड) --}}
+                    <div class="dropdown d-none d-lg-block">
                         @php
                             $sortOptions = [
                                 'newest' => 'Newest',
@@ -36,13 +57,13 @@
                             ];
                             $currentSort = request('sort', 'newest');
                         @endphp
-                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 rounded bg-white shadow-sm"
-                            href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="text-dark fw-bold text-decoration-none dropdown-toggle small border p-2 px-3 rounded bg-white shadow-sm d-flex align-items-center"
+                            href="#" role="button" data-bs-toggle="dropdown" style="height: 40px; min-width: 160px;">
                             Sort by: {{ $sortOptions[$currentSort] ?? 'Newest' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                             @foreach ($sortOptions as $key => $label)
-                                <li><a class="dropdown-item small {{ $currentSort == $key ? 'active' : '' }}"
+                                <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light' : '' }}"
                                         href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a>
                                 </li>
                             @endforeach
@@ -228,6 +249,36 @@
         /* स्लाइडर को दिखने लायक ऊँचाई दें */
         .price-slider {
             margin-top: 10px;
+        }
+
+        /* बटन्स (Chips) का स्टाइल */
+        .chip-item {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #333;
+            text-decoration: none !important;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .chip-item:hover {
+            border-color: #ff6f00;
+            color: #ff6f00;
+        }
+
+        .chip-item.active {
+            background-color: #ffcc66;
+            color: #000000;
+            border-color: #f7f1de;
+        }
+
+        /* स्क्रॉल बार छुपाने के लिए */
+        .subcategory-nav-container::-webkit-scrollbar {
+            display: none;
         }
     </style>
 @endsection
