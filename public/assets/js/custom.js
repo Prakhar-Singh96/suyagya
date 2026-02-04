@@ -2340,20 +2340,23 @@ async function searchCity(query) {
     }
 }
 
-function toggleFilterItems(btn, containerId) {
-    const container = document.getElementById(containerId);
+function toggleFilterItems(btn) {
+    // बटन के ठीक ऊपर वाले कंटेनर को ढूंढें
+    const container = btn.previousElementSibling;
     const hiddenItems = container.querySelectorAll('.hidden-item');
 
-    // चेक करें कि अभी आइटम्स खुले हैं या बंद
+    // चेक करें कि अभी खुला है या बंद
     const isExpanded = btn.getAttribute('data-expanded') === 'true';
 
     if (!isExpanded) {
-        // सरे आइटम्स दिखाओ
-        hiddenItems.forEach(item => item.classList.remove('d-none'));
+        hiddenItems.forEach(item => {
+            item.classList.remove('d-none');
+            item.style.opacity = '0';
+            setTimeout(() => item.style.opacity = '1', 10);
+        });
         btn.innerText = "- See Less";
         btn.setAttribute('data-expanded', 'true');
     } else {
-        // वापस सिर्फ पहले 5 दिखाओ
         hiddenItems.forEach(item => item.classList.add('d-none'));
         btn.innerText = "+ See More";
         btn.setAttribute('data-expanded', 'false');

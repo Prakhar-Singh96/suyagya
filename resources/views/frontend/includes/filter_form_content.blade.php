@@ -37,21 +37,24 @@
             <div class="filter-options mt-2">
                 @php $count = 0; @endphp
 
-                {{-- 🚀 5 से ज्यादा होने पर 'see-more-container' में जाएगा --}}
-                <div class="filter-list-container" id="filter_list_{{ $filter->id }}">
+                {{-- यूनिक ID दी गई है (id attribute removed from div to avoid conflict) --}}
+                <div class="filter-list-container">
                     @foreach ($filter->filterValues as $value)
                         @php
                             $isChecked = request('filter') && isset(request('filter')[$filter->id]) && in_array($value->id, request('filter')[$filter->id]);
                             $count++;
                         @endphp
 
+                        {{-- 🚀 5 के बाद वाले आइटम्स को 'd-none' और 'hidden-item' क्लास मिलेगी --}}
                         <div class="form-check mb-2 d-flex justify-content-between align-items-center filter-item {{ $count > 5 ? 'd-none hidden-item' : '' }}">
                             <div>
                                 <input class="form-check-input filter-checkbox shadow-none" type="checkbox"
                                        name="filter[{{ $filter->id }}][]" value="{{ $value->id }}"
-                                       id="val_{{ $value->id }}" {{ $isChecked ? 'checked' : '' }}
+                                       {{-- ID को यूनिक बनाया गया है --}}
+                                       id="f_{{ $filter->id }}_v_{{ $value->id }}_{{ $loop->parent->index }}"
+                                       {{ $isChecked ? 'checked' : '' }}
                                        onchange="this.form.submit()">
-                                <label class="form-check-label text-muted small ms-1" for="val_{{ $value->id }}">
+                                <label class="form-check-label text-muted small ms-1" for="f_{{ $filter->id }}_v_{{ $value->id }}_{{ $loop->parent->index }}">
                                     {{ $value->value }}
                                 </label>
                             </div>
@@ -60,11 +63,11 @@
                     @endforeach
                 </div>
 
-                {{-- 🚀 अगर 5 से ज्यादा आइटम्स हैं, तो ही बटन दिखाओ --}}
+                {{-- 🚀 See More बटन --}}
                 @if ($filter->filterValues->count() > 5)
                     <a href="javascript:void(0);"
                        class="text-primary small fw-bold text-decoration-none mt-2 d-inline-block see-more-btn"
-                       onclick="toggleFilterItems(this, 'filter_list_{{ $filter->id }}')">
+                       onclick="toggleFilterItems(this)">
                        + See More
                     </a>
                 @endif
