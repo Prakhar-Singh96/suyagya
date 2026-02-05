@@ -123,6 +123,7 @@ class ProductController extends Controller
             $data['astro_planet'] = $request->astro_planet;
             $data['astro_rashi'] = $request->astro_rashi;
             $data['astro_benefits'] = $request->astro_benefits;
+            $data['sort_order'] = $request->sort_order ?? 0;
 
             $product = Product::create($data);
 
@@ -268,6 +269,7 @@ class ProductController extends Controller
             $data['astro_planet'] = $request->astro_planet;
             $data['astro_rashi'] = $request->astro_rashi;
             $data['astro_benefits'] = $request->astro_benefits;
+            $data['sort_order'] = $request->sort_order ?? 0;
 
             // =========================================================
             // 🖼️ IMAGE UPDATE LOGIC (With Auto OG Generation)

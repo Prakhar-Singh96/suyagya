@@ -28,6 +28,7 @@ class Product extends Model
         'discount',
         'price',
         'quantity',
+        'sort_order',
 
         'main_image',
         'main_image_alt',

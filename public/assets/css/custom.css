@@ -1801,11 +1801,16 @@ main {
 }
 
 .dropdown-item:hover {
-    background-color: #FFF8E7;
+    background-color: #ffcc66;
     /* Light cream hover bg */
     color: #000 !important;
     padding-left: 1.5rem !important;
     /* Slight slide effect */
+}
+
+.dropdown-item.active {
+background-color: #c19a6b;
+color: #ffffff;
 }
 
 .dropdown-item i {

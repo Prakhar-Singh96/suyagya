@@ -119,10 +119,11 @@ class ProductListingController extends Controller
                     $query->orderBy('price', 'desc');
                     break;
                 default:
-                    $query->orderBy('created_at', 'desc');
+                    $query->orderByRaw('sort_order = 0, sort_order ASC')->orderBy('created_at', 'desc');
+                    break;
             }
         } else {
-            $query->orderBy('created_at', 'desc');
+            $query->orderByRaw('sort_order = 0, sort_order ASC')->orderBy('created_at', 'desc');
         }
 
         return $query;

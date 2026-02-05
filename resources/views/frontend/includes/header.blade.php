@@ -346,8 +346,18 @@
                                     <small id="otp_error" class="text-danger text-center d-block mb-2"></small>
 
                                     <div class="text-center mb-3">
-                                        <small class="text-muted"><i class="las la-clock"></i> Resend OTP in <span
-                                                id="timer">30</span> Sec</small>
+                                        {{-- यह हिस्सा टाइमर दिखाएगा --}}
+                                        <div id="timer-container">
+                                            <small class="text-muted"><i class="las la-clock"></i> Resend OTP in <span
+                                                    id="timer">30</span> Sec</small>
+                                        </div>
+
+                                        {{-- यह लिंक शुरू में छुपा रहेगा (display: none) --}}
+                                        <div id="resend-container" style="display: none;">
+                                            <small class="text-muted">Didn't receive code?</small>
+                                            <a href="javascript:void(0)" onclick="resendOtp()"
+                                                class="fw-bold text-primary text-decoration-none small">Resend OTP</a>
+                                        </div>
                                     </div>
 
                                     <button onclick="verifyOtp()" id="btn-verify"

@@ -189,20 +189,43 @@ function editPhone() {
     $('#otp1, #otp2, #otp3, #otp4').val(''); // Clear OTP
 }
 
-// Helper: Timer
+var timerInterval;
+
 function startTimer() {
     var timeLeft = 30;
-    var elem = document.getElementById('timer');
-    var timerId = setInterval(countdown, 1000);
-    function countdown() {
-        if (timeLeft == -1) {
-            clearTimeout(timerId);
-            // Enable Resend Logic here if needed
+    var timerElem = document.getElementById('timer');
+    var timerBox = document.getElementById('timer-container');
+    var resendBox = document.getElementById('resend-container');
+
+    // पिछला कोई टाइमर चल रहा हो तो उसे साफ़ करें
+    clearInterval(timerInterval);
+
+    // UI को रिसेट करें
+    timerBox.style.display = 'block';
+    resendBox.style.display = 'none';
+    timerElem.innerHTML = timeLeft;
+
+    timerInterval = setInterval(function() {
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timerBox.style.display = 'none'; // टाइमर छुपाएं
+            resendBox.style.display = 'block'; // 'Resend OTP' लिंक दिखाएं
         } else {
-            elem.innerHTML = timeLeft;
             timeLeft--;
+            timerElem.innerHTML = timeLeft;
         }
-    }
+    }, 1000);
+}
+
+// 🚀 Resend OTP के लिए नया फंक्शन
+function resendOtp() {
+    // हम अपने पुराने sendOtp() फंक्शन का ही इस्तेमाल करेंगे
+    // बस एरर मैसेज साफ़ कर देते हैं
+    $('#otp_error').text('');
+    $('#otp1, #otp2, #otp3, #otp4').val(''); // पुराने बॉक्स खाली करें
+
+    // sendOtp() को दोबारा कॉल करें
+    sendOtp();
 }
 
 // Simple function to toggle a search bar (you may need to adapt this)

@@ -62,7 +62,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                         @foreach ($sortOptions as $key => $label)
-                            <li><a class="dropdown-item small {{ $currentSort == $key ? 'active bg-light' : '' }}"
+                            <li><a class="dropdown-item small {{ $currentSort == $key ? 'active' : '' }}"
                                    href="{{ request()->fullUrlWithQuery(['sort' => $key]) }}">{{ $label }}</a></li>
                         @endforeach
                     </ul>

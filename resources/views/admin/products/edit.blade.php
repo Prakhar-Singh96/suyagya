@@ -524,6 +524,13 @@
                                     <option value="0" {{ $product->status == 0 ? 'selected' : '' }}>Inactive</option>
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Sort Order (Position)</label>
+                                <input type="number" class="form-control" name="sort_order"
+                                    value="{{ old('sort_order', $product->sort_order ?? 0) }}"
+                                    placeholder="e.g. 1 for Top">
+                                <small class="text-muted">छोटा नंबर (जैसे 1) सबसे ऊपर दिखेगा।</small>
+                            </div>
 
                             <hr>
 
