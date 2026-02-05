@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- Title Section --}}
-    <div class="py-3 text-center border-bottom">
+    <div class="py-2 text-center border-bottom">
         <div class="container">
             <h1 class="font-heading fw-bold text-dark mb-0">{{ isset($subCategory) ? $subCategory->name : $category->name }}
             </h1>
@@ -13,13 +13,13 @@
         </div>
     </div>
 
-    <div class="container py-3">
+    <div class="container py-1">
         <div class="row">
             {{-- 🟢 सब-कैटेगरी और सॉर्टिंग को एक ही लाइन में लाने वाला टूलबार --}}
             {{-- 🟢 मास्टर टूलबार: सब कुछ एक ही लाइन में --}}
-            <div class="col-12 mb-4">
+            <div class="col-12 mb-2">
             {{-- 🟢 मोबाइल पर कॉलम (Stack) और डेस्कटॉप पर रो (Row) --}}
-            <div class="d-flex flex-column d-lg-flex flex-lg-row align-items-center justify-content-between border-bottom pb-3 gap-3">
+            <div class="d-flex flex-column d-lg-flex flex-lg-row align-items-center justify-content-between pb-0 gap-2">
 
                 {{-- 1. मोबाइल फिल्टर बटन: अब यह चिप्स के ऊपर या साइड में सही से अलाइन होगा --}}
                 <div class="w-100 d-flex justify-content-between align-items-center d-lg-none">
