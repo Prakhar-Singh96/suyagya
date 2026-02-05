@@ -39,7 +39,7 @@
 
             {{-- RIGHT COLUMN: Sidebar --}}
             <div class="col-lg-4">
-                <div class="sticky-top">
+                <div class="sticky-top" style="z-index:10;">
 
                     {{-- Recent Blogs Widget --}}
                     <div class="card border rounded shadow-sm mb-4">
