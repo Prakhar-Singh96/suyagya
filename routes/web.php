@@ -308,7 +308,7 @@ Route::get('sitemap/products.xml', [SitemapController::class, 'products'])->name
 
 Route::get('/sitemap/blogs.xml', [SitemapController::class, 'blogs'])->name('sitemap.blogs');
 
-Route::view('/ring-size-guide', 'frontend.pages.ring_size_guide')->name('ring.size.guide');
+// Route::view('/ring-size-guide', 'frontend.pages.ring_size_guide')->name('ring.size.guide');
 
 
 Route::post('/get-astro-advice', [AstroChatController::class, 'getAstroAdvice'])->name('astro.get-advice');
