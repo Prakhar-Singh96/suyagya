@@ -188,12 +188,14 @@ class CheckoutController extends Controller
             $subtotal = round($product->price) * $qty;
             $totalMrp = round($product->mrp_price ?? $product->price) * $qty;
             $totalSiddhCharge = $siddhAmountPerItem * $qty;
+            $itemTotalPrice = (round($product->price) + $siddhAmountPerItem) * $qty; // Price + Siddh मिलाकर Total
 
             $orderItemsData[] = [
                 'product_id'   => $product->id,
                 'product_name' => $product->name,
                 'quantity'     => $qty,
                 'price'        => round($product->price), // 👈 सिर्फ असली सेलिंग प्राइस
+                'total_price'  => $itemTotalPrice, // 👈 नया कॉलम
                 'mrp_price'    => round($product->mrp_price ?? $product->price), // 👈 शुद्ध MRP
                 'is_siddh'     => $isSiddh,
                 'siddh_amount' => $siddhAmountPerItem, // 👈 अलग से सिद्धार्थ चार्ज
@@ -209,12 +211,14 @@ class CheckoutController extends Controller
                 $subtotal += round($item->product->price) * $qty;
                 $totalMrp += round($item->product->mrp_price ?? $item->product->price) * $qty;
                 $totalSiddhCharge += $siddhAmountPerItem * $qty;
+                $itemTotalPrice = (round($item->product->price) + $siddhAmountPerItem) * $qty;
 
                 $orderItemsData[] = [
                     'product_id'   => $item->product_id,
                     'product_name' => $item->product->name,
                     'quantity'     => $qty,
-                    'price'        => round($item->product->price),
+                    'price'        => round($item->product->price ?? $item->product->price),
+                    'total_price'  => $itemTotalPrice, // 👈 नया कॉलम
                     'mrp_price'    => round($item->product->mrp_price ?? $item->product->price),
                     'is_siddh'     => $isSiddh,
                     'siddh_amount' => $siddhAmountPerItem,
@@ -227,11 +231,15 @@ class CheckoutController extends Controller
         $adminDiscount = 0;
         $gameDiscount = 0;
 
-        // A. Admin Coupon Discount
+        $baseForDiscount = $subtotal + $totalSiddhCharge;
+
+        // placeOrder(Request $request) के अंदर:
         if ($request->coupon_code) {
             $coupon = Coupon::where('code', $request->coupon_code)->where('status', 1)->first();
             if ($coupon && !($coupon->expires_at && Carbon::now()->gt($coupon->expires_at))) {
-                $adminDiscount = ($coupon->type == 'fixed') ? $coupon->value : ($subtotal * $coupon->value) / 100;
+                // 🚀 यहाँ बदलाव: डिस्काउंट को round() करें
+                $rawDiscount = ($coupon->type == 'fixed') ? $coupon->value : ($baseForDiscount * $coupon->value) / 100;
+                $adminDiscount = round($rawDiscount);
             }
         }
 
@@ -248,7 +256,8 @@ class CheckoutController extends Controller
         $prepaidDiscount = ($request->payment_method == 'RAZORPAY') ? 25 : 0;
 
         // 🚀 फाइनल टोटल में प्रीपेड डिस्काउंट भी घटाएं
-        $finalTotal = max(0, ($subtotal - ($adminDiscount + $gameDiscount)) + $totalSiddhCharge - $prepaidDiscount);
+        $finalTotal = ($baseForDiscount - ($adminDiscount + $gameDiscount)) - $prepaidDiscount;
+        $finalTotal = max(0, round($finalTotal));
 
         // 4. CREATE ORDER
         $order = Order::create([
@@ -282,7 +291,7 @@ class CheckoutController extends Controller
             $api = new Api($paymentSetting->key_id, $paymentSetting->key_secret);
 
             // 🚀 यहाँ सुधार: अब $finalTotal का इस्तेमाल हो रहा है
-            $finalAmountInPaise = (int) round($finalTotal * 100);
+            $finalAmountInPaise = (int) ($finalTotal * 100);
 
             $rzpOrder = $api->order->create([
                 'receipt'         => (string) $order->id,
@@ -464,7 +473,7 @@ class CheckoutController extends Controller
             $discountAmount = $couponValue;
         } else {
             // Percent Case (10% of 500 = 50)
-            $discountAmount = ($cartTotal * $couponValue) / 100;
+            $discountAmount = round(($cartTotal * $couponValue) / 100);
         }
 
         // Discount Total se zyada nahi ho sakta
@@ -477,8 +486,8 @@ class CheckoutController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Coupon Applied Successfully!',
-            'discount' => number_format($discountAmount, 2), // Format for display
-            'new_total' => number_format($newTotal, 2)
+            'discount' => number_format($discountAmount, 0), // Format for display
+            'new_total' => number_format($newTotal, 0)
         ]);
     }
 

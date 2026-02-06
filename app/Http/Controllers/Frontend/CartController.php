@@ -165,8 +165,11 @@ class CartController extends Controller
         $totalMrp = 0;
 
         foreach ($cartItems as $item) {
-            $price = $item->product->price + ($item->is_siddh ? $item->product->siddh_price : 0);
-            $mrp = $item->product->mrp_price + ($item->is_siddh ? $item->product->siddh_price : 0);
+            $basePrice = round($item->product->price);
+            $siddhPrice = $item->is_siddh ? round($item->product->siddh_price) : 0;
+
+            $price = $basePrice + $siddhPrice;
+            $mrp = round($item->product->mrp_price ?? $item->product->price) + $siddhPrice;
 
             $total += $price * $item->quantity;
             $totalMrp += $mrp * $item->quantity;

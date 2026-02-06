@@ -232,7 +232,7 @@
                         </p>
 
                         <p class="mt-2">
-                            <span class="fw-bold">Working Hours:</span> Mon-Sat, 10 AM - 6 PM
+                            <span class="fw-bold">Working Hours:</span> Mon-Sat, 9 AM - 6 PM
                         </p>
                         </div>
                     </div>

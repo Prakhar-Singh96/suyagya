@@ -44,10 +44,16 @@
                                     @endif
                                 </div>
                                 <div class="text-end">
-                                    {{-- 🚀 सुधार: आइटम लेवल पर MRP और Discount --}}
+                                    {{-- पुरानी MRP --}}
                                     <p class="text-muted text-decoration-line-through small mb-0">
-                                        ₹{{ number_format($item->mrp_price, 2) }}</p>
-                                    <p class="fw-bold mb-0">₹{{ number_format($item->price, 2) }}</p>
+                                        ₹{{ number_format($item->mrp_price * $item->quantity, 2) }}
+                                    </p>
+                                    {{-- 🚀 नया: आइटम का फाइनल टोटल (Siddh मिलाकर) --}}
+                                    <p class="fw-bold mb-0" style="font-size: 1.1rem; color: #000;">
+                                        ₹{{ number_format($item->total_price, 2) }}
+                                    </p>
+                                    <small class="text-muted">(₹{{ number_format($item->price + $item->siddh_amount) }} x
+                                        {{ $item->quantity }})</small>
                                 </div>
                             </div>
                         @endforeach
