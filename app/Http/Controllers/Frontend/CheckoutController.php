@@ -373,11 +373,14 @@ class CheckoutController extends Controller
             // 2. Agar Verify ho gaya -> Database Update
             $order = Order::findOrFail($request->order_id);
 
-            // Payment Status Paid Mark karein
+            // 🚀 यहाँ सभी Razorpay IDs को सेव करें ताकि रिफंड किया जा सके
             $order->update([
                 'payment_status' => 'paid',
-                'transaction_id' => $request->razorpay_payment_id,
-                'status' => 'processing' // Optional: Pending se Processing kar dein
+                'status'         => 'processing',
+                'rzp_payment_id' => $request->razorpay_payment_id, // 👈 रिफंड के लिए सबसे ज़रूरी
+                'rzp_order_id'   => $request->razorpay_order_id,
+                'rzp_signature'  => $request->razorpay_signature,
+                'transaction_id' => $request->razorpay_payment_id, // बैकअप के लिए
             ]);
 
             // 3. Empty Cart (Agar pehle nahi kiya tha)
@@ -537,22 +540,76 @@ class CheckoutController extends Controller
         }
     }
 
+    // public function cancelOrder(Request $request)
+    // {
+
+    //     $order = Order::find($request->order_id);
+
+    //     if ($order && $order->payment_status == 'pending') {
+    //         $order->status = 'cancelled';
+    //         $order->payment_status = 'failed';
+    //         $order->save();
+
+    //         \Log::info('Order Successfully Cancelled'); // Success Log
+
+    //         return response()->json(['status' => true, 'message' => 'Order Cancelled']);
+    //     }
+
+    //     \Log::warning('Order Cancel Condition Failed'); // Fail Log
+    //     return response()->json(['status' => false]);
+    // }
+
     public function cancelOrder(Request $request)
     {
-
+        // 1. ऑर्डर ढूंढें
         $order = Order::find($request->order_id);
 
-        if ($order && $order->payment_status == 'pending') {
-            $order->status = 'cancelled';
-            $order->payment_status = 'failed';
-            $order->save();
-
-            \Log::info('Order Successfully Cancelled'); // Success Log
-
-            return response()->json(['status' => true, 'message' => 'Order Cancelled']);
+        if (!$order) {
+            return response()->json(['status' => false, 'message' => 'Order not found']);
         }
 
-        \Log::warning('Order Cancel Condition Failed'); // Fail Log
-        return response()->json(['status' => false]);
+        // 🛡️ सुरक्षा क्लॉज: सिर्फ तभी कैंसिल करें जब शिप न हुआ हो
+        if (!in_array($order->status, ['pending', 'processing'])) {
+            return response()->json(['status' => false, 'message' => 'This order is already shipped and cannot be cancelled.']);
+        }
+
+        try {
+            // 💰 2. REFUND LOGIC: अगर पेमेंट 'PAID' है तो Razorpay से रिफंड करें
+            if ($order->payment_status == 'paid' && !empty($order->rzp_payment_id)) {
+
+                $setting = PaymentSetting::first();
+                $api = new Api($setting->key_id, $setting->key_secret);
+
+                // Razorpay API को रिफंड रिक्वेस्ट भेजें
+                $refund = $api->payment->fetch($order->rzp_payment_id)->refund([
+                    'amount' => (int)($order->total_amount * 100), // पैसे में (जैसे ₹100 = 10000)
+                    'notes'  => [
+                        'reason' => 'User cancelled the order',
+                        'order_number' => $order->order_number
+                    ]
+                ]);
+
+                Log::info('Razorpay Refund Processed for Order: ' . $order->order_number);
+                $order->payment_status = 'refunded'; // स्टेटस बदलें
+            } elseif ($order->payment_status == 'pending') {
+                $order->status = 'cancelled';
+                $order->payment_status = 'failed';
+            }
+
+            // 3. ऑर्डर स्टेटस अपडेट करें
+            $order->status = 'cancelled';
+            $order->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Order successfully cancelled and refund initiated (if applicable).'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Order Cancellation Error: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Cancellation failed: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

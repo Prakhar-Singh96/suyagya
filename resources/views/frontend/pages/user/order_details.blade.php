@@ -200,6 +200,86 @@
                     </div>
                 </div>
             </div>
+            {{-- 🚫 CANCEL ORDER SECTION --}}
+            @if (!in_array($order->status, ['shipped', 'delivered', 'cancelled']))
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h6 class="fw-bold text-danger mb-2">Need to cancel?</h6>
+                        {{-- <p class="small text-muted mb-3">You can cancel this order before it is shipped.</p> --}}
+
+                        <form id="cancelOrderForm">
+                            @csrf
+                            <input type="hidden" name="order_id" value="{{ $order->id }}">
+                            <button type="button" onclick="confirmCancellation()" id="btn_cancel_order"
+                                class="btn btn-outline-danger w-100 fw-bold rounded-pill">
+                                <i class="las la-times-circle"></i> Cancel Order
+                            </button>
+                        </form>
+
+                        @if ($order->payment_status == 'paid')
+                            <div class="alert alert-info mt-3 py-2 px-3 small border-0 mb-0" style="border-radius: 10px;">
+                                <i class="las la-info-circle"></i>
+                                <strong>Refund Info:</strong> Since this is a paid order, your refund will be initiated to
+                                your original payment method.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmCancellation() {
+            Swal.fire({
+                title: 'Confirm Cancellation?',
+                text: "Are you sure you want to cancel this order? This action cannot be reversed.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Cancel Order',
+                cancelButtonText: 'No, Keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitCancelRequest();
+                }
+            })
+        }
+
+        function submitCancelRequest() {
+            var btn = $('#btn_cancel_order');
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Cancelling...');
+
+            $.ajax({
+                url: "{{ route('checkout.cancel') }}", // ✅ आपके द्वारा बताया गया रूट नेम
+                type: "POST",
+                data: $('#cancelOrderForm').serialize(),
+                success: function(res) {
+                    if (res.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cancelled!',
+                            text: res.message,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload(); // स्टेटस अपडेट करने के लिए रीलोड
+                        });
+                    } else {
+                        Swal.fire('Error!', res.message, 'error');
+                        btn.prop('disabled', false).html(
+                            '<i class="las la-times-circle fs-5 me-1"></i> Cancel My Order');
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire('Error!', 'Failed to process cancellation. Please contact support.', 'error');
+                    btn.prop('disabled', false).html(
+                        '<i class="las la-times-circle fs-5 me-1"></i> Cancel My Order');
+                }
+            });
+        }
+    </script>
 @endsection
