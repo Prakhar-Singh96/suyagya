@@ -836,7 +836,7 @@
                                     <div class="rashi-item {{ $product->id == $rp->id ? 'active' : '' }}">
                                         <a href="{{ url('product/' . $rp->slug) }}" class="text-decoration-none">
                                             <div class="rashi-img-wrapper shadow-sm">
-                                                <img src="{{ asset($rp->product_main_image) }}"
+                                                <img src="{{ asset($rp->main_image) }}"
                                                     class="w-100 h-100 object-fit-cover rounded-circle"
                                                     alt="{{ $rp->name }}">
                                             </div>
