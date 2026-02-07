@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                                                                    border: 1px solid #eee;
-                                                                    padding: 15px;
-                                                                    border-radius: 8px;
-                                                                    margin-bottom: 20px;
-                                                                    background-color: #f7f1de;
-                                                                } */
+                                                                                    border: 1px solid #eee;
+                                                                                    padding: 15px;
+                                                                                    border-radius: 8px;
+                                                                                    margin-bottom: 20px;
+                                                                                    background-color: #f7f1de;
+                                                                                } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -345,6 +345,105 @@
                 width: 250px !important;
                 height: 250px !important;
             }
+        }
+    </style>
+    <style>
+        .shop-by-rashi-container {
+            border: 1px solid #ffeeba;
+            background-color: #fffdf5;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+
+        .rashi-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .rashi-scroll::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
+        }
+
+        .rashi-item {
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .rashi-img-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            overflow: hidden;
+            margin: 0 auto 5px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .rashi-item.active .rashi-img-wrapper {
+            border-color: #ff6f00;
+            box-shadow: 0 0 8px rgba(255, 111, 0, 0.3);
+        }
+
+        .rashi-item a {
+            text-decoration: none;
+            color: #333;
+            font-size: 11px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .rashi-item.active a {
+            color: #ff6f00;
+        }
+
+        .rashi-scroll {
+            display: flex;
+            flex-wrap: nowrap;
+            /* शुरू में एक लाइन में */
+            overflow-x: auto;
+            gap: 12px;
+            padding-bottom: 10px;
+            transition: all 0.4s ease-in-out;
+        }
+
+        /* 🚀 जब 'expanded' क्लास लगे, तब ग्रिड बन जाए */
+        .rashi-scroll.expanded {
+            flex-wrap: wrap;
+            /* मल्टी-लाइन ग्रिड */
+            overflow-x: hidden;
+            justify-content: flex-start;
+        }
+
+        /* डेस्कटॉप पर ग्रिड का लुक सुंदर दिखाने के लिए */
+        .rashi-scroll.expanded .rashi-item {
+            flex: 0 0 calc(20% - 10px);
+            /* एक लाइन में 5 आइटम */
+            margin-bottom: 15px;
+        }
+
+        /* मोबाइल पर ग्रिड (2 या 3 आइटम) */
+        @media (max-width: 767px) {
+            .rashi-scroll.expanded .rashi-item {
+                flex: 0 0 calc(33.33% - 10px);
+            }
+        }
+
+        .view-toggle-btn {
+            cursor: pointer;
+            font-size: 12px;
+            color: #6c757d;
+            transition: color 0.2s;
+        }
+
+        .view-toggle-btn:hover {
+            color: #ff6f00;
         }
     </style>
 @endsection
@@ -733,6 +832,34 @@
                                 {{ $product->quantity }} left in stock!</small>
                         @endif
                     </div>
+                    {{-- ♈ SHOP BY RASHI SECTION --}}
+                    @if (count($rashiProducts) > 0)
+                        <div class="shop-by-rashi-container">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold m-0" style="font-size: 14px; font-family: 'Merriweather', serif;">Shop
+                                    by Rashi</h6>
+
+                                {{-- 🚀 क्लिक करने वाला टॉगल बटन --}}
+                                <span id="rashiViewToggle" class="view-toggle-btn fw-bold">
+                                    View more »
+                                </span>
+                            </div>
+
+                            <div id="rashiContainer" class="rashi-scroll">
+                                @foreach ($rashiProducts as $rp)
+                                    <div class="rashi-item {{ $product->id == $rp->id ? 'active' : '' }}">
+                                        <a href="{{ url('product/' . $rp->slug) }}">
+                                            <div class="rashi-img-wrapper">
+                                                <img src="{{ asset($rp->main_image) }}"
+                                                    class="w-100 h-100 object-fit-cover" alt="{{ $rp->name }}">
+                                            </div>
+                                            <span>{{ Str::before($rp->name, ' ') }}</span>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="d-flex gap-3 mb-4">
                         <button class="btn btn-warning w-50 py-3 fw-bold text-dark text-uppercase shadow-sm fs-6"
@@ -1327,7 +1454,8 @@
                                                 style="z-index: 0;">
                                                 <span class="text-secondary fw-bold"
                                                     style="font-size: 12px; letter-spacing: 1px;">SIZE</span><br>
-                                                <span class="fs-1 fw-bold text-dark" id="displaySize" style="line-height: 1;">10</span>
+                                                <span class="fs-1 fw-bold text-dark" id="displaySize"
+                                                    style="line-height: 1;">10</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1382,7 +1510,8 @@
                                         <div class="step-text">
                                             <p>Wrap a string around your finger, mark the overlap, measure the length in
                                                 <strong>mm</strong> and
-                                                enter below.</p>
+                                                enter below.
+                                            </p>
                                         </div>
                                         <div class="step-text">
                                             <h3>Step 1</h3>
@@ -1404,8 +1533,8 @@
                                         <span class="input-group-text bg-white border-end-0"><i
                                                 class="las la-tape text-muted"></i></span>
                                         <input type="number" id="manualInput"
-                                            class="form-control border-start-0 py-2 fs-5" placeholder="Enter circumference mm"
-                                            oninput="calculateFromInput()">
+                                            class="form-control border-start-0 py-2 fs-5"
+                                            placeholder="Enter circumference mm" oninput="calculateFromInput()">
                                         <span class="input-group-text bg-white">mm</span>
                                     </div>
 

@@ -275,7 +275,15 @@ class ProductListingController extends Controller
             ->where('id', '!=', $product->id)
             ->take(8)->get();
 
-        return view('frontend.pages.product_detail', compact('product', 'relatedProducts', 'categories', 'reviews', 'totalReviews', 'averageRating', 'starCounts'));
+        $rashiProducts = [];
+        if ($product->category && str_contains(strtolower($product->category->name), 'rashi')) {
+            $rashiProducts = Product::where('category_id', $product->category_id)
+                ->where('status', 1)
+                ->select('id', 'name', 'slug', 'main_image') // लाइटवेट क्वेरी
+                ->get();
+        }
+
+        return view('frontend.pages.product_detail', compact('product', 'relatedProducts', 'categories', 'reviews', 'totalReviews', 'averageRating', 'starCounts', 'rashiProducts'));
     }
 
     public function searchListing(Request $request)
