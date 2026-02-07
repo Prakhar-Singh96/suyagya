@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                                                                                                border: 1px solid #eee;
-                                                                                                padding: 15px;
-                                                                                                border-radius: 8px;
-                                                                                                margin-bottom: 20px;
-                                                                                                background-color: #f7f1de;
-                                                                                            } */
+                                                                                                            border: 1px solid #eee;
+                                                                                                            padding: 15px;
+                                                                                                            border-radius: 8px;
+                                                                                                            margin-bottom: 20px;
+                                                                                                            background-color: #f7f1de;
+                                                                                                        } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -351,49 +351,74 @@
         .shop-by-rashi-container {
             border: 1px solid #fcebb6;
             background-color: #fffdf5;
-            border-radius: 12px;
+            border-radius: 16px;
+            /* प्रीमियम राउंडेड कॉर्नर्स */
             padding: 15px;
             margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            /* हल्का प्रीमियम शैडो */
         }
 
         .rashi-grid {
-            display: flex;
-            flex-wrap: wrap;
-            /* हमेशा रैप होगा */
-            gap: 10px;
-            height: 105px;
-            /* 🚀 सिर्फ एक लाइन दिखाने के लिए फिक्स्ड हाइट */
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            /* एक लाइन में 4 बराबर कॉलम */
+            gap: 12px;
+            /* बराबर गैप */
+            max-height: 110px;
+            /* 🚀 पहली लाइन के लिए परफेक्ट हाइट */
             overflow: hidden;
-            /* बाकी राशियाँ छुप जाएँगी */
-            transition: all 0.5s ease;
-            /* स्मूथ खुलने के लिए */
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            /* स्मूथ प्रीमियम स्लाइड */
         }
 
-        /* 🚀 जब 'expanded' क्लास लगेगी, तो हाइट बढ़ जाएगी */
         .rashi-grid.expanded {
-            height: auto;
-            /* या 350px (पूरी ग्रिड दिखाने के लिए) */
+            max-height: 400px;
+            /* खुलने पर ग्रिड की हाइट */
         }
 
         .rashi-item {
-            width: calc(25% - 8px);
-            /* मोबाइल पर एक लाइन में 4 */
             text-align: center;
-            margin-bottom: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .rashi-item:active {
+            transform: scale(0.95);
+            /* क्लिक करने पर हल्का सा दबेगा */
         }
 
         .rashi-img-wrapper {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            border: 2px solid #eee;
+            border: 1.5px solid #eee;
             background: #fff;
-            margin: 0 auto 5px;
+            margin: 0 auto 6px;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s;
         }
 
         .rashi-item.active .rashi-img-wrapper {
-            border-color: #ff6f00;
-            box-shadow: 0 0 5px rgba(255, 111, 0, 0.2);
+            border: 2px solid #ff6f00;
+            /* एक्टिव राशि के लिए ऑरेंज बॉर्डर */
+            background: #fffcf5;
+        }
+
+        .rashi-item span {
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+            display: block;
+            font-family: 'Merriweather', serif;
+        }
+
+        /* 🚀 View More / Less बटन प्रीमियम स्टाइल */
+        .view-toggle-container {
+            text-align: right;
+            margin-top: 5px;
         }
 
         .view-toggle-btn {
@@ -401,7 +426,17 @@
             color: #ff6f00;
             font-weight: bold;
             font-size: 13px;
-            text-decoration: underline;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #fff4e5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+
+        .view-toggle-btn:hover {
+            background: #ffe8cc;
         }
     </style>
 @endsection
@@ -792,26 +827,29 @@
                     </div>
                     {{-- ♈ SHOP BY RASHI SECTION --}}
                     @if (count($rashiProducts) > 0)
-                        <div class="shop-by-rashi-container shadow-sm">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="fw-bold m-0" style="font-family: 'Merriweather', serif;">Shop by Rashi</h6>
-                                <span id="rashiViewToggle" class="view-toggle-btn">View more »</span>
-                            </div>
+                        <div class="shop-by-rashi-container">
+                            <h6 class="fw-bold mb-3" style="font-family: 'Merriweather', serif; color: #333;">Shop by
+                                Rashi</h6>
 
                             <div id="rashiGrid" class="rashi-grid">
                                 @foreach ($rashiProducts as $rp)
                                     <div class="rashi-item {{ $product->id == $rp->id ? 'active' : '' }}">
                                         <a href="{{ url('product/' . $rp->slug) }}" class="text-decoration-none">
-                                            <div class="rashi-img-wrapper">
-                                                <img src="{{ asset($rp->main_image) }}"
+                                            <div class="rashi-img-wrapper shadow-sm">
+                                                <img src="{{ asset($rp->product_main_image) }}"
                                                     class="w-100 h-100 object-fit-cover rounded-circle"
                                                     alt="{{ $rp->name }}">
                                             </div>
-                                            <span
-                                                class="small text-dark fw-bold d-block">{{ Str::before($rp->name, ' ') }}</span>
+                                            <span>{{ Str::before($rp->name, ' ') }}</span>
                                         </a>
                                     </div>
                                 @endforeach
+                            </div>
+
+                            <div class="view-toggle-container">
+                                <span id="rashiViewToggle" class="view-toggle-btn">
+                                    View more <i class="las la-angle-down"></i>
+                                </span>
                             </div>
                         </div>
                     @endif
@@ -2319,9 +2357,9 @@
                     grid.classList.toggle('expanded');
 
                     if (grid.classList.contains('expanded')) {
-                        btn.innerHTML = 'View less «';
+                        btn.innerHTML = 'View less <i class="las la-angle-up"></i>';
                     } else {
-                        btn.innerHTML = 'View more »';
+                        btn.innerHTML = 'View more <i class="las la-angle-down"></i>';
                     }
                 });
             }
