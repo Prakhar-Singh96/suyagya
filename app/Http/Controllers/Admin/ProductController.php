@@ -283,7 +283,7 @@ class ProductController extends Controller
                 }
 
                 $file = $request->file('product_main_image');
-                $data['product_main_image'] = $this->uploadAndResize($file, 'uploads/products/main/product', 1080, 1080);
+                $product->product_main_image = $this->uploadAndResize($file, 'uploads/products/main/product', 1080, 1080);
 
                 // 🚀 AUTO OG UPDATE: Agar naya main image dala hai, aur OG explicitly nahi dala
                 if (!$request->hasFile('og_image')) {
@@ -292,7 +292,7 @@ class ProductController extends Controller
                         File::delete(public_path($product->og_image));
                     }
                     // Naya banao 1200x630
-                    $data['og_image'] = $this->uploadAndResize($file, 'uploads/products/og', 1200, 630);
+                    $product->og_image = $this->uploadAndResize($file, 'uploads/products/og', 1200, 630);
                 }
             }
 
@@ -301,7 +301,7 @@ class ProductController extends Controller
                 if ($product->main_image && File::exists(public_path($product->main_image))) {
                     File::delete(public_path($product->main_image));
                 }
-                $data['main_image'] = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 600, 600);
+                $product->main_image = $this->uploadAndResize($request->file('main_image'), 'uploads/products/main', 600, 600);
             }
 
             // 3. OG Image Manual Update (1200x630)
@@ -309,10 +309,11 @@ class ProductController extends Controller
                 if ($product->og_image && File::exists(public_path($product->og_image))) {
                     File::delete(public_path($product->og_image));
                 }
-                $data['og_image'] = $this->uploadAndResize($request->file('og_image'), 'uploads/products/og', 1200, 630);
+                $product->og_image = $this->uploadAndResize($request->file('og_image'), 'uploads/products/og', 1200, 630);
             }
 
-            $product->update($data);
+            $product->fill($data);
+            $product->save(); // 👈 यहाँ इमेज पाथ सुरक्षित रहेंगे
 
             // Update Categories
             if ($request->has('additional_cats')) {
