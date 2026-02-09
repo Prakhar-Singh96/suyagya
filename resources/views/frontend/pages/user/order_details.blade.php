@@ -27,6 +27,12 @@
                                     <h6 class="mb-1 fw-bold text-dark">{{ $item->product_name }}</h6>
                                     <div class="small text-muted mb-2">
                                         <span>Qty: {{ $item->quantity }}</span>
+                                        {{-- 🚀 नया: वजन (Weight) यहाँ दिखाएँ --}}
+                                        @if ($item->weight)
+                                            <span class="ms-3 border-start ps-3 text-dark"><strong>Weight:</strong>
+                                                {{ $item->weight }}</span>
+                                        @endif
+
                                         @if ($item->ring_size)
                                             <span class="ms-3 border-start ps-3 text-dark"><strong>Size:</strong>
                                                 {{ $item->ring_size }}</span>

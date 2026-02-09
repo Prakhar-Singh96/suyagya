@@ -365,7 +365,7 @@
             /* एक लाइन में 4 बराबर कॉलम */
             gap: 12px;
             /* बराबर गैप */
-            max-height: 110px;
+            max-height: 90px;
             /* 🚀 पहली लाइन के लिए परफेक्ट हाइट */
             overflow: hidden;
             transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -436,7 +436,7 @@
         }
 
         .view-toggle-btn:hover {
-            background: #ffe8cc;
+            background: #522e03;
         }
     </style>
 @endsection

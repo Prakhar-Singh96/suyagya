@@ -35,6 +35,9 @@
                                                         ₹{{ number_format($item->siddh_amount) }} Energization
                                                         Charge</small>
                                                 @endif
+                                                @if ($item->weight)
+                                                    <span class="badge badge-info">W: {{ $item->weight }}</span>
+                                                @endif
                                                 @if ($item->ring_size)
                                                     <span class="badge bg-label-secondary small">Size:
                                                         {{ $item->ring_size }}</span>

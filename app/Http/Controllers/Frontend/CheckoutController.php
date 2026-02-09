@@ -180,6 +180,14 @@ class CheckoutController extends Controller
 
         if ($request->buy_mode == 'direct') {
             $product = Product::findOrFail($request->product_id);
+            // 🚀 वजन (Weight) निकालें अगर variant_id भेजा गया है
+            $weight = null;
+            if ($request->variant_id) {
+                $variant = \App\Models\ProductVariant::find($request->variant_id);
+                if ($variant) {
+                    $weight = $variant->weight . 'g'; // वजन जैसे '50g'
+                }
+            }
             $qty = $request->quantity;
             // 🔥 सिद्धार्थ अमाउंट अलग से कैलकुलेट करें
             $isSiddh = $request->is_siddh ?? 0;
@@ -199,10 +207,11 @@ class CheckoutController extends Controller
                 'mrp_price'    => round($product->mrp_price ?? $product->price), // 👈 शुद्ध MRP
                 'is_siddh'     => $isSiddh,
                 'siddh_amount' => $siddhAmountPerItem, // 👈 अलग से सिद्धार्थ चार्ज
-                'ring_size'    => $request->ring_size
+                'ring_size'    => $request->ring_size,
+                'weight'       => $weight // 👈 यहाँ वजन सेव होगा
             ];
         } else {
-            $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
+            $cartItems = Cart::with('product', 'variant')->where('user_id', $user->id)->get();
             foreach ($cartItems as $item) {
                 $qty = $item->quantity;
                 $isSiddh = $item->is_siddh ?? 0;
@@ -222,7 +231,8 @@ class CheckoutController extends Controller
                     'mrp_price'    => round($item->product->mrp_price ?? $item->product->price),
                     'is_siddh'     => $isSiddh,
                     'siddh_amount' => $siddhAmountPerItem,
-                    'ring_size'    => $item->ring_size
+                    'ring_size'    => $item->ring_size,
+                    'weight'       => $item->variant ? $item->variant->weight . 'g' : null // 👈 कार्ट में सेव वजन
                 ];
             }
         }
