@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\UserDetail;
+use App\Models\UserAddress;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'user_type', // admin, staff, seller, customer
         'status',    // active, pending, inactive
         'phone',
+        'wallet_balance'
     ];
 
     protected $hidden = [
@@ -43,5 +45,15 @@ class User extends Authenticatable
     public function addresses()
     {
         return $this->hasMany(UserAddress::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(WalletTransaction::class);
+    }
+
+    public function referralCoupon()
+    {
+        return $this->hasOne(ReferralCoupon::class);
     }
 }

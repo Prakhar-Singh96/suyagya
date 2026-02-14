@@ -205,6 +205,21 @@
                     <div id="coupon_list_box" class="mt-2 border rounded bg-white shadow-sm p-2"
                         style="display: none; max-height: 200px; overflow-y: auto;"></div>
 
+                    {{-- 🔥 3. REFERRAL CODE SECTION (नया हिस्सा) --}}
+                    <div class="mt-3 pt-2 border-top">
+                        <label class="form-label small fw-bold text-dark">
+                            <i class="las la-user-friends text-info fs-5 me-1"></i> Referral Code (Optional)
+                        </label>
+                        <div class="input-group input-group-sm shadow-sm">
+                            {{-- यह इनपुट यूजर से कोड लेगा --}}
+                            <input type="text" name="referral_code" id="referral_code_input"
+                                class="form-control ps-3" placeholder="Enter Friend's Referral Code"
+                                onkeyup="$('#final_referral_code').val(this.value)">
+                        </div>
+                        <span id="referral_err_msg" class="text-danger fw-bold"
+                            style="font-size: 11px; display: block; margin-top: 5px;"></span>
+                    </div>
+
                 </div>
 
 
@@ -376,7 +391,47 @@
 
                 <div id="step_payment" style="display: none;">
 
-                    <h6 class="fw-bold mb-3">Select Payment Method</h6>
+                    <div id="wallet_selection_area" style="display: none;">
+                        @if (Auth::check() && Auth::user()->wallet_balance > 0)
+                            <div class="wallet-container mb-3 px-1">
+                                <div class="card border-0 shadow-sm overflow-hidden"
+                                    style="border-radius: 12px; background: #fffcf0; border: 1px solid #ffeeba !important;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <div class="coin-icon-wrapper me-3">
+                                                    <i class="las la-coins fs-2 text-warning animate__animated animate__infinite animate__pulse"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 13px;">Use
+                                                        Suyagya Coins</h6>
+                                                    <small class="text-muted" style="font-size: 11px;">You have <b>{{ number_format(Auth::user()->wallet_balance) }}</b> coins available</small>
+                                                </div>
+                                            </div>
+                                            <div class="form-check form-switch m-0">
+                                                <input class="form-check-input custom-switch" type="checkbox"
+                                                    id="use_coins_switch" onchange="calculateFinalTotal()"
+                                                    style="width: 2.8rem; height: 1.4rem; cursor:pointer;">
+                                            </div>
+                                        </div>
+
+                                        <div id="wallet_applied_details"
+                                            class="mt-2 pt-2 border-top border-warning-subtle"
+                                            style="display: none !important;">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center text-success fw-bold small">
+                                                <span><i class="las la-check-circle"></i> Coins Applied</span>
+                                                <span id="bill_coin_discount">- ₹0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    <h6 class="fw-bold mb-3 text-dark small text-uppercase" style="letter-spacing: 1px;">Select
+                        Payment Method</h6>
 
                     <form id="finalPaymentForm" onsubmit="event.preventDefault(); processPayment();">
 
@@ -397,6 +452,9 @@
 
                         {{-- Existing Coupon Input (For Admin Coupons) --}}
                         <input type="hidden" name="coupon_code" id="final_coupon_code">
+
+                        <input type="hidden" name="referral_code" id="final_referral_code">
+                        <input type="hidden" name="use_coins" id="final_use_coins" value="0">
 
 
 

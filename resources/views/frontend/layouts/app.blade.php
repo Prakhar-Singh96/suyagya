@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="is-logged-in" content="{{ Auth::check() ? '1' : '0' }}">
+    <meta name="user-wallet" content="{{ Auth::check() ? Auth::user()->wallet_balance : 0 }}">
 
     {{-- 🚀 PERFORMANCE: GTM Script yahan se hata kar niche Footer me daal diya hai --}}
 
@@ -255,9 +256,22 @@
     @endif
 
 
-    <div id="chat-launcher" onclick="toggleChat()"
-        style="position:fixed; bottom:90px; right:20px; background:#673ab7; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:99; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-        <i class="las la-robot" style="font-size: 30px;"></i>
+    <div id="chat-launcher" onclick="toggleChat()" class="astro-bounce"
+        style="position:fixed; bottom:90px; right:20px; width:75px; height:75px; cursor:pointer; z-index:99;">
+
+        <div style="position: relative; width: 100%; height: 100%;">
+            <div
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: radial-gradient(circle, #ff9800 0%, rgba(255,152,0,0) 70%); border-radius: 50%; z-index: -1; animation: pulse-glow 2s infinite;">
+            </div>
+
+            <img src="{{ asset('assets/img/pandit-icon.png') }}" alt="Astro Pandit"
+                style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));">
+
+            <span
+                style="position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); background: #673ab7; color: white; font-size: 10px; padding: 2px 10px; border-radius: 10px; white-space: nowrap; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3);">
+                Astro AI
+            </span>
+        </div>
     </div>
 
     <div id="astro-chat-window"
@@ -374,6 +388,51 @@
             background: #673ab7;
             border-radius: 10px;
         }
+
+        /* 🚀 नया एनीमेशन: ऊपर-नीचे तैरना और हल्का सा बढ़ना */
+        @keyframes astro-bounce {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-12px) scale(1.05);
+                /* ऊपर जाएगा और थोड़ा बड़ा होगा */
+            }
+        }
+
+        .astro-bounce {
+            animation: astro-bounce 3s ease-in-out infinite;
+            /* यह लगातार चलता रहेगा */
+        }
+
+        /* पीछे का चमकना (Pulsing Glow) */
+        @keyframes pulse-glow {
+            0% {
+                transform: translate(-50%, -50%) scale(0.7);
+                opacity: 0.4;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(0.7);
+                opacity: 0.4;
+            }
+        }
+
+        /* माउस ले जाने पर रुककर बड़ा होना */
+        #chat-launcher:hover {
+            animation-play-state: paused;
+            /* एनीमेशन रुक जाएगा */
+            transform: scale(1.15) !important;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
     </style>
 
     {{-- ✅ WHATSAPP FLOATING BUTTON START --}}
@@ -474,7 +533,7 @@
             width: 60px;
             height: 60px;
             bottom: 20px;
-            right: 20px;
+            right: 25px;
             background-color: #25d366;
             color: #FFF;
             border-radius: 50px;
@@ -531,7 +590,7 @@
                 width: 60px;
                 height: 60px;
                 bottom: 20px;
-                right: 20px;
+                right: 25px;
                 font-size: 28px;
             }
         }

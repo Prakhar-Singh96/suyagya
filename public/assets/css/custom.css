@@ -3605,3 +3605,33 @@ html {
 .filter-item {
     transition: opacity 0.3s ease;
 }
+
+.wallet-container .card {
+    transition: all 0.3s ease;
+}
+
+.wallet-container .form-check-input:checked {
+    background-color: #ffc107;
+    border-color: #ffb300;
+}
+
+.wallet-container .form-check-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+}
+
+.wallet-container .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+
+.coin-icon-wrapper i {
+    filter: drop-shadow(0px 2px 4px rgba(255, 193, 7, 0.4));
+}
+
+#bill_coin_discount {
+    animation: fadeInDown 0.4s ease;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

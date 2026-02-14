@@ -29,6 +29,7 @@ use App\Http\Controllers\Frontend\SitemapController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\FilterValueController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\WalletAdminController;
 use App\Http\Controllers\Frontend\Auth\OtpController;
 use App\Http\Controllers\Frontend\BlogPageController;
 use App\Http\Controllers\Frontend\CheckoutController;
@@ -155,6 +156,9 @@ Route::middleware(['auth'])->group(function () {
 
     // 🟢 New Route for Order Details
     Route::get('/orders/{id}', [App\Http\Controllers\Frontend\UserController::class, 'orderDetails'])->name('user.order_details');
+    Route::get('/my-wallet', [UserController::class, 'wallet'])->name('user.wallet');
+    Route::get('/submit-reel', [UserController::class, 'submitReelForm'])->name('user.submit_reel');
+    Route::post('/store-reel', [UserController::class, 'storeReelLink'])->name('user.store_reel');
 
     // Route::get('/profile', [App\Http\Controllers\Frontend\UserController::class, 'profile'])->name('user.profile');
 
@@ -239,6 +243,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // Cancel
             Route::post('/cancel/{id}', [LogisticController::class, 'cancelShipment'])->name('cancel');
+        });
+
+        // 💰 Wallet & Cashback Management
+        Route::group(['prefix' => 'wallet', 'as' => 'wallet.'], function () {
+            Route::get('/pending-cashbacks', [WalletAdminController::class, 'pendingCashbacks'])->name('pending');
+            Route::post('/approve/{id}', [WalletAdminController::class, 'approveCashback'])->name('approve');
         });
 
 

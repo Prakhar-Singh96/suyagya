@@ -102,6 +102,35 @@
                         @endif
                     </div>
                 </div>
+
+                {{-- 🚫 CANCEL ORDER SECTION --}}
+                @if (!in_array($order->status, ['shipped', 'delivered', 'cancelled']))
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-danger mb-2">Need to cancel?</h6>
+                            {{-- <p class="small text-muted mb-3">You can cancel this order before it is shipped.</p> --}}
+
+                            <form id="cancelOrderForm">
+                                @csrf
+                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                <button type="button" onclick="confirmCancellation()" id="btn_cancel_order"
+                                    class="btn btn-outline-danger w-100 fw-bold rounded-pill">
+                                    <i class="las la-times-circle"></i> Cancel Order
+                                </button>
+                            </form>
+
+                            @if ($order->payment_status == 'paid')
+                                <div class="alert alert-info mt-3 py-2 px-3 small border-0 mb-0"
+                                    style="border-radius: 10px;">
+                                    <i class="las la-info-circle"></i>
+                                    <strong>Refund Info:</strong> Since this is a paid order, your refund will be initiated
+                                    to
+                                    your original payment method.
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="col-lg-4">
@@ -123,7 +152,7 @@
                             $productDiscount = $order->mrp_total - $sellingPriceSubtotal;
                         @endphp
                         @if ($productDiscount > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-success">
+                            <div class="d-flex justify-content-between mb-2 small text-success fw-bold">
                                 <span>Product Discount</span>
                                 <span>- ₹{{ number_format($productDiscount, 2) }}</span>
                             </div>
@@ -131,7 +160,7 @@
 
                         {{-- 🎁 Admin Coupon --}}
                         @if ($order->coupon_discount > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-primary">
+                            <div class="d-flex justify-content-between mb-2 small text-danger fw-bold">
                                 <span>Coupon ({{ $order->coupon_code }})</span>
                                 <span>- ₹{{ number_format($order->coupon_discount, 2) }}</span>
                             </div>
@@ -139,7 +168,7 @@
 
                         {{-- 🎮 Gaming Reward --}}
                         @if ($order->gaming_discount > 0)
-                            <div class="d-flex justify-content-between mb-2 small fw-bold text-info">
+                            <div class="d-flex justify-content-between mb-2 small text-danger fw-bold">
                                 <span>Game Reward</span>
                                 <span>- ₹{{ number_format($order->gaming_discount, 2) }}</span>
                             </div>
@@ -147,9 +176,16 @@
 
                         {{-- 🚀 नया: प्रीपेड डिस्काउंट रो --}}
                         @if (isset($order->prepaid_discount) && $order->prepaid_discount > 0)
-                            <div class="d-flex justify-content-between mb-2 small text-success fw-bold">
+                            <div class="d-flex justify-content-between mb-2 small text-danger fw-bold">
                                 <span>Prepaid Order Discount</span>
                                 <span>- ₹{{ number_format($order->prepaid_discount, 2) }}</span>
+                            </div>
+                        @endif
+
+                        @if (isset($order->wallet_amount) && $order->wallet_amount > 0)
+                            <div class="d-flex justify-content-between mb-2 small text-success fw-bold">
+                                <span>Use Coin</span>
+                                <span>- {{ number_format($order->wallet_amount, 2) }}</span>
                             </div>
                         @endif
 
@@ -206,32 +242,6 @@
                     </div>
                 </div>
             </div>
-            {{-- 🚫 CANCEL ORDER SECTION --}}
-            @if (!in_array($order->status, ['shipped', 'delivered', 'cancelled']))
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <h6 class="fw-bold text-danger mb-2">Need to cancel?</h6>
-                        {{-- <p class="small text-muted mb-3">You can cancel this order before it is shipped.</p> --}}
-
-                        <form id="cancelOrderForm">
-                            @csrf
-                            <input type="hidden" name="order_id" value="{{ $order->id }}">
-                            <button type="button" onclick="confirmCancellation()" id="btn_cancel_order"
-                                class="btn btn-outline-danger w-100 fw-bold rounded-pill">
-                                <i class="las la-times-circle"></i> Cancel Order
-                            </button>
-                        </form>
-
-                        @if ($order->payment_status == 'paid')
-                            <div class="alert alert-info mt-3 py-2 px-3 small border-0 mb-0" style="border-radius: 10px;">
-                                <i class="las la-info-circle"></i>
-                                <strong>Refund Info:</strong> Since this is a paid order, your refund will be initiated to
-                                your original payment method.
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 @endsection

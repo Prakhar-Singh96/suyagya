@@ -13,8 +13,8 @@ class Order extends Model
 
     protected $fillable = [
         'order_number', 'rzp_order_id', 'rzp_payment_id', 'rzp_signature', 'user_id', 'shipping_address',
-        'total_amount', 'mrp_total', 'coupon_discount',
-        'gaming_discount', 'prepaid_discount', 'coupon_code', 'payment_method',
+        'total_amount', 'mrp_total', 'coupon_discount', 'reel_link', 'cashback_status', 'refer_code_used',
+        'gaming_discount', 'prepaid_discount', 'wallet_amount', 'coupon_code', 'payment_method',
         'payment_status', 'status'
     ];
 

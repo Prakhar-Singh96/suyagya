@@ -138,6 +138,22 @@
             </ul>
         </li>
 
+        {{-- 💰 WALLET & CASHBACK MODULE --}}
+        <li class="menu-item {{ request()->is('admin/wallet*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-wallet"></i>
+                <div>Wallet & Cashback</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->routeIs('admin.wallet.pending') ? 'active' : '' }}">
+                    <a href="{{ route('admin.wallet.pending') }}" class="menu-link">
+                        <div>Pending Reels</div>
+                        {{-- Optional: Yahan Badge dikha sakte hain agar count pass karein --}}
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         {{-- ✨ NEW LOGISTIC MODULE HERE ✨ --}}
         <li class="menu-item {{ request()->is('admin/logistic*') ? 'active' : '' }}">
             <a href="{{ route('admin.logistic.index') }}" class="menu-link">
