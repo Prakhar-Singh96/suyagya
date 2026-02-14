@@ -71,12 +71,21 @@ class ProductListingController extends Controller
 
         // 2. Standard Filters
         if ($request->filled('filter')) {
+            $allSelectedIds = [];
             foreach ($request->filter as $filterId => $valueIds) {
                 if (!empty($valueIds)) {
-                    $query->whereHas('filterValues', function ($q) use ($valueIds) {
-                        $q->whereIn('filter_values.id', $valueIds);
-                    });
+                    // $query->whereHas('filterValues', function ($q) use ($valueIds) {
+                    //     $q->whereIn('filter_values.id', $valueIds);
+                    // });
+                    $allSelectedIds = array_merge($allSelectedIds, (array)$valueIds);
                 }
+            }
+
+            if (!empty($allSelectedIds)) {
+                // सिर्फ एक बार 'whereHas' चलाएं ताकि 'OR' लॉजिक काम करे
+                $query->whereHas('filterValues', function ($q) use ($allSelectedIds) {
+                    $q->whereIn('filter_values.id', $allSelectedIds);
+                });
             }
         }
 
@@ -132,55 +141,48 @@ class ProductListingController extends Controller
     // 🟢 3. GET DYNAMIC SIDEBAR FILTERS (Helper)
     private function getDynamicFilters($context = [])
     {
+        // 1. सिर्फ वही Filters लाओ जिनके पास ऐसी Values हैं जो Products से जुड़ी हैं
         return Filter::whereHas('filterValues.products', function ($q) use ($context) {
             $q->where('status', 1);
-
-            // Updated logic for dynamic filters too
-            if (isset($context['category_id'])) {
-                $catId = $context['category_id'];
-                $q->where(function ($subQ) use ($catId) {
-                    $subQ->where('category_id', $catId)
-                        ->orWhereHas('additionalCategories', function ($deepQ) use ($catId) {
-                            $deepQ->where('categories.id', $catId);
-                        });
-                });
-            }
-            if (isset($context['sub_category_id'])) {
-                $subCatId = $context['sub_category_id'];
-                $q->where(function ($subQ) use ($subCatId) {
-                    $subQ->where('sub_category_id', $subCatId)
-                        ->orWhereHas('additionalSubCategories', function ($deepQ) use ($subCatId) {
-                            $deepQ->where('sub_categories.id', $subCatId);
-                        });
-                });
-            }
+            $this->applyCategoryContext($q, $context); // Helper use करेंगे context के लिए
         })
             ->with(['filterValues' => function ($q) use ($context) {
-                $q->withCount(['products' => function ($sq) use ($context) {
+                // 🚀 मुख्य सुधार: सिर्फ वही FilterValues लाओ जो प्रोडक्ट्स में सिलेक्टेड हैं
+                $q->whereHas('products', function ($sq) use ($context) {
                     $sq->where('status', 1);
-
-                    if (isset($context['category_id'])) {
-                        $catId = $context['category_id'];
-                        $sq->where(function ($subQ) use ($catId) {
-                            $subQ->where('category_id', $catId)
-                                ->orWhereHas('additionalCategories', function ($deepQ) use ($catId) {
-                                    $deepQ->where('categories.id', $catId);
-                                });
-                        });
-                    }
-
-                    if (isset($context['sub_category_id'])) {
-                        $subCatId = $context['sub_category_id'];
-                        $sq->where(function ($subQ) use ($subCatId) {
-                            $subQ->where('sub_category_id', $subCatId)
-                                ->orWhereHas('additionalSubCategories', function ($deepQ) use ($subCatId) {
-                                    $deepQ->where('sub_categories.id', $subCatId);
-                                });
-                        });
-                    }
-                }]);
+                    $this->applyCategoryContext($sq, $context);
+                })
+                    // साथ में काउंट भी वही लाओ जो कैटेगरी के हिसाब से सही हो
+                    ->withCount(['products' => function ($sq) use ($context) {
+                        $sq->where('status', 1);
+                        $this->applyCategoryContext($sq, $context);
+                    }]);
             }])
             ->get();
+    }
+
+    // 🟢 कोड को साफ़ रखने के लिए एक Helper Function (Category Logic repeat न करना पड़े)
+    private function applyCategoryContext($query, $context)
+    {
+        if (isset($context['category_id'])) {
+            $catId = $context['category_id'];
+            $query->where(function ($subQ) use ($catId) {
+                $subQ->where('category_id', $catId)
+                    ->orWhereHas('additionalCategories', function ($deepQ) use ($catId) {
+                        $deepQ->where('categories.id', $catId);
+                    });
+            });
+        }
+
+        if (isset($context['sub_category_id'])) {
+            $subCatId = $context['sub_category_id'];
+            $query->where(function ($subQ) use ($subCatId) {
+                $subQ->where('sub_category_id', $subCatId)
+                    ->orWhereHas('additionalSubCategories', function ($deepQ) use ($subCatId) {
+                        $deepQ->where('sub_categories.id', $subCatId);
+                    });
+            });
+        }
     }
 
     // =========================================================
