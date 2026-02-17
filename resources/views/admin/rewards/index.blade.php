@@ -53,7 +53,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-3">{{ $affiliates->links() }}</div>
+                <div class="card-footer d-flex justify-content-end">
+                    {{ $affiliates->links('pagination::bootstrap-5') }}
+                </div>
             </div>
 
             {{-- ⚪ Tab 2: Normal Customers (Read-Only Balance) --}}
@@ -78,7 +80,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-3">{{ $customers->links() }}</div>
+                <div class="card-footer d-flex justify-content-end">
+                    {{ $customers->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>
