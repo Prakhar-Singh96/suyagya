@@ -1,44 +1,45 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\TrackingController;
-use App\Http\Controllers\AstroChatController;
-use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminReviewController;
+use App\Http\Controllers\Admin\AffiliateRewardController;
+use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\FilterController;
-use App\Http\Controllers\Frontend\FaqController;
+use App\Http\Controllers\Admin\FilterValueController;
+use App\Http\Controllers\Admin\GeneralFaqController;
+use App\Http\Controllers\Admin\HomePageSettingController;
+use App\Http\Controllers\Admin\LogisticController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\RedirectController;
+use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\WalletAdminController;
+use App\Http\Controllers\AstroChatController;
+use App\Http\Controllers\Frontend\Auth\OtpController;
+use App\Http\Controllers\Frontend\BlogPageController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\FaqController;
 use App\Http\Controllers\Frontend\GameController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
-use App\Http\Controllers\Frontend\UserController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CustomerController;
-use App\Http\Controllers\Admin\LogisticController;
-use App\Http\Controllers\Admin\RedirectController;
+use App\Http\Controllers\Frontend\ProductListingController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Frontend\SearchController;
-use App\Http\Controllers\Admin\GeneralFaqController;
 use App\Http\Controllers\Frontend\SitemapController;
-use App\Http\Controllers\Admin\AdminReviewController;
-use App\Http\Controllers\Admin\FilterValueController;
-use App\Http\Controllers\Admin\SubCategoryController;
-use App\Http\Controllers\Admin\WalletAdminController;
-use App\Http\Controllers\Frontend\Auth\OtpController;
-use App\Http\Controllers\Frontend\BlogPageController;
-use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WishlistController;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\HomePageSettingController;
-use App\Http\Controllers\Frontend\ProductListingController;
-use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Seller\Auth\LoginController as SellerLoginController;
+use App\Http\Controllers\TrackingController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -225,6 +226,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/redirects', [RedirectController::class, 'index'])->name('redirects.index');
         Route::post('/redirects/store', [RedirectController::class, 'store'])->name('redirects.store');
         Route::delete('/redirects/{id}', [RedirectController::class, 'destroy'])->name('redirects.destroy');
+
+        // Reward & Wallet Routes
+        Route::get('rewards', [AffiliateRewardController::class, 'index'])->name('rewards.index');
+        Route::post('rewards/payout/{id}', [AffiliateRewardController::class, 'settlePayout'])->name('rewards.payout');
+
+        // Referral Logs Route
+        Route::get('referral-logs', [AffiliateRewardController::class, 'referralLogs'])->name('referrals.logs');
 
         // Admin Middleware Group ke andar
         Route::group(['prefix' => 'logistic', 'as' => 'logistic.'], function () {

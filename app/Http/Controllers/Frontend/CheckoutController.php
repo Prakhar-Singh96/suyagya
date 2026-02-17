@@ -338,35 +338,7 @@ class CheckoutController extends Controller
             if ($request->buy_mode == 'cart') Cart::where('user_id', $user->id)->delete();
             // 2. 🚀 REFERRAL REWARD: प्रखर को 25 सिक्के दें (अगर अभिषेक ने उसका कोड यूज़ किया है)
             if ($order->refer_code_used) {
-                $referrerCoupon = \App\Models\ReferralCoupon::where('code', $order->refer_code_used)->first();
-                if ($referrerCoupon) {
-                    $referrer = $referrerCoupon->user;
-
-                    $cashbackAmount = round($order->total_amount * 0.05);
-
-                    if ($cashbackAmount > 0) {
-                        // --- 1. प्रखर को 5% रिवॉर्ड मिला ---
-                        $referrer->increment('wallet_balance', $cashbackAmount);
-                        \App\Models\WalletTransaction::create([
-                            'user_id'     => $referrer->id,
-                            'order_id'    => $order->id,
-                            'amount'      => $cashbackAmount,
-                            'type'        => 'credit',
-                            'description' => '5% Referral Reward from ' . $user->name . '\'s order'
-                        ]);
-
-                        // --- 2. यूजर (अभिषेक) को भी 5% रिवॉर्ड मिला ---
-                        /** @var \App\Models\User $user */
-                        $user->increment('wallet_balance', $cashbackAmount);
-                        \App\Models\WalletTransaction::create([
-                            'user_id'     => $user->id,
-                            'order_id'    => $order->id,
-                            'amount'      => $cashbackAmount,
-                            'type'        => 'credit',
-                            'description' => '5% Cashback for using Referral Code'
-                        ]);
-                    }
-                }
+                $this->distributeReferralRewards($order);
             }
 
             // 3. 🚀 NEW COUPON: अभिषेक के लिए उसका खुद का रेफरल कोड बनाएं
@@ -431,35 +403,7 @@ class CheckoutController extends Controller
                 Cart::where('user_id', $user->id)->delete();
             }
             if ($order->refer_code_used) {
-                $referrerCoupon = \App\Models\ReferralCoupon::where('code', $order->refer_code_used)->first();
-                if ($referrerCoupon) {
-                    $referrer = $referrerCoupon->user;
-
-                    $cashbackAmount = round($order->total_amount * 0.05);
-
-                    if ($cashbackAmount > 0) {
-                        // --- 1. प्रखर को 5% रिवॉर्ड मिला ---
-                        $referrer->increment('wallet_balance', $cashbackAmount);
-                        \App\Models\WalletTransaction::create([
-                            'user_id'     => $referrer->id,
-                            'order_id'    => $order->id,
-                            'amount'      => $cashbackAmount,
-                            'type'        => 'credit',
-                            'description' => '5% Referral Reward from ' . $user->name . '\'s order'
-                        ]);
-
-                        // --- 2. यूजर (अभिषेक) को भी 5% रिवॉर्ड मिला ---
-                        /** @var \App\Models\User $user */
-                        $user->increment('wallet_balance', $cashbackAmount);
-                        \App\Models\WalletTransaction::create([
-                            'user_id'     => $user->id,
-                            'order_id'    => $order->id,
-                            'amount'      => $cashbackAmount,
-                            'type'        => 'credit',
-                            'description' => '5% Cashback for using Referral Code'
-                        ]);
-                    }
-                }
+                $this->distributeReferralRewards($order);
             }
             // 🚀 बदलाव २: आर्डर होते ही नए यूजर के लिए कोड बनाएं (Chain System)
             if (!ReferralCoupon::where('user_id', $user->id)->exists()) {
@@ -475,6 +419,44 @@ class CheckoutController extends Controller
             }
             $this->sendOrderEmail($order->id);
             return response()->json(['status' => 'success', 'message' => 'Order Placed Successfully via COD!']);
+        }
+    }
+
+    private function distributeReferralRewards($order)
+    {
+        if (!$order->refer_code_used) return;
+
+        $referrerCoupon = \App\Models\ReferralCoupon::where('code', $order->refer_code_used)->first();
+        if (!$referrerCoupon) return;
+
+        $referrer = $referrerCoupon->user;
+        $buyer = $order->user;
+
+        // 🚀 लॉजिक: अगर यूजर अफिलिएट है तो 10%, वरना 5%
+        $percentage = ($referrer->user_type == 'affiliate') ? 0.10 : 0.05;
+        $rewardAmount = round($order->total_amount * $percentage);
+
+        if ($rewardAmount > 0) {
+            // 1. Referrer (पंडित जी/Influencer) को रिवॉर्ड
+            $referrer->increment('wallet_balance', $rewardAmount);
+            \App\Models\WalletTransaction::create([
+                'user_id'     => $referrer->id,
+                'order_id'    => $order->id,
+                'amount'      => $rewardAmount,
+                'type'        => 'credit',
+                'description' => ($percentage * 100) . '% Referral Reward from ' . $buyer->name
+            ]);
+
+            // 2. Buyer (अभिषेक) को भी रिवॉर्ड (इसे आप हमेशा 5% रखना चाहें तो फिक्स कर सकते हैं)
+            $buyerReward = round($order->total_amount * 0.05);
+            $buyer->increment('wallet_balance', $buyerReward);
+            \App\Models\WalletTransaction::create([
+                'user_id'     => $buyer->id,
+                'order_id'    => $order->id,
+                'amount'      => $buyerReward,
+                'type'        => 'credit',
+                'description' => '5% Cashback for using Referral Code'
+            ]);
         }
     }
 
@@ -522,35 +504,7 @@ class CheckoutController extends Controller
             $user = Auth::user();
 
             if ($order->refer_code_used) {
-                $referrerCoupon = \App\Models\ReferralCoupon::where('code', $order->refer_code_used)->first();
-                if ($referrerCoupon) {
-                    $referrer = $referrerCoupon->user;
-
-                    $cashbackAmount = round($order->total_amount * 0.05);
-
-                    if ($cashbackAmount > 0) {
-                        // --- 1. प्रखर को 5% रिवॉर्ड मिला ---
-                        $referrer->increment('wallet_balance', $cashbackAmount);
-                        \App\Models\WalletTransaction::create([
-                            'user_id'     => $referrer->id,
-                            'order_id'    => $order->id,
-                            'amount'      => $cashbackAmount,
-                            'type'        => 'credit',
-                            'description' => '5% Referral Reward from ' . $user->name . '\'s order'
-                        ]);
-
-                        // --- 2. यूजर (अभिषेक) को भी 5% रिवॉर्ड मिला ---
-                        /** @var \App\Models\User $user */
-                        $user->increment('wallet_balance', $cashbackAmount);
-                        \App\Models\WalletTransaction::create([
-                            'user_id'     => $user->id,
-                            'order_id'    => $order->id,
-                            'amount'      => $cashbackAmount,
-                            'type'        => 'credit',
-                            'description' => '5% Cashback for using Referral Code'
-                        ]);
-                    }
-                }
+                $this->distributeReferralRewards($order);
             }
 
             // 🚀 बदलाव २: आर्डर होते ही नए यूजर के लिए कोड बनाएं (Chain System)

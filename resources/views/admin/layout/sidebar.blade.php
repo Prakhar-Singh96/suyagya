@@ -154,6 +154,26 @@
             </ul>
         </li>
 
+        <li
+            class="menu-item {{ request()->routeIs('admin.rewards.*') || request()->routeIs('admin.referrals.*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-gift"></i>
+                <div data-i18n="Rewards Management">Rewards Management</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->routeIs('admin.rewards.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.rewards.index') }}" class="menu-link">
+                        <div data-i18n="User Wallets">User Wallets & Payouts</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.referrals.logs') ? 'active' : '' }}">
+                    <a href="{{ route('admin.referrals.logs') }}" class="menu-link">
+                        <div data-i18n="Referral History">Referral History Logs</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         {{-- ✨ NEW LOGISTIC MODULE HERE ✨ --}}
         <li class="menu-item {{ request()->is('admin/logistic*') ? 'active' : '' }}">
             <a href="{{ route('admin.logistic.index') }}" class="menu-link">

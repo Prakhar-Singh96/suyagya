@@ -16,6 +16,11 @@ class UserDetail extends Model
         'avatar',
         'shop_name',  // Only for sellers
         'gst_number', // Only for sellers
+        'pan_card_no',     // ✅ नया
+        'aadhar_card_no',  // ✅ नया
+        'bank_name',       // ✅ नया
+        'account_no',      // ✅ नया
+        'ifsc_code'        // ✅ नया
     ];
 
     // Relationship back to User
