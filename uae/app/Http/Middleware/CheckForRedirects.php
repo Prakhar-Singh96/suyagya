@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Cache; // ✅ ये जरूरी है
 use App\Models\Redirect;              // ✅ ये भी जरूरी है
+use Illuminate\Support\Facades\Schema;
 
 class CheckForRedirects
 {
@@ -17,14 +18,18 @@ class CheckForRedirects
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // ✅ FIX: अगर Migration वाला रूट है, तो चेक मत करो और आगे जाने दो
+        // ✅ FIX 1: Migration रूट को छोड़ दें
         if ($request->is('run-migration') || $request->is('run-migration*')) {
             return $next($request);
         }
-        // URL को साफ करें (slash / को handle करें)
+
+        // ✅ FIX 2: अगर 'redirects' टेबल अभी तक डेटाबेस में नहीं बनी है, तो चेक न करें
+        if (!\Schema::hasTable('redirects')) {
+            return $next($request);
+        }
+
         $path = '/' . trim($request->path(), '/');
 
-        // Cache चेक करें
         $redirect = Cache::remember("redirect_{$path}", 3600, function () use ($path) {
             return Redirect::where('old_url', $path)->first();
         });
