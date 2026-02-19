@@ -1,0 +1,158 @@
+/* ======================================= */
+/* 💡 SUYAGYA PREMIUM THEME - FINAL CUSTOM CSS */
+/* ======================================= */
+
+/* 🎨 Color Variables (FIXED) */
+:root {
+    /* 🔴 FIX 1: PRIMARY COLOR MUST BE MAROON */
+    --primary: #fdfdfd;
+    --hov-primary: #852222;
+    --secondary-base: #FFCC66;    /* Gold/Ochre for accents */
+
+    /* 🔴 FIX 2: LIGHT BACKGROUND COLOR (CREAM/BEIGE) */
+    --light: #f7f1de;
+    --soft-light: #000000;
+
+    /* 🔴 FIX 3: WHITE COLOR MUST BE #FFFFFF (For icons and main links) */
+    --dark: #333333;
+    --white: #000000;
+    --soft-white: #e8e8e8;
+}
+
+/* 1. Global/Layout Overrides (Ensure full height and visibility) */
+body {
+    background-color: var(--light) !important;
+    color: var(--dark); /* Default text is dark */
+    font-family: 'Merriweather', serif;
+}
+
+/* 2. Header and Navigation Bar */
+header {
+    background-color: var(--primary) !important; /* Should be Maroon */
+}
+
+/* Nav Link Styling: Text should be WHITE on Maroon background */
+.navbar-nav .nav-item a {
+    color: var(--white) !important; /* Should be white/light */
+    font-weight: 700;
+    padding: 15px 15px;
+}
+
+/* Top Bar: Links should be light on Maroon background */
+.top-navbar a {
+    color: var(--soft-light) !important; /* Should be light */
+}
+
+/* 3. ICON BLOCK STYLING (The core of the problem) */
+.nav-action-icons i.las {
+    font-size: 1.8rem !important;
+    /* 🔴 FIX 4: ICONS MUST BE WHITE */
+    color: var(--white) !important;
+    vertical-align: middle;
+}
+.nav-action-icons a {
+    color: var(--white) !important;
+}
+
+/* 2. MEGA MENU ALIGNMENT & FLICKER FIXES */
+.mega-parent {
+    position: static !important; /* Crucial: ensures dropdown positioning is relative to the viewport/document */
+}
+.mega-menu {
+    /* Flicker and Centering Fixes remain */
+    margin-top: -10px !important;
+    padding-top: 10px !important;
+    padding-bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100vw;
+    max-width: 100vw;
+}
+
+/* Pure CSS HOVER TO OPEN (Re-enable for Mega Menu) */
+.mega-parent:hover > .dropdown-menu {
+    display: block !important;
+}
+
+.mega-bg {
+    background: var(--light) !important;
+    min-height: 250px;
+}
+
+/* 3. Mega Menu Grid and Icon Styling (Astrotalk style) */
+.mega-grid {
+    /* Ensure no unwanted spacing from inherited classes */
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1.5rem;
+    display: flex;
+    justify-content: center; /* Centers the whole block of items */
+}
+/* Ensure the 8-column layout is visually clean */
+@media (min-width: 1200px) {
+    .mega-grid > [class*="col-xl-"] {
+        flex: 0 0 auto;
+        width: 12.5%; /* Forces 8 columns on large screens */
+        padding: 0.5rem;
+    }
+}
+
+/* Category Item Styling */
+.mega-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--dark);
+    padding: 10px 5px;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    min-height: 140px; /* Ensures vertical alignment when text wraps */
+}
+
+/* Icon/Image Styling */
+.mega-icon {
+    width: 85px;
+    height: 85px;
+    background: var(--soft-white); /* Light background for the box */
+    border: 1px solid var(--soft-light);
+    margin-bottom: 8px;
+    border-radius: 50% !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mega-icon img {
+    /* Padding is critical to shrink the content visually inside the circular clip */
+    padding: 8px !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain; /* Prevents stretching and ensures full visibility */
+    border-radius: 50% !important;
+}
+
+/* Text style for category name */
+.mega-item span {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+html, body {
+    height: 100%; /* Ensures body fills the viewport height */
+}
+
+/* 1. Main Wrapper needs full height and Flex column direction */
+.aiz-main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures it covers the entire viewport height */
+    width: 100%;
+}
+
+/* 2. Main content pushes the footer down */
+main {
+    flex-grow: 1; /* This is the key: it expands to fill available space */
+}

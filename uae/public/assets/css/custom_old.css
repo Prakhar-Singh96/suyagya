@@ -1,0 +1,260 @@
+/* ======================================= */
+/* 💡 SUYAGYA PREMIUM THEME - CUSTOM.CSS  */
+/* ======================================= */
+
+/* 🎨 NEW COLOR PALETTE & GLOBAL STYLES */
+:root {
+    /* Deep Maroon/Burgundy for Primary Actions/Headings */
+    --primary: #A52A2A;           
+    --hov-primary: #852222;       
+    --soft-primary: rgba(165, 42, 42, 0.15);
+    
+    /* Soft Gold/Ochre for Accents/Prosperity */
+    --secondary-base: #FFCC66;    
+    --hov-secondary-base: #E6B85C;
+    --soft-secondary-base: rgba(255, 204, 102, 0.3);
+    
+    /* Creamy Beige Background */
+    --light: #F9F4E9;             
+    --soft-light: #EEE9DC;
+    
+    /* Text */
+    --dark: #333333;             
+    --secondary: #666666;
+    --soft-white: #b5b5bf;
+    --white: #FFFFFF;
+}
+
+/* 1. Global Background and Typography */
+body {
+    background-color: var(--light) !important; 
+    color: var(--dark);
+    font-family: 'Merriweather', serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--dark);
+}
+
+/* 2. Header and Navigation */
+.top-navbar, header.bg-primary {
+    background-color: var(--primary) !important;
+    border-bottom: 3px solid var(--secondary-base);
+}
+.header_menu_links {
+    color: var(--white) !important;
+    font-weight: 700 !important;
+    transition: background-color 0.3s;
+}
+.header_menu_links:hover {
+    background-color: var(--hov-primary) !important;
+}
+
+/* 3. Layout and Section Spacing */
+.container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Increase vertical space for premium feel */
+section {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}
+.p-2rem {
+    padding: 2rem !important;
+}
+
+/* 4. Product Cards and Tags */
+.aiz-card-box {
+    background-color: var(--white) !important;
+    border: 1px solid var(--soft-light); /* Softer border */
+    border-radius: 8px !important;
+    transition: box-shadow 0.3s;
+}
+.aiz-card-box:hover {
+    box-shadow: 0 8px 20px rgba(165, 42, 42, 0.1); /* Subtle hover shadow with primary color tint */
+}
+
+/* Best Seller Flag */
+#loveyouto {
+    background-color: var(--primary); 
+}
+
+/* Discount Tag */
+#loveyoutoo, #loveyoutooo {
+    background-color: var(--primary) !important;
+    color: var(--secondary-base) !important; /* Gold on Maroon for high contrast */
+}
+
+/* Add to Cart Button */
+.aiz-p-hov-icon {
+    background-color: var(--primary) !important; 
+    border-radius: 30px !important;
+}
+
+/* Product Price Color */
+.fw-700.text-primary {
+    color: var(--primary) !important;
+    font-size: 1.1rem;
+}
+
+/* 5. Footer Styles */
+.footer-widget, footer {
+    background-color: var(--primary) !important; 
+}
+.text-soft-light {
+    color: var(--soft-light) !important;
+}
+.list-inline-item .facebook, .list-inline-item .twitter, 
+.list-inline-item .instagram, .list-inline-item .youtube {
+    background-color: var(--soft-primary);
+    color: var(--secondary-base);
+}
+
+/* 6. Lab Certification Section */
+.lab-certification-container {
+    box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+}
+.lab-text {
+    background: var(--primary) !important;
+}
+.badge-text {
+    color: var(--primary) !important;
+}
+
+/* 7. Shop By Purpose/Stones Images */
+.category-item img {
+    border: 2px solid var(--primary); /* Maroon border */
+    background-color: var(--white); /* Ensure white interior */
+}
+
+/* 8. Marquee Bar */
+.offer-bara {
+    background-color: var(--primary);
+}
+.offer-itema {
+    color: var(--secondary-base) !important;
+}
+
+/* 9. Facilities Icons */
+#font svg path {
+    fill: var(--primary) !important; /* Make facility icons maroon */
+}
+
+@media (min-width: 1024px) {
+    .mega-menu {
+        display: none !important;
+        position: absolute;
+        left: 30%;
+        transform: translateX(-50%);
+        width: 100vw !important;
+        top: 100%;
+        z-index: 999;
+    }
+
+    /* show on hover (desktop only) */
+    .mega-parent:hover .mega-menu {
+        display: block !important;
+    }
+
+    
+    
+    .mega-bg {
+    background: #fff;
+    width: 100%;
+    padding: 40px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* ======================================= */
+/* 💡 MEGA MENU CONTAINER & ALIGNMENT FIXES */
+/* ======================================= */
+
+/* Mega Menu Position: Centered relative to the viewport/page, overriding parent alignment */
+.mega-menu {
+    display: none !important;
+    position: absolute;
+    /* --- FIXING LEFT-SIDE CUTTING & CENTERING --- */
+    left: 50% !important; /* Center the element relative to the screen (or container, depending on parent positioning) */
+    transform: translateX(-50%) !important; /* Pull it back by half its width (when width is defined) */
+    width: 100vw !important; /* Should cover full screen width */
+    max-width: 100vw !important; /* Ensure it respects viewport */
+    /* ------------------------------------------- */
+    
+    top: 100%; 
+    z-index: 999; 
+    padding: 0 !important;
+    margin-top: -10px;        /* Fixes the blinking issue */
+    padding-top: 10px !important; /* Restore padding inside */
+}
+
+/* Ensure inner content respects the standard website container width */
+.mega-menu .container {
+    max-width: 1300px; /* Adjust to your main site container width if different from default */
+}
+
+/* Menu items grid setup for Astrotalk style 8-column layout */
+.mega-menu .row {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px 0; /* Vertical spacing only; horizontal spacing via padding */
+    margin: 0 -10px; /* Counteracts inner column padding */
+    justify-content: center; /* Center the grid items */
+}
+
+.mega-menu .col {
+    /* Use fixed width suitable for 8-column display on desktop */
+    flex: 0 0 auto; 
+    width: 12.5%; /* 8 items across */
+    min-width: 100px; /* Smallest size for category box */
+    padding: 0 10px;
+}
+
+/* Individual Category Box Styling (Astrotalk style) */
+.mega-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the top of the box */
+    padding: 12px 5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    height: 100%; /* Ensure all boxes have same height */
+}
+
+.mega-icon {
+    width: 85px !important; 
+    height: 85px !important;
+    background: var(--soft-light); 
+    border: 1px solid var(--soft-primary);
+    margin: 0 auto 8px; 
+    
+    /* 👇 Make the CONTAINER Circle (Like Astrotalk's actual images) */
+    border-radius: 50% !important; /* Forces the box to be circular */
+    
+    overflow: hidden;
+    display: flex; /* For centering the image */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. Image inside the circular container */
+.mega-icon img {
+    /* 👇 Ensure the image takes the full space of the circular container */
+    width: 100% !important; 
+    height: 100% !important;
+    object-fit: cover; /* This is key: crops/covers the area without distortion */
+    
+    /* Remove any scaling or rounded corners inherited from old code, 
+       as the container itself is now rounded. */
+    transform: none !important; 
+    border-radius: 50% !important; 
+}
+
+.mega-item:hover .mega-icon {
+    box-shadow: 0 0 0 4px var(--soft-secondary-base); /* Subtle glow effect */
+}
+
+}

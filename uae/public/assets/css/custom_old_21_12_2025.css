@@ -1,0 +1,2735 @@
+/* ======================================= */
+/* 💡 SUYAGYA PREMIUM THEME - FINAL CUSTOM CSS (BS5 Aware) */
+/* ======================================= */
+
+/* 🎨 Color Variables (Adjusted for Light Header) */
+:root {
+    /* 🔴 FIX 1: PRIMARY COLORS */
+    --primary: #fdfdfd;
+    --hov-primary: #852222;
+    --secondary-base: #FFCC66;
+    /* Gold/Ochre for accents */
+
+    /* Premium Orange Theme (Divine Hindu Style) */
+    --primary-orange: #FFCC66;
+    /* Rich Dark Orange */
+    --light-orange-bg: #fff8e1;
+    --text-dark: #1a1a1a;
+    --border-color: #e0e0e0;
+
+    /* 🔴 FIX 2: LIGHT BACKGROUND COLOR (CREAM/BEIGE) */
+    --light: #f7f1de;
+    --soft-light: #000000;
+
+    /* 🔴 FIX 3: WHITE COLOR MUST BE #FFFFFF (For icons and main links) */
+    --dark: #000000;
+    --white: #ffffff;
+    --soft-white: #e8e8e8;
+}
+
+/* 1. Global Header Background and Border Fixes */
+header {
+    /* Main header background must be light, not maroon */
+    background-color: var(--light) !important;
+    padding: 0;
+}
+
+.top-navbar {
+    background-color: var(--light) !important;
+}
+
+/* 2. Golden Border Fix (Applied at the very bottom) */
+.navbar {
+    /* Ensures the navbar itself doesn't have an unwanted border,
+       and that the logo area is clean */
+    background-color: var(--primary) !important;
+    padding: 0 !important;
+}
+
+/* This class must be placed on an outer div or the <header> itself
+   if we want it below the entire <nav> block.
+   In this code, we apply it directly to <nav> for simplicity: */
+nav.navbar {
+    border-bottom: 4px solid var(--secondary-base) !important;
+}
+
+
+/* 3. Navigation Links and Text (Must be DARK) */
+.top-navbar a {
+    color: var(--dark) !important;
+    font-weight: 500;
+}
+
+.main-nav-list .nav-item a.nav-link {
+    /* Menu Links: Products, Bracelet, etc. */
+    color: var(--dark) !important;
+    font-weight: 500;
+    /* Medium weight, clean look */
+    font-size: 15px;
+    transition: color 0.2s;
+    padding: 15px 12px;
+    /* Tight padding to match screenshot */
+}
+
+
+/* 4. Icon Action Bar Styling (Right Corner) */
+
+.nav-action-icons {
+    /* Push icons to the absolute far right */
+    margin-left: auto;
+    padding-right: 10px;
+}
+
+.nav-action-icons a {
+    /* Icons text/links must be dark/black */
+    color: var(--dark) !important;
+    text-decoration: none;
+    transition: color 0.2s;
+    line-height: 1;
+    /* Essential for vertical alignment */
+}
+
+/* Icons (las) Sizing and Hover */
+.nav-action-icons i.las {
+    font-size: 1.5rem !important;
+    /* Slightly smaller, clean size */
+    color: var(--dark) !important;
+}
+
+/* Spacing between Icons: Adjusting margins */
+.nav-search-icon {
+    margin-left: 20px;
+}
+
+/* Space from the menu end */
+.nav-user-auth {
+    margin-left: 1rem;
+}
+
+.nav-wishlist-icon {
+    margin-left: 1rem;
+}
+
+.nav-cart-box {
+    margin-left: 1rem;
+}
+
+/* 2. MEGA MENU ALIGNMENT & FLICKER FIXES */
+.mega-parent {
+    position: static !important;
+    /* Crucial: ensures dropdown positioning is relative to the viewport/document */
+}
+
+.mega-menu {
+    /* Flicker and Centering Fixes remain */
+    margin-top: -10px !important;
+    padding-top: 10px !important;
+    padding-bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100vw;
+    max-width: 100vw;
+}
+
+/* Pure CSS HOVER TO OPEN (Re-enable for Mega Menu) */
+.mega-parent:hover>.dropdown-menu {
+    display: block !important;
+}
+
+.mega-bg {
+    background: var(--light) !important;
+    min-height: 250px;
+}
+
+.mega-bg .px-5 {
+    padding-right: 30rem !important;
+    padding-left: 30rem !important;
+}
+
+/* 3. Mega Menu Grid and Icon Styling (Astrotalk style) */
+.mega-grid {
+    /* Ensure no unwanted spacing from inherited classes */
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1.5rem;
+    display: flex;
+    justify-content: center;
+    /* Centers the whole block of items */
+}
+
+/* Ensure the 8-column layout is visually clean */
+@media (min-width: 1200px) {
+    .mega-grid>[class*="col-xl-"] {
+        flex: 0 0 auto;
+        width: 12.5%;
+        /* Forces 8 columns on large screens */
+        padding: 0.5rem;
+    }
+}
+
+/* Category Item Styling */
+.mega-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--dark);
+    padding: 10px 5px;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    min-height: 140px;
+    /* Ensures vertical alignment when text wraps */
+}
+
+/* Icon/Image Styling */
+.mega-icon {
+    width: 85px;
+    height: 85px;
+    background: var(--soft-white);
+    /* Light background for the box */
+    border: 1px solid var(--soft-light);
+    margin-bottom: 8px;
+    border-radius: 50% !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mega-icon img {
+    width: 100px;
+    height: 100px;
+    /* Padding is critical to shrink the content visually inside the circular clip */
+    padding: 8px !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    /* Prevents stretching and ensures full visibility */
+    border-radius: 50% !important;
+}
+
+/* Text style for category name */
+.mega-item span {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+html,
+body {
+    height: 100%;
+    /* Ensures body fills the viewport height */
+}
+
+/* 1. Main Wrapper needs full height and Flex column direction */
+.aiz-main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Ensures it covers the entire viewport height */
+    width: 100%;
+}
+
+/* 2. Main content pushes the footer down */
+main {
+    flex-grow: 1;
+    /* This is the key: it expands to fill available space */
+}
+
+
+/* ======================================= */
+/* 💡 Category Scroll Section CSS */
+/* ======================================= */
+
+/* Slick Carousel Structure Overrides (Necessary when not using aiz-core.css) */
+.slick-carousel-wrapper {
+    position: relative;
+}
+
+.slick-list {
+    padding: 0 !important;
+}
+
+.slick-track {
+    display: flex;
+}
+
+.slick-slide {
+    float: left;
+    height: 100%;
+    min-height: 1px;
+}
+
+/* Basic Arrow Styling (You will need full Slick/Line Awesome CSS for these to look good) */
+.slick-prev,
+.slick-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 30px;
+    height: 30px;
+    /* Styles for visibility (example) */
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.slick-prev {
+    left: 10px;
+}
+
+.slick-next {
+    right: 10px;
+}
+
+/* #categoryScroll .slick-prev,
+#categoryScroll .slick-next {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 20 !important;
+    background-color: #2d2325;
+} */
+
+/* Remove default slick arrow box */
+#categoryScroll .slick-prev,
+#categoryScroll .slick-next {
+    width: 42px !important;
+    height: 42px !important;
+    background: #ffffff !important;
+    border: 1px solid #ddd !important;
+    border-radius: 50% !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.10) !important;
+    z-index: 100 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#categoryScroll .slick-prev {
+    left: -10px !important;
+}
+
+#categoryScroll .slick-next {
+    right: -10px !important;
+}
+
+/* Make arrow icon white/black and perfectly round */
+#categoryScroll .slick-prev:before,
+#categoryScroll .slick-next:before {
+    font-size: 18px !important;
+    color: #333 !important;
+    opacity: 1 !important;
+}
+
+
+/* 1. Individual Category Item Styling (Circular Icon) */
+.category-scroll-item a {
+    text-decoration: none;
+    display: block;
+    color: var(--dark);
+    padding: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.category-scroll-item a:hover {
+    color: var(--primary);
+    transform: scale(1.05);
+}
+
+.category-scroll-item .mega-icon {
+    /* Logo Container Sizing */
+    width: 135px;
+    height: 135px;
+    background: var(--soft-white);
+    border: 1px solid var(--soft-light);
+    border-radius: 50% !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.category-scroll-item img {
+    /* Image inside must fill and be circular */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    border-radius: 50% !important;
+    padding: 8px;
+}
+
+#categoryScroll {
+    width: 100% !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+#categoryScroll .slick-track {
+    margin-left: 0 !important;
+}
+
+#categoryScroll .slick-list {
+    overflow: hidden !important;
+}
+
+.carousel-box {
+    text-align: center;
+}
+
+.mega-icon img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+}
+
+
+
+/* 2. Hero Slider Styling */
+.home-banner-area {
+    /* Ensures the banner fills the width */
+    max-height: 700px;
+    /* overflow: hidden; */
+}
+
+.bnanner-img {
+    height: 700px;
+    /* object-fit: cover; */
+    width: 100%;
+}
+
+/* ===================================================== */
+/* 📱 FULL RESPONSIVE BREAKPOINTS FOR HEADER */
+/* ===================================================== */
+
+/* 🔵 1) Mobile Devices (0px – 576px) */
+@media (max-width: 576px) {
+
+    /* Top bar hide (already hidden but safe) */
+    .top-navbar {
+        display: none !important;
+    }
+
+    /* Header padding fix */
+    header {
+        padding: 6px 0 !important;
+    }
+
+    /* Logo smaller */
+    .navbar-brand img {
+        height: 38px !important;
+    }
+
+    /* Menu collapse full width */
+    #mainMenu {
+        background: var(--light) !important;
+        padding: 10px 15px !important;
+    }
+
+    /* Navigation links bigger for touch */
+    .main-nav-list .nav-link {
+        padding: 10px 0 !important;
+        font-size: 16px !important;
+    }
+
+    /* Right icons spacing and size */
+    .nav-action-icons i {
+        font-size: 22px !important;
+    }
+
+    .nav-action-icons div {
+        margin-left: 12px !important;
+    }
+
+    /* Mega menu images smaller */
+    .mega-icon {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .mega-icon img {
+        padding: 4px !important;
+    }
+
+    /* Mega menu grid -- 3 per row */
+    .mega-grid>div {
+        width: 33.33% !important;
+    }
+
+    /* Remove mega menu hover on mobile */
+    .mega-parent:hover>.dropdown-menu {
+        display: none !important;
+    }
+
+    /* Dropdown should open with click */
+    .mega-parent .dropdown-menu {
+        position: relative !important;
+        transform: none !important;
+        left: 0 !important;
+        width: 100% !important;
+        box-shadow: none !important;
+    }
+}
+
+
+/* 🟣 2) Tablet (577px – 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+
+    .top-navbar {
+        display: none !important;
+    }
+
+    .navbar-brand img {
+        height: 45px !important;
+    }
+
+    #mainMenu {
+        background: var(--light) !important;
+        padding: 15px !important;
+    }
+
+    .main-nav-list .nav-link {
+        font-size: 15px !important;
+        padding: 10px 0 !important;
+    }
+
+    /* 4 categories per row */
+    .mega-grid>div {
+        width: 25% !important;
+    }
+
+    .mega-icon {
+        width: 80px !important;
+        height: 80px !important;
+    }
+}
+
+
+/* 🟡 3) Mini Laptop (769px – 992px) */
+@media (min-width: 769px) and (max-width: 992px) {
+
+    /* Logo fix */
+    .navbar-brand img {
+        height: 48px !important;
+    }
+
+    /* Navigation links spacing */
+    .main-nav-list .nav-link {
+        font-size: 14px !important;
+        padding: 10px 8px !important;
+    }
+
+    /* Icons smaller */
+    .nav-action-icons i {
+        font-size: 20px !important;
+    }
+
+    /* Mega menu: 5 per row */
+    .mega-grid>div {
+        width: 20% !important;
+    }
+}
+
+
+/* 🟢 4) Small Laptop (993px – 1200px) */
+@media (min-width: 993px) and (max-width: 1200px) {
+
+    .navbar-brand img {
+        height: 50px !important;
+    }
+
+    .main-nav-list .nav-link {
+        font-size: 14px !important;
+        padding: 12px 8px !important;
+    }
+
+    /* 6 per row */
+    .mega-grid>div {
+        width: 16.66% !important;
+    }
+}
+
+/* ======================================= */
+/* 🌟 NEW FEATURED PRODUCTS SECTION STYLE */
+/* ======================================= */
+
+/* 1. Decorative Heading Box */
+.fancy-heading-box {
+    background-color: #FFF5E6;
+    /* Light beige/peach background */
+    border: 1px solid #E0C09C;
+    /* Soft brown border */
+    border-radius: 15px;
+    /* Rounded edges */
+    padding: 10px 40px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: inline-block;
+    position: relative;
+}
+
+/* Inner decorative line effect (optional double border look) */
+.fancy-heading-box::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid #E0C09C;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.fancy-heading-box h2 {
+    font-family: 'Merriweather', serif;
+    color: #3E2723;
+    /* Dark brown text */
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* 2. Product Card Base */
+.product-card-minimal {
+    background: transparent;
+    /* Clean look */
+    transition: transform 0.2s;
+}
+
+/* Image Styling */
+.img-box {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.img-box img {
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    background-color: #F9F4E9;
+    /* Fallback background for transparent pngs */
+}
+
+/* Slight zoom on hover */
+.product-card-minimal:hover .img-box img {
+    transform: scale(1.05);
+}
+
+/* 3. Badges */
+.badge-sale {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #EBC47C;
+    /* Mustard/Gold color from image */
+    color: #3E2723;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.btn-wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    cursor: pointer;
+    color: #333;
+}
+
+.btn-wishlist:hover {
+    color: #A52A2A;
+}
+
+/* 4. Typography */
+.product-title {
+    font-family: 'Merriweather', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #222;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stars i {
+    color: #F4B400;
+    /* Golden stars */
+    font-size: 0.85rem;
+}
+
+.price-row {
+    font-family: sans-serif;
+    /* Price is usually cleaner in sans-serif */
+}
+
+/* 5. Action Button (The "Add to cart" / "Choose" button) */
+.btn-earthy {
+    background-color: #BFA070 !important;
+    /* The brownish-gold color */
+    color: #fff !important;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.btn-earthy:hover {
+    background-color: #A38558 !important;
+    /* Slightly darker on hover */
+}
+
+/* 6. View All Button */
+.btn-view-all {
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #333;
+    font-weight: 600;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    transition: all 0.3s;
+}
+
+.btn-view-all:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* ======================================= */
+/* 💡 FEATURED PRODUCTS: FINAL ADJUSTMENTS */
+/* ======================================= */
+
+/* 1. WIDER CONTAINER FOR PRODUCTS SECTION */
+/* This ensures products use more screen width, reducing left/right white space */
+.featured-products-section .container {
+    max-width: 1600px !important;
+    /* Wider container specifically for this section */
+}
+
+/* 2. PRODUCT CARD STYLING */
+.product-card-minimal {
+    background: transparent;
+    transition: transform 0.3s ease;
+    height: 100%;
+    /* Ensure cards stretch equally */
+}
+
+/* 3. IMAGE BOX (The main fix for small images) */
+.img-box {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    /* Remove fixed padding/background tricks that caused extra white space */
+    background-color: transparent;
+    width: 100%;
+    /* Aspect Ratio Fix: Force square or slightly tall rectangle */
+    aspect-ratio: 1 / 1;
+}
+
+.img-box a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures image fills the box without whitespace */
+    border-radius: 12px;
+    transition: transform 0.5s ease;
+}
+
+/* Hover Zoom Effect */
+.product-card-minimal:hover .img-box img {
+    transform: scale(1.08);
+    /* Slightly larger zoom for premium feel */
+}
+
+/* 4. BADGES & ICONS POSITIONING */
+.badge-sale {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: #F5E6CA;
+    /* Lighter beige background */
+    color: #3E2723;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 4px;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-wishlist {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 10;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.btn-wishlist:hover {
+    color: #A52A2A;
+    transform: scale(1.1);
+}
+
+/* 5. PRODUCT DETAILS & BUTTON */
+.product-details {
+    margin-top: 12px;
+}
+.product-details .product-title {
+    font-size: 17px !important;
+}
+
+.product-title {
+    font-family: 'Merriweather', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+}
+
+.rating-row {
+    margin-bottom: 8px;
+}
+
+.stars i {
+    color: #F5B301;
+    /* Richer gold color */
+    font-size: 0.9rem;
+}
+
+.review-count {
+    font-size: 0.8rem;
+    margin-left: 6px;
+    color: #666;
+}
+
+.price-row {
+    margin-bottom: 12px;
+    font-family: sans-serif;
+}
+
+.price-current {
+    font-weight: 700;
+    color: #222;
+    font-size: 1.05rem;
+    margin-right: 8px;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* Action Button (Full Width) */
+.btn-earthy {
+    background-color: #C19A6B !important;
+    /* Matches reference button color */
+    color: #fff !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.btn-earthy:hover {
+    background-color: #A67C52 !important;
+}
+
+/* ======================================= */
+/* 🎥 EXPLORE FEED VIDEO SECTION (Clean Version) */
+/* ======================================= */
+
+/* 1. Video Card Container */
+.video-card {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background-color: #000;
+    transform: translateZ(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Slight lift on hover */
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 2. Video Wrapper (9:16 Aspect Ratio) */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 177.77%;
+    /* 16:9 Vertical Ratio */
+}
+
+.the-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* 3. Default Overlay (Visible initially, hidden on hover) */
+.video-overlay-default {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    /* Dark tint to make text readable */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+    /* Smooth fade out */
+    z-index: 2;
+    pointer-events: none;
+    /* Allows click to pass through to the link */
+}
+
+/* Play Icon Styling */
+.play-icon-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: auto;
+    /* Pushes title to bottom */
+    margin-top: auto;
+    /* Centers vertically */
+}
+
+/* Title Styling */
+.video-title {
+    margin-top: auto;
+    margin-bottom: 15px;
+    color: #fff;
+    font-family: 'Merriweather', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-align: center;
+}
+
+/* 4. HOVER ACTION: Hide Overlay */
+.video-card:hover .video-overlay-default {
+    opacity: 0;
+    /* Makes icon and title invisible so video can be seen clearly */
+}
+
+.video-feed-section .container {
+    max-width: 1600px !important;
+    /* Wider container specifically for this section */
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.btn-sound-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    /* Above video and overlays */
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    /* Hidden by default */
+    transition: opacity 0.3s ease, background-color 0.2s;
+}
+
+.btn-sound-toggle i {
+    font-size: 1.2rem;
+}
+
+.btn-sound-toggle:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Show sound button ONLY on hover */
+.video-card:hover .btn-sound-toggle {
+    opacity: 1;
+}
+
+/* 3. Buy Now Overlay (Bottom) */
+.video-overlay-hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    /* Gradient for readability */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 0;
+    /* Hidden by default */
+    transition: opacity 0.3s ease;
+    z-index: 5;
+}
+
+/* Buy Now Button Style */
+.btn-buy-now-video {
+    background-color: var(--white);
+    color: var(--dark);
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+}
+
+.btn-buy-now-video:hover {
+    background-color: var(--secondary-base);
+    color: var(--white);
+}
+
+/* 4. Hover Interactions */
+.video-card:hover .video-overlay-default {
+    opacity: 0;
+    /* Hide play icon */
+}
+
+.video-card:hover .video-overlay-hover {
+    opacity: 1;
+    /* Show Buy Now button */
+}
+
+.video-card:hover .btn-sound-toggle {
+    opacity: 1;
+    /* Show Sound button */
+}
+
+/* 5. Slick Slider Arrows (Optional Customization) */
+.video-carousel .slick-prev,
+.video-carousel .slick-next {
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+}
+
+.video-carousel .slick-prev:before,
+.video-carousel .slick-next:before {
+    color: var(--primary);
+    /* Maroon arrows */
+    font-size: 30px;
+}
+
+/* 1. Hide Slider Arrows (Left/Right buttons) */
+.video-carousel .slick-prev,
+.video-carousel .slick-next,
+.video-carousel .slick-arrow {
+    display: none !important;
+}
+
+/* 2. Ensure Video Poster Fills Area */
+.the-video {
+    /* object-fit: cover; Ensures image covers the whole card without stretching */
+    background-color: #fff;
+    /* White background behind image */
+}
+
+
+/* ======================================= */
+/* ❤️ FAVOURITES SECTION (MASONRY STYLE) */
+/* ======================================= */
+
+/* 1. Card Base Style */
+.fav-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #000;
+    /* Fallback color */
+}
+
+/* 2. Image Styling & Zoom Effect */
+.fav-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures image fills the box perfectly */
+    transition: transform 0.5s ease;
+    opacity: 0.9;
+    /* Slight dark tint for text visibility */
+}
+
+.fav-card:hover img {
+    transform: scale(1.08);
+    /* Smooth zoom on hover */
+    opacity: 1;
+}
+
+/* 3. Card Heights (Crucial for Layout) */
+/* Desktop Heights */
+@media (min-width: 992px) {
+    .fav-card.wide {
+        height: 320px;
+        /* Top left wide image */
+    }
+
+    .fav-card.standard {
+        height: 320px;
+        /* Small squares */
+    }
+
+    .fav-card.tall {
+        height: 100%;
+        /* Automatically fills the full height of the right column */
+        min-height: 655px;
+        /* backup height to match left side (320 + 320 + gap) */
+    }
+}
+
+/* Mobile/Tablet Heights */
+@media (max-width: 991px) {
+
+    .fav-card.wide,
+    .fav-card.tall,
+    .fav-card.standard {
+        height: 250px;
+        /* Standard height for all on mobile */
+    }
+}
+
+/* 4. Content Overlay (Text & Button) */
+.fav-content {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    width: 100%;
+}
+
+.fav-content h3 {
+    color: #fff;
+    font-family: 'Merriweather', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+/* 5. Shop Now Button */
+.btn-fav-shop {
+    background-color: #FFF8E7;
+    /* Creamy white background like image */
+    color: #333;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 18px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-fav-shop:hover {
+    background-color: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+
+/* ======================================= */
+/* ✨ CHOOSE ENERGY SECTION (UPDATED) */
+/* ======================================= */
+
+/* 1. Custom Grid for 8 items */
+@media (min-width: 992px) {
+    .col-lg-custom-8 {
+        flex: 0 0 auto;
+        width: 12.5%;
+        max-width: 12.5%;
+    }
+}
+
+/* 2. The Card Container */
+.energy-card {
+    padding: 10px;
+    border-radius: 12px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ⭐ HOVER EFFECT - POPUP ⭐ */
+.energy-card:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+/* 3. The Icon Wrapper (Background Removed) */
+.icon-wrapper {
+    width: 90px;
+    height: 90px;
+    /* 👇 Background हटा दिया गया है */
+    background-color: transparent !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 👇 Padding हटा दी गई है ताकि आपकी इमेज बड़ी दिखे */
+    padding: 0 !important;
+    margin: 0 auto;
+    /* Optional: हल्का शैडो ताकि इमेज उभरी हुई दिखे */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Hover Shadow */
+.energy-card:hover .icon-wrapper {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 4. The Icon Image (Filter Removed) */
+.icon-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* इमेज को बिना काटे पूरा दिखाएगा */
+    border-radius: 50%;
+    /* इमेज को गोल रखेगा */
+
+    /* 👇 यह लाइन हटा दी गई है ताकि ओरिजिनल रंग दिखे */
+    /* filter: brightness(0) invert(1); */
+}
+
+/* 5. Title Styling */
+.energy-title {
+    color: #333;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-top: 15px;
+}
+
+.energy-section .container {
+    max-width: 1600px !important;
+}
+
+/* ======================================= */
+/* 📿 KARUNGALI SECTION STYLING */
+/* ======================================= */
+
+/* Banner Card (Left Side) */
+.category-banner-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.category-banner-card .banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.8);
+}
+
+.category-banner-card .banner-content {
+    position: absolute;
+    top: 20px;
+    left: 15px;
+}
+
+.category-banner-card h3 {
+    color: #fff;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.4;
+}
+
+/* Add to Cart Button */
+.btn-add-cart {
+    background-color: #C19A6B !important;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 0;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.btn-add-cart:hover {
+    background-color: #A38558 !important;
+}
+
+/* Wishlist Button */
+.btn-wishlist-small {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ======================================= */
+/* ⭐ CUSTOMER RATINGS BAR */
+/* ======================================= */
+
+.ratings-bar-section {
+    /* Dark Brown background from your screenshot */
+    background-color: #6B3403 !important;
+    border-top: 4px solid #8B5E3C;
+    /* Optional: Slightly lighter top border for depth */
+    border-bottom: 4px solid #8B5E3C;
+}
+
+.ratings-content h3 {
+    font-family: 'Merriweather', serif;
+    /* Use your premium font */
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
+}
+
+/* Star Styling */
+.stars-row {
+    color: #F4B400;
+    /* Golden Yellow */
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+/* Rated Text */
+.fs-16 {
+    font-size: 1rem;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+/* ======================================= */
+/* 💬 TESTIMONIAL SECTION STYLING */
+/* ======================================= */
+
+/* 1. The Card Itself */
+.testimonial-card {
+    background-color: #F9F9F9;
+    /* Light Grey Background */
+    border: 1px solid #333;
+    /* Dark Border like image */
+    border-radius: 20px;
+    /* Rounded Corners */
+    overflow: hidden;
+    /* Keeps image inside corners */
+    min-height: 280px;
+    /* Ensure consistent height */
+    margin-bottom: 10px;
+    /* Space for shadow */
+}
+
+/* 2. Text Area */
+.testimonial-card .text-content {
+    background-color: #F4F4F4;
+    /* Slightly darker grey for text area */
+}
+
+.testimonial-card .review-text {
+    font-family: 'Merriweather', serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #444;
+    font-style: italic;
+}
+
+.testimonial-card .la-star {
+    font-size: 1.2rem;
+    color: #FFC107;
+    /* Golden Stars */
+}
+
+/* 3. Image Area */
+.review-img-wrapper {
+    height: 100%;
+    min-height: 280px;
+    /* Ensures image area has height on mobile */
+}
+
+.review-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures image fills the right side without stretching */
+}
+
+/* 4. Slider Dots (Optional) */
+.testimonial-slider .slick-dots li button:before {
+    font-size: 10px;
+    color: var(--primary);
+}
+
+/* ======================================= */
+/* 📰 BLOG SECTION STYLING */
+/* ======================================= */
+
+/* 1. The Card Itself */
+.blog-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover Effect on Card */
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* 2. Image Area */
+.blog-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 240px;
+    /* Fixed height for consistency */
+}
+
+.blog-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* Image Zoom on Hover */
+.blog-card:hover .blog-img-wrapper img {
+    transform: scale(1.05);
+}
+
+/* 3. The Tag (e.g., "Spiritual Knowledge") */
+.blog-tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: rgba(139, 94, 60, 0.9);
+    /* Brownish color */
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    z-index: 2;
+}
+
+/* 4. Text Content Area */
+.blog-content {
+    padding: 25px;
+}
+
+/* Title */
+.blog-title {
+    font-family: 'Merriweather', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.blog-title a {
+    transition: color 0.3s;
+}
+
+.blog-title a:hover {
+    color: var(--primary) !important;
+}
+
+/* Description */
+.blog-desc {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    /* Limits text to 3 lines and adds '...' */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 5. "Read more" Button */
+.read-more-btn {
+    color: #8B5E3C;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.3s;
+}
+
+.read-more-btn:hover {
+    color: var(--primary);
+}
+
+.read-more-btn i {
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+}
+
+.read-more-btn:hover i {
+    transform: translateX(5px);
+    /* Moves arrow slightly to the right */
+}
+
+/* ======================================= */
+/* ❓ FAQ SECTION STYLING */
+/* ======================================= */
+
+/* 1. The FAQ Card Container */
+.faq-item {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    /* Shadow for depth */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* 2. The Question Button (Default/Closed) */
+.faq-btn {
+    background-color: #FFF8E7 !important;
+    /* Cream background */
+    color: #333 !important;
+    font-family: 'Merriweather', serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 18px 20px;
+    border: none;
+    box-shadow: none !important;
+    /* Remove default BS shadow */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Remove default Bootstrap arrow icon because we will make a custom one */
+.faq-btn::after {
+    display: none !important;
+}
+
+/* 3. Custom Arrow Icon */
+.faq-btn::before {
+    content: "\f107";
+    /* Line Awesome Angle Down Code */
+    font-family: 'Line Awesome Free';
+    font-weight: 900;
+    position: absolute;
+    right: 20px;
+
+    /* Circle Style */
+    width: 28px;
+    height: 28px;
+    border: 2px solid #D97846;
+    /* Orange Border */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D97846;
+    font-size: 14px;
+    transition: transform 0.3s ease, background 0.3s;
+}
+
+/* 4. Active State (When Opened) */
+.faq-btn:not(.collapsed) {
+    background-color: #FFF8E7 !important;
+    /* Header stays cream */
+    color: #333 !important;
+}
+
+/* Rotate Arrow when opened */
+.faq-btn:not(.collapsed)::before {
+    content: "\f106";
+    /* Change to Up Arrow */
+    transform: rotate(180deg);
+    background-color: #D97846;
+    color: #fff;
+}
+
+/* 5. The Answer Body (The Red Box in your image) */
+.faq-answer {
+    background-color: #f58e5b;
+    /* Dark Orange/Reddish Color */
+    color: #000000;
+    /* White text */
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ======================================= */
+/* 📖 BRAND STORY ACCORDION STYLING */
+/* ======================================= */
+
+.brand-story-section .accordion-item {
+    background-color: transparent !important;
+    /* The bottom border is handled by Bootstrap class 'border-bottom' */
+}
+
+.brand-story-section .accordion-button {
+    font-family: 'Merriweather', serif;
+    font-size: 1.2rem;
+    color: #333 !important;
+    padding: 20px 0;
+    /* Top/Bottom padding */
+    background: transparent !important;
+    box-shadow: none !important;
+    /* Removes the blue glow on click */
+}
+
+/* Custom Arrow Color */
+.brand-story-section .accordion-button::after {
+    filter: brightness(0);
+    /* Makes the default blue arrow black */
+    transform: scale(0.8);
+}
+
+/* Content Styling */
+.brand-story-content h4,
+.brand-story-content h3,
+.brand-story-content h5 {
+    font-family: 'Merriweather', serif;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.brand-story-content p,
+.brand-story-content li {
+    font-family: sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #555;
+}
+
+.brand-story-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+/* Make Dropdown Open on Hover for Desktop */
+@media (min-width: 992px) {
+    .hover-dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+        /* Remove gap so mouse doesn't loose focus */
+        animation: fadeIn 0.3s ease-in-out;
+    }
+}
+
+/* ======================================= */
+/* 🟢 JAPAM STYLE NAVIGATION CSS */
+/* ======================================= */
+
+/* 1. Navbar Links Style */
+.main-nav-list .nav-link {
+    font-family: 'Merriweather', serif;
+    /* Optional: matches your theme */
+    font-size: 15px;
+    padding: 18px 10px !important;
+    /* Taller click area */
+    position: relative;
+    transition: color 0.3s;
+}
+
+/* 2. Dropdown Menu (Japam Style) */
+.dropdown-menu {
+    border-top: 3px solid var(--secondary-base) !important;
+    /* Gold Top Border */
+    margin-top: 0 !important;
+    border-radius: 0 0 8px 8px !important;
+    /* Rounded bottom corners only */
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    color: #444;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #FFF8E7;
+    /* Light cream hover bg */
+    color: #000 !important;
+    padding-left: 1.5rem !important;
+    /* Slight slide effect */
+}
+
+.dropdown-item i {
+    font-size: 12px;
+    /* Small arrow icon */
+}
+
+/* 3. HOVER TO OPEN (Desktop Only) */
+@media (min-width: 992px) {
+    .hover-dropdown:hover .dropdown-menu {
+        display: block;
+        animation: fadeInUp 0.3s ease-in-out;
+    }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 15px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* ======================================= */
+/* 🌟 JAPAM STYLE MEGA MENU CSS */
+/* ======================================= */
+
+/* 1. Mega Menu Container */
+.japam-mega-menu {
+    width: 900px !important;
+    /* Wide menu */
+    padding: 0 !important;
+    border-top: 3px solid var(--secondary-base) !important;
+    border-radius: 0 0 8px 8px;
+    margin-top: 0px !important;
+    left: 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 2. Left Side: Sub-Category List */
+.japam-sc-list {
+    background-color: #fff;
+    padding: 10px 0;
+    border-right: 1px solid #eee;
+    height: 100%;
+}
+
+.japam-sc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    /* Selection indicator */
+}
+
+.japam-sc-item:hover {
+    background-color: #F9F9F9;
+    color: #000;
+    border-left-color: var(--secondary-base);
+    /* Gold line on hover */
+    padding-left: 25px;
+    /* Slide effect */
+}
+
+.japam-sc-item i {
+    font-size: 11px;
+    color: #999;
+}
+
+/* 3. Right Side: Product Grid */
+.japam-prod-grid {
+    background-color: #fff;
+    padding: 20px;
+}
+
+.japam-prod-card {
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    transition: transform 0.3s;
+}
+
+.japam-prod-card:hover {
+    transform: translateY(-5px);
+}
+
+.japam-prod-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    /* Square image */
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: #f8f8f8;
+}
+
+.japam-prod-title {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Ensure the parent li allows the wide dropdown */
+.nav-item.dropdown {
+    position: static;
+    /* This allows the mega menu to take full width if needed */
+}
+
+/* But for 900px width relative to link, we use relative on li and specific width on menu */
+@media (min-width: 992px) {
+    .nav-item.dropdown {
+        position: relative;
+    }
+
+    /* If you want it full width of container, use position static on .navbar-collapse */
+}
+
+/* Filter Sidebar */
+.filter-sidebar .form-check-input:checked {
+    background-color: var(--dark);
+    border-color: var(--dark);
+}
+
+.filter-sidebar .form-check-label {
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Collapse Arrow Rotation */
+.filter-group a[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+.filter-group a i {
+    transition: transform 0.3s;
+}
+
+/* Product Card Tweaks */
+.product-card .img-box img {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .img-box img {
+    transform: scale(1.05);
+    /* Slight Zoom on hover */
+}
+
+/* Badge Style */
+.badge.bg-danger {
+    background-color: #D32F2F !important;
+    /* Japam Red */
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+/* ======================================= */
+/* 🎚️ JAPAM STYLE PRICE SLIDER (noUiSlider Override) */
+/* ======================================= */
+
+/* 1. Base Slider Bar (The Grey Line) */
+.noUi-target {
+    background: #e9e9e9;
+    /* Light Grey background like Japam */
+    border-radius: 0;
+    /* No rounded corners for the bar itself */
+    border: none;
+    box-shadow: none;
+    height: 2px;
+    /* Very thin line */
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* 2. Connect Bar (The Black Line between handles) */
+.noUi-connect {
+    background: #000;
+    /* Pure Black */
+}
+
+/* 3. The Handles (Big Circles) */
+.noUi-horizontal .noUi-handle {
+    width: 24px;
+    height: 24px;
+    right: -12px;
+    /* Center alignment */
+    top: -11px;
+    /* Vertically center on the thin line */
+
+    border-radius: 50%;
+    /* Perfect Circle */
+    background: #fff;
+    /* White interior */
+    border: 2px solid #000;
+    /* Black Border */
+    box-shadow: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+/* Hover Effect on Handle */
+.noUi-horizontal .noUi-handle:hover {
+    transform: scale(1.1);
+    /* Slight zoom */
+}
+
+/* Remove default lines inside the handle */
+.noUi-handle:before,
+.noUi-handle:after {
+    display: none;
+}
+
+/* 4. Input Boxes Styling (Clean White) */
+.price-input-box {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 10px 8px 25px;
+    /* Left padding for Rupee symbol */
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.price-input-box:focus {
+    border-color: #000;
+    /* Black border on focus */
+}
+
+/* Rupee Symbol Positioning */
+.position-absolute.text-muted {
+    color: #999 !important;
+    font-size: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px !important;
+}
+
+/* Arrow Button */
+.btn-dark {
+    background-color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.btn-dark:hover {
+    background-color: #333;
+}
+
+.header-search-bar {
+    background-color: var(--light) !important;
+    border-top: 4px solid var(--secondary-base) !important;
+}
+
+.header-search-bar input.form-control:focus {
+    box-shadow: none;
+    border-color: var(--light) !important;
+}
+
+.header-search-bar .input-group {
+    display: contents !important;
+}
+
+/* Search Results Styling */
+.search-item-card {
+    transition: background-color 0.2s ease;
+}
+
+.search-item-card:hover {
+    background-color: #f8f9fa;
+    /* Light Grey Hover */
+}
+
+.font-heading {
+    font-family: 'Merriweather', serif;
+    /* Japam Font Style */
+}
+
+/* Hover Effect for Right Side Links */
+.hover-text-dark:hover {
+    color: #000 !important;
+}
+
+/* Cursor Pointer Helper */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+
+/* ======================================= */
+/* 🔐 ASTROTALK STYLE LOGIN MODAL */
+/* ======================================= */
+
+/* 1. Modal Dialog Width */
+.login-modal-dialog {
+    max-width: 850px;
+    /* Wide modal */
+}
+
+.login-modal-content {
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* 2. Left Side (Branding) */
+.login-left-panel {
+    background-color: #3E1B1B;
+    /* Dark Maroon */
+    color: #fff;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+    /* Optional texture */
+}
+
+.login-logo img {
+    height: 50px;
+    margin-bottom: 15px;
+}
+
+.login-offer-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #fff;
+}
+
+.feature-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    color: #FFD700;
+    /* Gold Icon */
+    margin-bottom: 5px;
+}
+
+.feature-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.feature-desc {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* 3. Right Side (Form) */
+.login-right-panel {
+    background-color: #fff;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.login-title {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #333;
+}
+
+.otp-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.otp-input:focus {
+    border-color: #3E1B1B;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(62, 27, 27, 0.1);
+}
+
+.btn-login-action {
+    background-color: #eee;
+    color: #333;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.3s;
+}
+
+.btn-login-action:hover {
+    background-color: #3E1B1B;
+    /* Maroon on Hover */
+    color: #fff;
+}
+
+.edit-number-btn {
+    font-size: 0.85rem;
+    color: #008000;
+    /* Green like screenshot */
+    border: 1px solid #008000;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+
+/* Product Gallery Styling */
+.thumb-box {
+    height: 70px;
+    width: 70px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.thumb-box.active-thumb {
+    border-color: #000;
+    /* Selected border color */
+}
+
+.thumb-box:hover {
+    border-color: #ccc;
+}
+
+/* Slick Arrows for Gallery */
+.thumbnail-slider .slick-prev,
+.thumbnail-slider .slick-next {
+    width: 25px;
+    height: 25px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    z-index: 1;
+    color: #333;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-slider .slick-prev {
+    left: -10px;
+}
+
+.thumbnail-slider .slick-next {
+    right: -10px;
+}
+
+.thumbnail-slider .slick-prev:before,
+.thumbnail-slider .slick-next:before {
+    content: '';
+}
+
+/* Remove default */
+
+/* Font Sizing */
+.x-small {
+    font-size: 11px;
+}
+
+/* Button Hover */
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+
+/* ======================================= */
+/* 🌟 4. PRODUCT DETAIL PAGE (PREMIUM RIGHT SIDE) */
+/* ======================================= */
+
+/* 1. Title & Price */
+.product-title {
+    font-family: 'Merriweather', serif;
+    /* Rich Font */
+    font-size: 28px;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+
+.price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.price-main {
+    font-size: 26px;
+    font-weight: 700;
+    color: #000;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 16px;
+}
+
+/* 2. Timer */
+.offer-timer {
+    color: var(--offer-red);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+/* 3. EMI Box */
+.emi-box-premium {
+    border: 1px dashed #bbb;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+/* 4. Siddh Checkbox (Clean Look) */
+.siddh-box-premium {
+    border: 1px solid #ccc;
+    background: #fff;
+    padding: 12px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.siddh-box-premium:hover {
+    background: #f9f9f9;
+    border-color: #aaa;
+}
+
+.siddh-box-premium input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--gold-btn);
+}
+
+/* 5. 🔥 BUTTONS (Side by Side) */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-premium {
+    flex: 1;
+    /* 50% Width each */
+    padding: 14px 0;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-gold {
+    background-color: #a67630;
+    ;
+}
+
+.btn-gold:hover {
+    background-color: var(--secondary-base);
+}
+
+.btn-dark-brown {
+    background-color: #2c1b18;
+}
+
+.btn-dark-brown:hover {
+    background-color: var(--secondary-base);
+}
+
+/* 6. Delivery Input */
+.delivery-premium {
+    background: var(--bg-light);
+    border: 1px solid #ffe0b2;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.delivery-input-group {
+    display: flex;
+    gap: 0;
+}
+
+.delivery-input-group input {
+    border: 1px solid #ccc;
+    border-right: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.delivery-input-group button {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    border-radius: 0 4px 4px 0;
+    font-weight: 600;
+}
+
+/* 🖼️ SYNCED SLIDER CSS */
+.product-main-slider {
+    margin-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    /* Light border for clean look */
+}
+
+.product-main-slider .slick-slide img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    /* Square Main Image */
+    object-fit: contain;
+    background-color: #fff;
+    display: block;
+}
+
+/* Thumbnails (No Gap Issue Fixed) */
+.product-thumb-slider .slick-slide {
+    margin: 0 4px;
+    /* 🔥 Gap Reduced Here */
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+    border: 1px solid transparent;
+    border-radius: 6px;
+}
+
+.product-thumb-slider .slick-slide img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+/* Active Thumbnail Highlight */
+.product-thumb-slider .slick-current {
+    opacity: 1;
+    border-color: var(--primary-orange);
+}
+
+
+/* Delivery Box Style */
+.delivery-check-box {
+    background-color: #fffbf2;
+    /* Creamy background from image */
+    border: 1px solid #ffe0b2;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Secure Footer Style */
+.secure-box {
+    margin-top: 15px;
+}
+
+/* Need Help Box Styling */
+.need-help-box {
+    background-color: #fffbf2;
+    /* Light Cream Background */
+    border: 1px solid #f0e6d2;
+    /* Subtle Border */
+}
+
+/* The horizontal line separator */
+.line-separator {
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+/* Custom Help Buttons (Yellow Border, White BG) */
+.help-btn {
+    border: 2px solid #ffc107 !important;
+    /* Yellow Border */
+    background-color: #fff;
+    border-radius: 8px;
+    /* Rounded Corners */
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.help-btn:hover {
+    background-color: #fff8e1;
+    /* Light yellow hover */
+    transform: translateY(-2px);
+    /* Slight lift effect */
+}
+
+/* Custom Accordion Styling */
+.accordion-flush .accordion-item {
+    border-bottom: 1px solid #eee;
+}
+
+.accordion-button {
+    padding: 15px 0;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    font-size: 15px;
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--text-dark);
+}
+
+.accordion-body {
+    padding: 10px 0 20px 0;
+}
+
+/* Custom Plus/Minus Icon */
+.accordion-button::after {
+    content: "\f067" !important;
+    /* Plus icon from Line Awesome */
+    font-family: 'Line Awesome Free';
+    font-weight: 900;
+    background-image: none !important;
+    font-size: 14px;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+.accordion-button:not(.collapsed)::after {
+    content: "\f068" !important;
+    /* Minus icon from Line Awesome */
+    transform: rotate(0deg) !important;
+}
+
+/* 🔥 FIX: ACCORDION BACKGROUND COLOR */
+.accordion-item,
+.accordion-header,
+.accordion-button,
+.accordion-collapse,
+.accordion-body {
+    /* Background ko transparent karein taaki page ka color dikhe */
+    background-color: transparent !important;
+    border: none !important;
+    /* Border bhi hata di agar clean chahiye */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    /* Sirf niche line */
+}
+
+/* Open hone par bhi background same rahe */
+.accordion-button:not(.collapsed) {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: #000;
+}
+
+
+/* Review Modal Stars */
+.rating-input i {
+    transition: transform 0.2s;
+}
+.rating-input i:hover {
+    transform: scale(1.2);
+}
+.rating-input .las {
+    color: #ffc107; /* Fill Color */
+}
+.rating-input .lar {
+    color: #ccc; /* Empty Color */
+}
+
+/* Modal Styling */
+#reviewModal .modal-content {
+    border-radius: 12px;
+    padding: 10px;
+}
+
+/* Masonry Grid for Reviews */
+.review-masonry-grid {
+    column-count: 4; /* Desktop पर 4 कॉलम */
+    column-gap: 1.5rem; /* कॉलम के बीच गैप */
+}
+
+.review-masonry-item {
+    display: inline-block; /* कार्ड को टूटने से बचाए */
+    width: 100%;
+    margin-bottom: 1.5rem; /* नीचे वाले कार्ड से दूरी */
+    break-inside: avoid; /* कार्ड को कॉलम के बीच कटने से रोके */
+}
+
+/* Responsive: Tablet पर 2 कॉलम */
+@media (max-width: 992px) {
+    .review-masonry-grid {
+        column-count: 2;
+    }
+}
+
+/* Responsive: Mobile पर 1 कॉलम */
+@media (max-width: 576px) {
+    .review-masonry-grid {
+        column-count: 1;
+    }
+}
+
+/* Fix for Slick Slider 1px Width Issue */
+.category-slider .slick-slide {
+    height: auto; /* Prevent collapse */
+}
+
+/* Category Image Hover Effect */
+.category-item:hover .img-circle {
+    transform: scale(1.05);
+    border-color: #C19A6B !important; /* Gold/Earth color */
+}
+
+/* Custom Arrow Styling */
+.category-scroll-wrapper .slick-prev,
+.category-scroll-wrapper .slick-next {
+    position: absolute;
+    top: 40%;
+    z-index: 10;
+    width: 35px;
+    height: 35px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.category-scroll-wrapper .slick-prev { left: -10px; }
+.category-scroll-wrapper .slick-next { right: -10px; }
+
+.category-scroll-wrapper .slick-prev:hover,
+.category-scroll-wrapper .slick-next:hover {
+    background: #C19A6B;
+    color: white !important;
+    border-color: #C19A6B;
+}
+
+/* Ensure Icons are centered inside buttons */
+.category-scroll-wrapper .slick-arrow i {
+    font-size: 18px;
+    line-height: 1;
+}
+
+
+/* 1. "Showing 1 to 12..." Text ko Chhupane (Hide) ke liye */
+nav .d-none.flex-sm-fill.d-sm-flex .small.text-muted {
+    display: none !important;
+}
+
+/* 2. Pagination ko Center me lane ke liye (Optional, agar center chahiye) */
+nav .d-none.flex-sm-fill.d-sm-flex {
+    justify-content: center !important;
+}
+/* 1. Active Page (Jo select hai) */
+.pagination .page-item.active .page-link {
+    background-color: #ffcc66 !important;
+    border-color: #ffcc66 !important; /* Border ka color bhi same karna padega */
+    color: #000000 !important;       /* Text Green */
+    font-weight: bold;
+}
+
+/* 2. Active Page Hover (Jab mouse le jayein) */
+.pagination .page-item.active .page-link:hover {
+    background-color: #ffcc66 !important;
+    border-color: #ffcc66 !important;
+    color: #000000 !important;
+}
+
+/* 3. Normal Pages (Jo select nahi hain) */
+.pagination .page-item .page-link {
+    color: #333 !important; /* Dark Grey Text */
+}
+
+/* 4. Normal Pages Hover */
+.pagination .page-item .page-link:hover {
+    background-color: #f7f1de !important;
+    color: #000000 !important;
+    border-color: #ddd;
+}
+
+
+/* Tracking Timeline CSS */
+.track-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.track-line {
+    position: absolute;
+    top: 15px;
+    left: 10%;
+    width: 80%;
+    height: 4px;
+    background-color: #e9ecef;
+    z-index: 1;
+}
+
+.track-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 25%;
+}
+
+.track-step .icon {
+    width: 35px;
+    height: 35px;
+    background-color: #fff;
+    border: 4px solid #e9ecef;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.track-step.active .icon {
+    border-color: #28a745; /* Green Color */
+    background-color: #28a745;
+    color: #fff;
+}
+
+.track-step .text {
+    font-weight: 600;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.track-step.active .text {
+    color: #000;
+}
+
+.track-step .date {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Connect active line (Jugaad for simple CSS) */
+.track-step.active ~ .track-step .icon {
+    border-color: #e9ecef; /* Inactive future steps */
+}
+
+/* 🔴 MOBILE MENU FIX: Hide inactive sub-menus */
+.Mobile-Header aside#mega-menu--mobile nav.navigation.hidden {
+    display: none !important;
+}
