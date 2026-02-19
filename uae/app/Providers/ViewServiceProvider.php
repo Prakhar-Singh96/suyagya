@@ -51,18 +51,21 @@ class ViewServiceProvider extends ServiceProvider
         // 👇 CART COUNT GLOBAL LOGIC (Yahan Add Karein) 👇
         View::composer('*', function ($view) {
             $cartGlobalCount = 0;
-            $sessionId = Session::getId();
-            $userId = Auth::id();
+            if (\Schema::hasTable('carts')) {
+                $sessionId = Session::getId();
+                $userId = Auth::id();
 
-            // Sirf tab count karein agar session ho
-            if ($sessionId) {
-                $cartGlobalCount = Cart::where(function($q) use ($sessionId, $userId) {
-                    if ($userId) {
-                        $q->where('user_id', $userId);
-                    } else {
-                        $q->where('session_id', $sessionId);
-                    }
-                })->count();
+                // Sirf tab count karein agar session ho
+                if ($sessionId) {
+                    $cartGlobalCount = Cart::where(function($q) use ($sessionId, $userId) {
+                        if ($userId) {
+                            $q->where('user_id', $userId);
+                        } else {
+                            $q->where('session_id', $sessionId);
+                        }
+                    })->count();
+                }
+
             }
 
             // 'cartGlobalCount' variable ab har blade file me milega
