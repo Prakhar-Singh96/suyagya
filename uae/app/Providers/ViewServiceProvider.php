@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema; // ✅ यह लाइन पक्का होनी चाहिए
 use App\Models\Category;
 use App\Models\Cart;
 
@@ -18,25 +19,31 @@ class ViewServiceProvider extends ServiceProvider
     {
         // Header ke liye categories globally available
         View::composer('frontend.includes.header', function ($view) {
+            $headerCategories = collect(); // ✅ डिफॉल्ट खाली कलेक्शन
 
-            // 1. Pehle Categories aur SubCategories load karein
-            $headerCategories = Category::where('status', 1)
-                ->with(['subCategories' => function($q) {
-                    $q->where('status', 1);
-                }])
-                ->orderBy('id', 'asc') // Ya 'id' 'asc'
-                ->get();
+            // 🟢 FIX: चेक करें कि क्या 'categories' टेबल मौजूद है
+            if (Schema::hasTable('categories')) {
+                // 1. Pehle Categories aur SubCategories load karein
+                $headerCategories = Category::where('status', 1)
+                    ->with(['subCategories' => function($q) {
+                        $q->where('status', 1);
+                    }])
+                    ->orderBy('id', 'asc')
+                    ->get();
 
-            // 2. 🟢 FIX: Har Category ke liye manually 4 latest products load karein
-            foreach ($headerCategories as $category) {
-                $latestProducts = $category->products()
-                                           ->where('status', 1)
-                                           ->latest() // Newest first
-                                           ->take(4)  // Sirf 4 chahiye
-                                           ->get();
+                // 2. Har Category ke liye manually 4 latest products load karein
+                foreach ($headerCategories as $category) {
+                    // पक्का करें कि products टेबल भी हो (रिलेशन के लिए)
+                    if (Schema::hasTable('products')) {
+                        $latestProducts = $category->products()
+                            ->where('status', 1)
+                            ->latest()
+                            ->take(4)
+                            ->get();
 
-                // Blade file ke liye relation set kar rahe hain
-                $category->setRelation('products', $latestProducts);
+                        $category->setRelation('products', $latestProducts);
+                    }
+                }
             }
 
             $view->with('headerCategories', $headerCategories);
@@ -48,14 +55,15 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 👇 CART COUNT GLOBAL LOGIC (Yahan Add Karein) 👇
+        // 👇 CART COUNT GLOBAL LOGIC 👇
         View::composer('*', function ($view) {
             $cartGlobalCount = 0;
-            if (\Schema::hasTable('carts')) {
+
+            // ✅ चेक करें कि क्या 'carts' टेबल मौजूद है
+            if (Schema::hasTable('carts')) {
                 $sessionId = Session::getId();
                 $userId = Auth::id();
 
-                // Sirf tab count karein agar session ho
                 if ($sessionId) {
                     $cartGlobalCount = Cart::where(function($q) use ($sessionId, $userId) {
                         if ($userId) {
@@ -65,10 +73,8 @@ class ViewServiceProvider extends ServiceProvider
                         }
                     })->count();
                 }
-
             }
 
-            // 'cartGlobalCount' variable ab har blade file me milega
             $view->with('cartGlobalCount', $cartGlobalCount);
         });
     }
