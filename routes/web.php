@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\HomePageSettingController;
 use App\Http\Controllers\Admin\LogisticController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Frontend\RssController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Admin\SubCategoryController;
@@ -145,6 +146,8 @@ Route::get('/support-policy', [PageController::class, 'support_policy'])->name('
 // Blog Routes
 Route::get('/blogs', [BlogPageController::class, 'index'])->name('blogs.index');
 Route::get('/blog/{slug}', [BlogPageController::class, 'show'])->name('blogs.show');
+
+Route::get('/blogs/feed', [RssController::class, 'blogs']);
 
 // --- AUTHENTICATED USER ROUTES ---
 Route::middleware(['auth'])->group(function () {
