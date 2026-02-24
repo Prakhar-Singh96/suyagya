@@ -90,6 +90,58 @@
 @endif
 
 
+{{-- ================= BLOG ARTICLE & BLOG FAQ SCHEMA ================= --}}
+@if (Route::is('blogs.show') && isset($blog))
+    <script type="application/ld+json">
+    [
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": @json($blog->title),
+            "image": [
+                @json(asset($blog->main_image))
+            ],
+            "datePublished": "{{ $blog->created_at->toIso8601String() }}",
+            "dateModified": "{{ $blog->updated_at->toIso8601String() }}",
+            "author": {
+                "@type": "Organization",
+                "name": "Suyagya",
+                "url": "{{ url('/') }}"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Suyagya",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "{{ asset('assets/images/logo.png') }}"
+                }
+            },
+            "description": @json($blog->meta_description ?? Str::limit(strip_tags($blog->content), 160))
+        }
+        @if(!empty($blog->faqs))
+        ,
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                @foreach($blog->faqs as $index => $faq)
+                {
+                    "@type": "Question",
+                    "name": @json($faq['question']),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": @json(strip_tags($faq['answer']))
+                    }
+                }{{ $index < count($blog->faqs) - 1 ? ',' : '' }}
+                @endforeach
+            ]
+        }
+        @endif
+    ]
+    </script>
+@endif
+
+
 {{-- ================= FAQ SCHEMA ================= --}}
 @php
     $pageFaqs = [];

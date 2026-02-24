@@ -9,8 +9,8 @@
         @foreach($blogs as $blog)
             <item>
                 <title><![CDATA[{{ $blog->title }}]]></title>
-                <link>{{ url('/blogs/' . $blog->slug) }}</link>
-                <guid>{{ url('/blogs/' . $blog->slug) }}</guid>
+                <link>{{ url('/blog/' . $blog->slug) }}</link>
+                <guid>{{ url('/blog/' . $blog->slug) }}</guid>
                 <pubDate>{{ $blog->created_at->toRssString() }}</pubDate>
 
                 <description><![CDATA[

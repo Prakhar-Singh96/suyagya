@@ -23,6 +23,31 @@
                         {!! $blog->content !!}
                     </div>
 
+                    {{-- ✅ FAQ SECTION START --}}
+                    @if($blog->faqs && count($blog->faqs) > 0)
+                    <div class="blog-faqs mb-5 pt-4 border-top">
+                        <h3 class="fw-bold mb-4">Blog FAQs</h3>
+                        <div class="accordion accordion-flush shadow-sm border rounded" id="blogFaqAccordion">
+                            @foreach($blog->faqs as $key => $faq)
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="faqHeading{{$key}}">
+                                        <button class="accordion-button {{ $key != 0 ? 'collapsed' : '' }} fw-bold text-dark"
+                                                type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse{{$key}}">
+                                            {{ $faq['question'] }}
+                                        </button>
+                                    </h2>
+                                    <div id="faqCollapse{{$key}}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}"
+                                         data-bs-parent="#blogFaqAccordion">
+                                        <div class="accordion-body text-muted" style="font-size: 0.95rem;">
+                                            {{ $faq['answer'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     {{-- Share Buttons --}}
                     <div class="d-flex align-items-center">
                         <span class="fw-bold me-3">Share:</span>

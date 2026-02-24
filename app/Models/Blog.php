@@ -19,6 +19,11 @@ class Blog extends Model
         'meta_description',
         'meta_keywords',
         'og_image',
+        'faqs',
         'status'
+    ];
+
+    protected $casts = [
+        'faqs' => 'array',
     ];
 }
