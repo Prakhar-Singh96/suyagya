@@ -196,6 +196,26 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">Update Order</button>
+                            {{-- 🚀 WhatsApp Button: सिर्फ तभी दिखेगा जब ट्रैकिंग डेटा मौजूद हो --}}
+                            @if($order->status == 'shipped' && $order->awb_number && $order->courier_name)
+                                @php
+                                    $addr = is_array($order->shipping_address) ? $order->shipping_address : json_decode($order->shipping_address, true);
+                                    $phone = $addr['phone'] ?? '';
+                                    $trackingUrl = $order->tracking_url ?? "https://www.indiapost.gov.in/";
+
+                                    $msg = "Hello, Your order #{$order->order_number} from Suyagya has been shipped! \n\n" .
+                                        "Courier: {$order->courier_name} \n" .
+                                        "Tracking ID: {$order->awb_number} \n" .
+                                        "Track your package here: {$trackingUrl} \n\n" .
+                                        "Thank you for shopping with us!";
+
+                                    $wa_link = "https://wa.me/91{$phone}?text=" . urlencode($msg);
+                                @endphp
+
+                                <a href="{{ $wa_link }}" target="_blank" class="btn btn-success w-100 mt-3">
+                                    <i class="lab la-whatsapp"></i> Send Tracking on WhatsApp
+                                </a>
+                            @endif
                         </form>
                     </div>
                 </div>

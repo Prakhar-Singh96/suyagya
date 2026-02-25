@@ -24,28 +24,37 @@
                     </div>
 
                     {{-- ✅ FAQ SECTION START --}}
-                    @if($blog->faqs && count($blog->faqs) > 0)
-                    <div class="blog-faqs mb-5 pt-4 border-top">
-                        <h3 class="fw-bold mb-4">Blog FAQs</h3>
-                        <div class="accordion accordion-flush shadow-sm border rounded" id="blogFaqAccordion">
-                            @foreach($blog->faqs as $key => $faq)
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="faqHeading{{$key}}">
-                                        <button class="accordion-button {{ $key != 0 ? 'collapsed' : '' }} fw-bold text-dark"
-                                                type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse{{$key}}">
-                                            {{ $faq['question'] }}
-                                        </button>
-                                    </h2>
-                                    <div id="faqCollapse{{$key}}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}"
-                                         data-bs-parent="#blogFaqAccordion">
-                                        <div class="accordion-body text-muted" style="font-size: 0.95rem;">
-                                            {{ $faq['answer'] }}
+                    @if ($blog->faqs && count($blog->faqs) > 0)
+                        {{-- mt-5 से ऊपर 3rem का गैप आ जाएगा --}}
+                        <div class="blog-faqs mt-5 mb-5 pt-5 border-top">
+                            <h3 class="fw-bold mb-4 font-heading text-dark">Blog FAQs</h3>
+
+                            <div class="accordion accordion-flush shadow-sm border rounded overflow-hidden"
+                                id="blogFaqAccordion">
+                                @foreach ($blog->faqs as $key => $faq)
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="faqHeading{{ $key }}">
+                                            {{-- py-3 से बटन के अंदर अच्छी स्पेसिंग आ जाएगी --}}
+                                            <button
+                                                class="accordion-button {{ $key != 0 ? 'collapsed' : '' }} fw-bold text-dark py-3 ps-4"
+                                                type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#faqCollapse{{ $key }}">
+                                                {{ $faq['question'] }}
+                                            </button>
+                                        </h2>
+                                        <div id="faqCollapse{{ $key }}"
+                                            class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}"
+                                            data-bs-parent="#blogFaqAccordion">
+                                            {{-- accordion-body में line-height बढ़ाने से टेक्स्ट साफ़ दिखेगा --}}
+                                            <div class="accordion-body text-muted py-3 ps-4"
+                                                style="font-size: 1rem; line-height: 1.6;">
+                                                {{ $faq['answer'] }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
                     @endif
 
                     {{-- Share Buttons --}}
