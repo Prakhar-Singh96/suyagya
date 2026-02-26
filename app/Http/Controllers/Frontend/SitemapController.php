@@ -109,15 +109,15 @@ class SitemapController extends Controller
         $sitemap .= '<url><loc>' . url('/collections/all') . '</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>';
 
         // आपके स्पेशल कीवर्ड्स
-        $purposes = ['Wealth', 'Health', 'Love', 'Luck', 'Protection', 'Peace', 'Courage', 'Balance'];
+        // $purposes = ['Wealth', 'Health', 'Love', 'Luck', 'Protection', 'Peace', 'Courage', 'Balance'];
 
-        foreach ($purposes as $purpose) {
-            $sitemap .= '<url>';
-            $sitemap .= '<loc>' . url("/collections/all?purpose={$purpose}") . '</loc>';
-            $sitemap .= '<changefreq>weekly</changefreq>';
-            $sitemap .= '<priority>0.7</priority>';
-            $sitemap .= '</url>';
-        }
+        // foreach ($purposes as $purpose) {
+        //     $sitemap .= '<url>';
+        //     $sitemap .= '<loc>' . url("/collections/all?purpose={$purpose}") . '</loc>';
+        //     $sitemap .= '<changefreq>weekly</changefreq>';
+        //     $sitemap .= '<priority>0.7</priority>';
+        //     $sitemap .= '</url>';
+        // }
 
         $sitemap .= '</urlset>';
         return response($sitemap, 200)->header('Content-Type', 'text/xml');

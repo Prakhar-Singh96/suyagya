@@ -123,7 +123,7 @@
     <meta name="description" content="{{ $metaDesc }}">
     <meta name="keywords" content="{{ $metaKeys }}">
     <meta name="author" content="Suyagya">
-    <link rel="canonical" href="{{ $currentUrl }}" />
+    <link rel="canonical" href="{{ $currentUrl }}{{ request()->has('page') ? '?page=' . request()->page : '' }}" />
 
     {{-- ✅ OPEN GRAPH / FACEBOOK / WHATSAPP --}}
     <meta property="og:type" content="website" />

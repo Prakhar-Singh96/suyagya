@@ -143,8 +143,13 @@
 
             {{-- 1. LOGO --}}
             <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya"
-                    style="height: 50px; width: auto; object-fit: contain;">
+                <div class="logo-wrap spiritual-logo">
+                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}"
+                        alt="Suyagya"
+                        class="logo-img">
+                </div>
+                {{-- <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya"
+                    style="height: 50px; width: auto; object-fit: contain;"> --}}
             </a>
 
             <button class="navbar-toggler p-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
@@ -399,7 +404,12 @@
         </div>
         <div class="HeaderCenter">
             <a class="navbar-brand py-2 me-lg-5" href="{{ url('/') }}">
-                <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya" height="50">
+                {{-- <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya" height="50"> --}}
+                <div class="logo-wrap spiritual-logo">
+                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}"
+                        alt="Suyagya"
+                        class="logo-img">
+                </div>
             </a>
         </div>
         <div class="HeaderRight">

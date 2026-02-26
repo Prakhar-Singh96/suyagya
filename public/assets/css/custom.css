@@ -3635,3 +3635,72 @@ html {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* 🕉️ Spiritual Premium Logo Animation */
+.spiritual-logo {
+    position: relative;
+    display: inline-block;
+    animation: logoReveal 3.2s ease-in-out infinite;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+    opacity: 1;
+    transform: scale(1);
+    animation: logoFadeIn 3.8s ease-in-out infinite;
+}
+
+/* Golden Aura */
+.spiritual-logo::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(
+        circle,
+        rgba(212,175,55,0.35) 0%,
+        rgba(212,175,55,0.15) 45%,
+        rgba(212,175,55,0) 70%
+    );
+    filter: blur(14px);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: auraPulse 3.8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* 🌿 UPDATED KEYFRAMES (NO ZERO OPACITY) */
+@keyframes logoFadeIn {
+    0% {
+        opacity: 0.85;
+        transform: scale(0.97);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        opacity: 0.95;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.9;
+        transform: scale(0.97);
+    }
+}
+
+@keyframes auraPulse {
+    0% {
+        opacity: 0.25;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 0.55;
+        transform: scale(1.15);
+    }
+    100% {
+        opacity: 0.25;
+        transform: scale(0.9);
+    }
+}
