@@ -952,6 +952,42 @@
             });
         }
     </script>
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // 1. ब्राउज़र को डिफ़ॉल्ट पॉप-अप दिखाने से रोकें
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // 2. चेक करें कि क्या यूजर पहले से ऐप मोड (Standalone) में तो नहीं है?
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                // अगर यूजर ब्राउज़र में है, तो बटन दिखाएँ
+                if (installBtn) installBtn.style.display = 'block';
+            }
+        });
+
+        function triggerInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        // इंस्टॉल होने के बाद बटन छुपा दें
+                        if (installBtn) installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // 3. अगर यूजर पहले से ऐप के अंदर है, तो बटन पक्का छुपा रहे
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                if (installBtn) installBtn.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 
 </html>

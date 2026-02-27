@@ -6,6 +6,15 @@
     "description": "Suyagya Stones, Rudraksha & Spiritual Bracelets",
     "display": "standalone",
     "theme_color": "#FFCC66",
+    "screenshots": [
+        {
+        "src": "ss.png",
+        "sizes": "390x844",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label": "Suyagya Home"
+        }
+    ],
     "icons": [
         {
             "src": "icon-72x72.png?v=1772186803",

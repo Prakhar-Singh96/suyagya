@@ -4,7 +4,9 @@
 
 @section('content')
 
-    {{-- Note: We rely on Slick Carousel JS being loaded from vendors.js or CDN --}}
+    <button id="pwa-install-btn" onclick="triggerInstall()" class="btn btn-warning" style="display: none;">
+        Install App
+    </button>
 
     {{-- 💎 1. CATEGORY SCROLL SECTION --}}
     <section class="py-4 bg-white shadow-sm">
