@@ -3704,3 +3704,40 @@ html {
         transform: scale(0.9);
     }
 }
+
+
+.pwa-popup-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 450px;
+    background: #fff;
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    z-index: 99999;
+    padding: 15px;
+    border: 1px solid #f7f1de;
+    animation: slideUp 0.5s ease-out;
+}
+
+.pwa-app-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+@keyframes slideUp {
+    from { bottom: -100px; opacity: 0; }
+    to { bottom: 20px; opacity: 1; }
+}
+
+/* मोबाइल के लिए स्पेसिफिक स्टाइल */
+@media (max-width: 768px) {
+    .pwa-popup-container {
+        bottom: 10px;
+        width: 95%;
+    }
+}

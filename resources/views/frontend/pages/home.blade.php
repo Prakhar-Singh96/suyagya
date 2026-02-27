@@ -4,10 +4,6 @@
 
 @section('content')
 
-    <button id="pwa-install-btn" onclick="triggerInstall()" class="btn btn-warning" style="display: none;">
-        Install App
-    </button>
-
     {{-- 💎 1. CATEGORY SCROLL SECTION --}}
     <section class="py-4 bg-white shadow-sm">
         <div class="container">

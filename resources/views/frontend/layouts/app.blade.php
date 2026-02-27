@@ -238,6 +238,24 @@
         {{-- ⬇️ Footer --}}
         @include('frontend.includes.footer')
 
+        <div id="pwa-install-popup" class="pwa-popup-container" style="display: none;">
+            <div class="pwa-popup-content">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('icon-96x96.png') }}" alt="Suyagya Logo" class="pwa-app-icon">
+                    <div class="ms-3 flex-grow-1">
+                        <h6 class="mb-0 fw-bold">Suyagya App</h6>
+                        <p class="mb-0 small text-muted">Install for better experience</p>
+                    </div>
+                    <div class="pwa-action-btns">
+                        <button onclick="hidePwaPopup()"
+                            class="btn btn-link text-muted text-decoration-none small">Later</button>
+                        <button onclick="triggerInstall()"
+                            class="btn btn-warning btn-sm fw-bold px-3 rounded-pill ms-2">Install</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- 🍞 Toast Container --}}
         <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1060;">
             <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert"
@@ -954,17 +972,19 @@
     </script>
     <script>
         let deferredPrompt;
-        const installBtn = document.getElementById('pwa-install-btn');
+        const pwaPopup = document.getElementById('pwa-install-popup');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // 1. ब्राउज़र को डिफ़ॉल्ट पॉप-अप दिखाने से रोकें
+            // ब्राउज़र का डिफ़ॉल्ट प्रॉम्प्ट रोकें
             e.preventDefault();
             deferredPrompt = e;
 
-            // 2. चेक करें कि क्या यूजर पहले से ऐप मोड (Standalone) में तो नहीं है?
+            // अगर यूजर पहले से standalone (App) मोड में नहीं है, तो पॉप-अप दिखाएं
             if (!window.matchMedia('(display-mode: standalone)').matches) {
-                // अगर यूजर ब्राउज़र में है, तो बटन दिखाएँ
-                if (installBtn) installBtn.style.display = 'block';
+                // थोड़ा डिले (2-3 सेकंड) के बाद दिखाएं ताकि यूजर इरिटेट न हो
+                setTimeout(() => {
+                    if (pwaPopup) pwaPopup.style.display = 'block';
+                }, 3000);
             }
         });
 
@@ -973,18 +993,28 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        // इंस्टॉल होने के बाद बटन छुपा दें
-                        if (installBtn) installBtn.style.display = 'none';
+                        hidePwaPopup();
                     }
                     deferredPrompt = null;
                 });
+            } else {
+                // iOS के लिए मैसेज (क्योंकि iOS ऑटो-प्रॉम्प्ट सपोर्ट नहीं करता)
+                alert(
+                "Suyagya ऐप इंस्टॉल करने के लिए ब्राउज़र के 'Share' बटन पर क्लिक करें और 'Add to Home Screen' चुनें।");
             }
         }
 
-        // 3. अगर यूजर पहले से ऐप के अंदर है, तो बटन पक्का छुपा रहे
+        function hidePwaPopup() {
+            if (pwaPopup) pwaPopup.style.display = 'none';
+            // यूजर ने 'Later' किया है तो आज दोबारा न दिखाएं (Optional: Session storage use कर सकते हैं)
+            sessionStorage.setItem('pwa-popup-dismissed', 'true');
+        }
+
+        // पेज लोड पर चेक करें
         window.addEventListener('DOMContentLoaded', () => {
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                if (installBtn) installBtn.style.display = 'none';
+            const dismissed = sessionStorage.getItem('pwa-popup-dismissed');
+            if (window.matchMedia('(display-mode: standalone)').matches || dismissed === 'true') {
+                if (pwaPopup) pwaPopup.style.display = 'none';
             }
         });
     </script>
