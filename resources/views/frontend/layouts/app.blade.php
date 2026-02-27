@@ -118,6 +118,9 @@
     @endphp
     {{-- 🔥 DYNAMIC SEO LOGIC END 🔥 --}}
 
+    {{-- 🔥 PWA: Mobile App Feature (इसे यहाँ जोड़ा गया है) 🔥 --}}
+    @pwaHead
+
     {{-- ✅ PRIMARY META TAGS --}}
     <title>{{ $metaTitle }}</title>
     <meta name="description" content="{{ $metaDesc }}">
@@ -938,6 +941,16 @@
                 window.history.replaceState({}, document.title, cleanUrl);
             }
         })();
+    </script>
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            // यहाँ फाइल का नाम sw.js रखें क्योंकि आपके public फोल्डर में इसी नाम से फाइल है
+            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                console.log('Suyagya PWA ServiceWorker registered! Scope: ', registration.scope);
+            }, function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        }
     </script>
 </body>
 
