@@ -974,16 +974,21 @@
         let deferredPrompt;
         const pwaPopup = document.getElementById('pwa-install-popup');
 
+        // 📱 मोबाइल चेक करने का फंक्शन
+        function isMobileUser() {
+            return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
-            // ब्राउज़र का डिफ़ॉल्ट प्रॉम्प्ट रोकें
             e.preventDefault();
             deferredPrompt = e;
 
-            // अगर यूजर पहले से standalone (App) मोड में नहीं है, तो पॉप-अप दिखाएं
-            if (!window.matchMedia('(display-mode: standalone)').matches) {
-                // थोड़ा डिले (2-3 सेकंड) के बाद दिखाएं ताकि यूजर इरिटेट न हो
+            // ✅ कंडीशन: सिर्फ तभी दिखाएं जब (मोबाइल हो) AND (Standalone मोड न हो) AND (Dismiss न किया हो)
+            const dismissed = sessionStorage.getItem('pwa-popup-dismissed');
+
+            if (isMobileUser() && !window.matchMedia('(display-mode: standalone)').matches && dismissed !== 'true') {
                 setTimeout(() => {
-                    if (pwaPopup) pwaPopup.style.display = 'block';
+                    if(pwaPopup) pwaPopup.style.display = 'block';
                 }, 3000);
             }
         });
