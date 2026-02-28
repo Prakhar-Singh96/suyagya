@@ -120,6 +120,12 @@
 
     {{-- 🔥 PWA: Mobile App Feature (इसे यहाँ जोड़ा गया है) 🔥 --}}
     @pwaHead
+    {{-- iPhone के लिए अपना लोगो फिक्स करें --}}
+    <link rel="apple-touch-icon" href="https://suyagya.com/apple-touch-icon-only.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://suyagya.com/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://suyagya.com/icon-192x192.png">
+    <meta name="apple-mobile-web-app-title" content="Suyagya">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
     {{-- ✅ PRIMARY META TAGS --}}
     <title>{{ $metaTitle }}</title>
