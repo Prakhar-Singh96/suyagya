@@ -455,6 +455,9 @@
 
                         <input type="hidden" name="referral_code" id="final_referral_code">
                         <input type="hidden" name="use_coins" id="final_use_coins" value="0">
+                        <input type="hidden" name="variant_id" id="final_variant_id">
+                        <input type="hidden" name="weight" id="final_weight"> {{-- 👈 यह भी जोड़ें --}}
+                        <input type="hidden" name="ring_size" id="final_ring_size"> {{-- 👈 यह भी जोड़ें --}}
 
 
 

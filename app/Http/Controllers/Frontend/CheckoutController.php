@@ -197,61 +197,133 @@ class CheckoutController extends Controller
         $totalMrp = 0;   // कुल MRP (MRP * Qty) - बिना सिद्धार्थ के
         $totalSiddhCharge = 0; // कुल सिद्धार्थ चार्ज
 
+        // if ($request->buy_mode == 'direct') {
+        //     $product = Product::findOrFail($request->product_id);
+        //     // 🚀 वजन (Weight) निकालें अगर variant_id भेजा गया है
+        //     $weight = null;
+        //     if ($request->variant_id) {
+        //         $variant = \App\Models\ProductVariant::find($request->variant_id);
+        //         if ($variant) {
+        //             $weight = $variant->weight . 'g'; // वजन जैसे '50g'
+        //         }
+        //     }
+        //     $qty = $request->quantity;
+        //     // 🔥 सिद्धार्थ अमाउंट अलग से कैलकुलेट करें
+        //     $isSiddh = $request->is_siddh ?? 0;
+        //     $siddhAmountPerItem = ($isSiddh == 1) ? ($product->siddh_price ?? 0) : 0;
+
+        //     $subtotal = round($product->price) * $qty;
+        //     $totalMrp = round($product->mrp_price ?? $product->price) * $qty;
+        //     $totalSiddhCharge = $siddhAmountPerItem * $qty;
+        //     $itemTotalPrice = (round($product->price) + $siddhAmountPerItem) * $qty; // Price + Siddh मिलाकर Total
+
+        //     $orderItemsData[] = [
+        //         'product_id'   => $product->id,
+        //         'product_name' => $product->name,
+        //         'quantity'     => $qty,
+        //         'price'        => round($product->price), // 👈 सिर्फ असली सेलिंग प्राइस
+        //         'total_price'  => $itemTotalPrice, // 👈 नया कॉलम
+        //         'mrp_price'    => round($product->mrp_price ?? $product->price), // 👈 शुद्ध MRP
+        //         'is_siddh'     => $isSiddh,
+        //         'siddh_amount' => $siddhAmountPerItem, // 👈 अलग से सिद्धार्थ चार्ज
+        //         'ring_size'    => $request->ring_size,
+        //         'weight'       => $weight // 👈 यहाँ वजन सेव होगा
+        //     ];
+        // } else {
+        //     $cartItems = Cart::with('product', 'variant')->where('user_id', $user->id)->get();
+        //     foreach ($cartItems as $item) {
+        //         $qty = $item->quantity;
+        //         $isSiddh = $item->is_siddh ?? 0;
+        //         $siddhAmountPerItem = ($isSiddh == 1) ? ($item->product->siddh_price ?? 0) : 0;
+
+        //         $subtotal += round($item->product->price) * $qty;
+        //         $totalMrp += round($item->product->mrp_price ?? $item->product->price) * $qty;
+        //         $totalSiddhCharge += $siddhAmountPerItem * $qty;
+        //         $itemTotalPrice = (round($item->product->price) + $siddhAmountPerItem) * $qty;
+
+        //         $orderItemsData[] = [
+        //             'product_id'   => $item->product_id,
+        //             'product_name' => $item->product->name,
+        //             'quantity'     => $qty,
+        //             'price'        => round($item->product->price ?? $item->product->price),
+        //             'total_price'  => $itemTotalPrice, // 👈 नया कॉलम
+        //             'mrp_price'    => round($item->product->mrp_price ?? $item->product->price),
+        //             'is_siddh'     => $isSiddh,
+        //             'siddh_amount' => $siddhAmountPerItem,
+        //             'ring_size'    => $item->ring_size,
+        //             'weight'       => $item->variant ? $item->variant->weight . 'g' : null // 👈 कार्ट में सेव वजन
+        //         ];
+        //     }
+        // }
         if ($request->buy_mode == 'direct') {
             $product = Product::findOrFail($request->product_id);
-            // 🚀 वजन (Weight) निकालें अगर variant_id भेजा गया है
+            $qty = $request->quantity;
+
+            // 🚀 सुधार 1: मास्टर प्राइस लॉजिक (वजन के हिसाब से असली कीमत उठाएं)
+            $baseSellingPrice = round($product->price);
+            $baseMrpPrice = round($product->mrp_price ?? $product->price);
             $weight = null;
+
             if ($request->variant_id) {
                 $variant = \App\Models\ProductVariant::find($request->variant_id);
                 if ($variant) {
-                    $weight = $variant->weight . 'g'; // वजन जैसे '50g'
+                    $baseSellingPrice = round($variant->selling_price); // वजन वाली असली कीमत
+                    $baseMrpPrice = round($variant->mrp_price);
+                    $weight = $variant->weight . 'g';
                 }
             }
-            $qty = $request->quantity;
-            // 🔥 सिद्धार्थ अमाउंट अलग से कैलकुलेट करें
-            $isSiddh = $request->is_siddh ?? 0;
-            $siddhAmountPerItem = ($isSiddh == 1) ? ($product->siddh_price ?? 0) : 0;
 
-            $subtotal = round($product->price) * $qty;
-            $totalMrp = round($product->mrp_price ?? $product->price) * $qty;
+            $isSiddh = $request->is_siddh ?? 0;
+            $siddhAmountPerItem = ($isSiddh == 1) ? round($product->siddh_price ?? 0) : 0;
+
+            // फाइनल कैलकुलेशन (वजन की कीमत + सिद्धार्थ चार्ज)
+            $subtotal = $baseSellingPrice * $qty;
+            $totalMrp = $baseMrpPrice * $qty;
             $totalSiddhCharge = $siddhAmountPerItem * $qty;
-            $itemTotalPrice = (round($product->price) + $siddhAmountPerItem) * $qty; // Price + Siddh मिलाकर Total
+            $itemTotalPrice = ($baseSellingPrice + $siddhAmountPerItem) * $qty;
 
             $orderItemsData[] = [
                 'product_id'   => $product->id,
                 'product_name' => $product->name,
                 'quantity'     => $qty,
-                'price'        => round($product->price), // 👈 सिर्फ असली सेलिंग प्राइस
-                'total_price'  => $itemTotalPrice, // 👈 नया कॉलम
-                'mrp_price'    => round($product->mrp_price ?? $product->price), // 👈 शुद्ध MRP
+                'price'        => $baseSellingPrice,
+                'total_price'  => $itemTotalPrice,
+                'mrp_price'    => $baseMrpPrice,
                 'is_siddh'     => $isSiddh,
-                'siddh_amount' => $siddhAmountPerItem, // 👈 अलग से सिद्धार्थ चार्ज
+                'siddh_amount' => $siddhAmountPerItem,
                 'ring_size'    => $request->ring_size,
-                'weight'       => $weight // 👈 यहाँ वजन सेव होगा
+                'weight'       => $weight
             ];
         } else {
-            $cartItems = Cart::with('product', 'variant')->where('user_id', $user->id)->get();
+            // 🛒 CART MODE: यहाँ भी वही गलती थी, अब फिक्स है
+            $cartItems = Cart::with(['product', 'variant'])->where('user_id', $user->id)->get();
+
             foreach ($cartItems as $item) {
                 $qty = $item->quantity;
                 $isSiddh = $item->is_siddh ?? 0;
-                $siddhAmountPerItem = ($isSiddh == 1) ? ($item->product->siddh_price ?? 0) : 0;
+                $siddhAmountPerItem = ($isSiddh == 1) ? round($item->product->siddh_price ?? 0) : 0;
 
-                $subtotal += round($item->product->price) * $qty;
-                $totalMrp += round($item->product->mrp_price ?? $item->product->price) * $qty;
+                // 🚀 सुधार 2: अगर वजन (Variant) है तो उसकी कीमत लो, वरना बेस प्राइस
+                $itemUnitPrice = $item->variant ? round($item->variant->selling_price) : round($item->product->price);
+                $itemUnitMrp = $item->variant ? round($item->variant->mrp_price) : round($item->product->mrp_price ?? $item->product->price);
+
+                $subtotal += $itemUnitPrice * $qty;
+                $totalMrp += $itemUnitMrp * $qty;
                 $totalSiddhCharge += $siddhAmountPerItem * $qty;
-                $itemTotalPrice = (round($item->product->price) + $siddhAmountPerItem) * $qty;
+
+                $itemTotalPrice = ($itemUnitPrice + $siddhAmountPerItem) * $qty;
 
                 $orderItemsData[] = [
                     'product_id'   => $item->product_id,
                     'product_name' => $item->product->name,
                     'quantity'     => $qty,
-                    'price'        => round($item->product->price ?? $item->product->price),
-                    'total_price'  => $itemTotalPrice, // 👈 नया कॉलम
-                    'mrp_price'    => round($item->product->mrp_price ?? $item->product->price),
+                    'price'        => $itemUnitPrice,
+                    'total_price'  => $itemTotalPrice,
+                    'mrp_price'    => $itemUnitMrp,
                     'is_siddh'     => $isSiddh,
                     'siddh_amount' => $siddhAmountPerItem,
                     'ring_size'    => $item->ring_size,
-                    'weight'       => $item->variant ? $item->variant->weight . 'g' : null // 👈 कार्ट में सेव वजन
+                    'weight'       => $item->variant ? $item->variant->weight . 'g' : null
                 ];
             }
         }

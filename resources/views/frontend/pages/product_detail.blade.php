@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                                                                                                            border: 1px solid #eee;
-                                                                                                            padding: 15px;
-                                                                                                            border-radius: 8px;
-                                                                                                            margin-bottom: 20px;
-                                                                                                            background-color: #f7f1de;
-                                                                                                        } */
+                                                                                                                border: 1px solid #eee;
+                                                                                                                padding: 15px;
+                                                                                                                border-radius: 8px;
+                                                                                                                margin-bottom: 20px;
+                                                                                                                background-color: #f7f1de;
+                                                                                                            } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -659,7 +659,7 @@
 
                     {{-- Hidden Data --}}
                     <div id="gem_data" style="display:none;">{{ json_encode($gemVariants) }}</div>
-                    <input type="hidden" name="variant_id" id="selected_variant_id" value="{{ $firstVar->id }}">
+                    <input type="hidden" name="variant_id" id="selected_variant_id" value="">
 
                     <div class="gem-config-container">
 
@@ -742,7 +742,7 @@
                                     Size Help & Calculator
                                 </button>
                                 <select class="form-select w-auto shadow-none border-secondary-subtle" name="ring_size"
-                                    style="min-width: 180px; height: 45px;">
+                                    id="ring_size_selector" style="min-width: 180px; height: 45px;">
                                     <option value="">Select Ring Size</option>
                                     @for ($i = 10; $i <= 30; $i++)
                                         <option value="{{ $i }}">{{ $i }}</option>
@@ -1747,22 +1747,33 @@
         }
 
         function findGemPrice() {
-            const type = document.getElementById('sel_type').value;
-            const ratti = document.getElementById('sel_ratti').value;
-            const mat = document.getElementById('sel_mat').value;
+            // 🚀 सुधार: एलिमेंट्स को पहले वेरिएबल में पकड़ें
+            const selTypeEl = document.getElementById('sel_type');
+            const selRattiEl = document.getElementById('sel_ratti');
+            const selMatEl = document.getElementById('sel_mat');
             const dataDiv = document.getElementById('gem_data');
-            if (!dataDiv) return;
+
+            // अगर डेटा या टाइप एलिमेंट पेज पर नहीं है, तो आगे न बढ़ें
+            if (!dataDiv || !selTypeEl) return;
+
+            const type = selTypeEl.value;
+            // 🛡️ Safe check: अगर एलिमेंट है तभी .value लें वरना null
+            const ratti = selRattiEl ? selRattiEl.value : null;
+            const mat = selMatEl ? selMatEl.value : null;
+
             const variants = JSON.parse(dataDiv.innerText);
 
             const match = variants.find(v => {
-                let isMatch = (v.type === type && v.ratti_size == ratti);
-                if (type !== 'loose') isMatch = isMatch && (v.material === mat);
+                let isMatch = (v.type === type);
+                if (ratti) isMatch = isMatch && (v.ratti_size == ratti);
+                if (type !== 'loose' && mat) isMatch = isMatch && (v.material === mat);
                 return isMatch;
             });
 
             if (match) {
                 updatePrices(match.price, match.mrp);
-                document.getElementById('selected_variant_id').value = match.id;
+                const targetId = document.getElementById('selected_variant_id');
+                if (targetId) targetId.value = match.id;
             }
         }
 

@@ -41,7 +41,12 @@
     <div class="list-group list-group-flush">
         @foreach ($cartItems as $item)
             @php
-                $price = $item->product->price + ($item->is_siddh ? $item->product->siddh_price : 0);
+                // 🚀 सुधार 1: मास्टर प्राइस लॉजिक (Variant Price को प्राथमिकता दें)
+                // अगर वैरिएंट है तो उसकी कीमत लें, वरना प्रोडक्ट की बेस प्राइस
+                $basePrice = $item->variant ? $item->variant->selling_price : $item->product->price;
+
+                // सिद्धार्थ चार्ज जोड़ें (अगर लागू हो)
+                $price = $basePrice + ($item->is_siddh ? $item->product->siddh_price : 0);
             @endphp
             <div class="list-group-item p-3 border-bottom-0 border-top">
                 <div class="d-flex align-items-center">
@@ -57,6 +62,17 @@
                         @if ($item->is_siddh)
                             <span class="badge bg-warning text-dark x-small mb-1" style="font-size: 10px;">Siddh /
                                 Energized</span>
+                        @endif
+                        {{-- 🚀 वजन और रिंग साइज यहाँ दिखाएं --}}
+                        @if($item->variant)
+                            <small class="text-muted d-block" style="font-size: 11px;">
+                                <i class="las la-weight"></i> Weight: <b>{{ $item->variant->weight }}g</b>
+                            </small>
+                        @endif
+                        @if($item->ring_size)
+                            <small class="text-muted d-block" style="font-size: 11px;">
+                                <i class="las la-ring"></i> Size: <b>{{ $item->ring_size }}</b>
+                            </small>
                         @endif
 
                         <div class="d-flex justify-content-between align-items-center mt-2">

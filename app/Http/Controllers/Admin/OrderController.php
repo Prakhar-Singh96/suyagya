@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\DB;
+use App\Models\ReferralCoupon;
+use App\Models\WalletTransaction;
 
 class OrderController extends Controller
 {
@@ -62,6 +65,7 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         $order = Order::findOrFail($id);
+        $oldStatus = $order->status; // पुराना स्टेटस याद रखें
 
         // 1. Basic Validation
         $request->validate([
@@ -89,6 +93,36 @@ class OrderController extends Controller
             $data['courier_name'] = $request->courier_name;
             $data['tracking_url'] = $request->tracking_url;
             $data['expected_delivery_date'] = $request->expected_delivery_date;
+        }
+
+        // 🚀 REFERRAL REWARD LOGIC: अगर स्टेटस 'delivered' हो रहा है
+        if ($request->status == 'delivered' && $oldStatus != 'delivered') {
+            // चेक करें कि क्या इस आर्डर में कोई रेफरल कोड इस्तेमाल हुआ है
+            if ($order->refer_code_used && $order->cashback_status != 'referral_paid') {
+                $refCoupon = ReferralCoupon::where('code', $order->refer_code_used)->first();
+
+                // सुरक्षा: खुद का कोड खुद इस्तेमाल करने पर रिवॉर्ड नहीं मिलेगा
+                if ($refCoupon && $refCoupon->user_id != $order->user_id) {
+                    $referrer = $refCoupon->user;
+
+                    DB::transaction(function () use ($referrer, $order) {
+                        // 1. रेफर करने वाले के वॉलेट में 25 Coins डालें
+                        $referrer->increment('wallet_balance', 25);
+
+                        // 2. ट्रांजैक्शन हिस्ट्री रिकॉर्ड करें
+                        WalletTransaction::create([
+                            'user_id' => $referrer->id,
+                            'order_id' => $order->id,
+                            'amount' => 25,
+                            'type' => 'credit',
+                            'description' => 'Referral Bonus for Order #' . $order->order_number
+                        ]);
+
+                        // दोबारा रिवॉर्ड न मिले इसलिए मार्क करें
+                        $order->cashback_status = 'referral_paid';
+                    });
+                }
+            }
         }
 
         // 3. Update Database

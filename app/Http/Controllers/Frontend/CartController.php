@@ -54,30 +54,62 @@ class CartController extends Controller
             }
         }
         $productId = $request->product_id;
-        $quantity = $request->quantity;
+        $variantId = $request->variant_id; // 👈 नया
+        $ringSize = $request->ring_size;   // 👈 नया
+        $quantityToAdd = $request->quantity;
         $isSiddh = $request->is_siddh;
+
+        // 🚀 सुधार: अगर रिंग साइज मौजूद है, तो variant_id को NULL कर दें
+        // ताकि डेटाबेस 'gemstone_variants' की ID को 'product_variants' में न ढूंढे
+        if (!empty($ringSize)) {
+            $variantId = null;
+        }
 
         $sessionId = Session::getId();
         $userId = Auth::id();
 
+        // 🚀 सुधार 2: सिलेक्टेड वैरिएंट का असली स्टॉक निकालें
+        // अगर वजन सिलेक्टेड है तो variant टेबल से, वरना मेन प्रोडक्ट टेबल से स्टॉक लें
+        $variant = null;
+        if ($variantId) {
+            $variant = \App\Models\ProductVariant::find($variantId);
+            $maxStock = $variant ? $variant->quantity : 0;
+        } else {
+            $product = Product::find($productId);
+            $maxStock = $product ? $product->quantity : 0;
+        }
+
         // Check if product already in cart
         $existingCart = Cart::where('product_id', $productId)
             ->where('is_siddh', $isSiddh)
+            ->where('variant_id', $variantId) // 👈 नया
+            ->where('ring_size', $ringSize)   // 👈 नया
             ->where(function ($q) use ($sessionId, $userId) {
                 if ($userId) $q->where('user_id', $userId);
                 else $q->where('session_id', $sessionId);
             })->first();
+        $currentInCart = $existingCart ? $existingCart->quantity : 0;
+
+        // 🚀 सुधार 4: फाइनल स्टॉक चेक (कार्ट + नई क्वांटिटी)
+        if (($currentInCart + $quantityToAdd) > $maxStock) {
+            return response()->json([
+                'status' => false,
+                'message' => "Cannot add more. You already have $currentInCart items in cart, and total available stock for this weight is $maxStock."
+            ]);
+        }
 
         if ($existingCart) {
             // Update Quantity
-            $existingCart->increment('quantity', $quantity);
+            $existingCart->increment('quantity', $quantityToAdd);
         } else {
             // Create New Entry
             Cart::create([
                 'session_id' => $sessionId,
                 'user_id' => $userId,
                 'product_id' => $productId,
-                'quantity' => $quantity,
+                'variant_id' => $variantId, // 👈 नया
+                'ring_size'  => $ringSize,  // 👈 नया
+                'quantity' => $quantityToAdd,
                 'is_siddh' => $isSiddh
             ]);
         }
@@ -94,9 +126,9 @@ class CartController extends Controller
     // 4. Update Quantity (AJAX)
     public function updateQuantity(Request $request)
     {
-        $cartItem = Cart::with('product')->findOrFail($request->cart_id);
+        $cartItem = Cart::with(['product', 'variant'])->findOrFail($request->cart_id);
         $newQty = $request->quantity;
-        $maxStock = $cartItem->product->quantity;
+        $maxStock = $cartItem->variant ? $cartItem->variant->quantity : $cartItem->product->quantity;
 
         // 1. Validate Stock
         if ($newQty > $maxStock) {
@@ -156,7 +188,7 @@ class CartController extends Controller
         $sessionId = Session::getId();
         $userId = Auth::id();
 
-        $cartItems = Cart::with('product')->where(function ($q) use ($sessionId, $userId) {
+        $cartItems = Cart::with(['product', 'variant'])->where(function ($q) use ($sessionId, $userId) {
             if ($userId) $q->where('user_id', $userId);
             else $q->where('session_id', $sessionId);
         })->latest()->get();
@@ -165,14 +197,17 @@ class CartController extends Controller
         $totalMrp = 0;
 
         foreach ($cartItems as $item) {
-            $basePrice = round($item->product->price);
+            // 🚀 मास्टर लॉजिक: अगर वैरिएंट है तो उसकी कीमत लें, वरना प्रोडक्ट की बेस प्राइस
+            $basePrice = $item->variant ? round($item->variant->selling_price) : round($item->product->price);
+            $mrpPrice = $item->variant ? round($item->variant->mrp_price) : round($item->product->mrp_price ?? $item->product->price);
+
             $siddhPrice = $item->is_siddh ? round($item->product->siddh_price) : 0;
 
-            $price = $basePrice + $siddhPrice;
-            $mrp = round($item->product->mrp_price ?? $item->product->price) + $siddhPrice;
+            $priceWithSiddh = $basePrice + $siddhPrice;
+            $mrpWithSiddh = $mrpPrice + $siddhPrice;
 
-            $total += $price * $item->quantity;
-            $totalMrp += $mrp * $item->quantity;
+            $total += $priceWithSiddh * $item->quantity;
+            $totalMrp += $mrpWithSiddh * $item->quantity;
         }
 
         $savings = $totalMrp - $total;
@@ -195,31 +230,34 @@ class CartController extends Controller
         ]);
     }
 
-    // ➕ 6. UPDATE SIDE CART QUANTITY (Plus/Minus Logic)
     public function updateSideCartQty(Request $request)
     {
-        $cartItem = Cart::with('product')->find($request->cart_id);
+        // 🚀 सुधार: वैरिएंट को भी लोड करें ताकि उसका स्टॉक (Quantity) मिल सके
+        $cartItem = Cart::with(['product', 'variant'])->find($request->cart_id);
 
         if (!$cartItem) {
             return response()->json(['status' => false, 'message' => 'Item not found']);
         }
 
         $newQty = $cartItem->quantity;
-        $maxStock = $cartItem->product->quantity;
+
+        // 🚀 मास्टर स्टॉक चेक:
+        // अगर वैरिएंट (वजन) सिलेक्टेड है, तो वैरिएंट टेबल से स्टॉक लें, वरना मेन प्रोडक्ट से
+        $maxStock = $cartItem->variant ? $cartItem->variant->quantity : $cartItem->product->quantity;
 
         // Action Check
         if ($request->action == 'plus') {
             if ($newQty < $maxStock) {
                 $newQty++;
             } else {
-                return response()->json(['status' => false, 'message' => 'Max stock reached!']);
+                // 🔥 अब यह हर वजन के हिसाब से अलग मैसेज देगा
+                $weightInfo = $cartItem->variant ? " in this weight ({$cartItem->variant->weight}g)" : "";
+                return response()->json(['status' => false, 'message' => "Only $maxStock items available$weightInfo."]);
             }
         } elseif ($request->action == 'minus') {
             if ($newQty > 1) {
                 $newQty--;
             } else {
-                // Optional: Agar 1 se kam kare to delete kar de?
-                // Filhal hum return karte hain taaki 1 pe ruka rahe
                 return response()->json(['status' => false, 'message' => 'Minimum quantity is 1']);
             }
         }

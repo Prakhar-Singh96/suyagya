@@ -448,7 +448,7 @@ function openSideCart() {
 // ---------------------------------------------------
 // 🛒 4. ADD TO CART (Open Drawer after adding)
 // ---------------------------------------------------
-function addToCart(productId, quantity, isSiddh, btnElement) {
+function addToCart(productId, quantity, isSiddh, btnElement, variantId = null , ringSize = null) {
     var btn = $(btnElement);
     var originalText = btn.html();
 
@@ -467,6 +467,8 @@ function addToCart(productId, quantity, isSiddh, btnElement) {
             product_id: productId,
             quantity: quantity,
             is_siddh: isSiddh,
+            variant_id: variantId, // 👈 नया कॉलम डेटा
+            ring_size: ringSize,   // 👈 नया कॉलम डेटा
             _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function (res) {
@@ -553,7 +555,21 @@ function addToCartFromDetail(btn) {
     var isSiddh = $('#input_is_siddh').val();
     var prodId = $(btn).data('id'); // Data attribute se ID lenge
 
-    addToCart(prodId, qty, isSiddh, btn);
+    var variantId = null;
+    var ringSize = $('#ring_size_selector').val() || null;
+
+    // 🚀 लॉजिक: अगर साधारण वजन वाला सेक्शन है, तभी variantId लें
+    if ($('#variant_select').length > 0) {
+        variantId = $('#variant_select').val();
+    }
+    // अगर जेमस्टोन रिंग है, तो variantId को null रहने दें (सिर्फ ringSize जाएगा)
+    else if ($('.gem-config-container').length > 0) {
+        if ($('#sel_type').val() !== 'ring') {
+            variantId = $('#selected_variant_id').val();
+        }
+    }
+
+    addToCart(prodId, qty, isSiddh, btn, variantId, ringSize);
 }
 
 // 🟢 GLOBAL AUTH STATUS (Meta tag se value lenge)
@@ -653,6 +669,30 @@ function openDirectCheckout(btn) {
     var prodId = $(btn).data('id');
     var qty = $('#qty_input').val() || 1;
     var isSiddh = $('#input_is_siddh').val();
+
+    // 🚀 वजन (Weight) और वैरिएंट ID निकालें
+    var variantId = null;
+    var weightText = null;
+
+    // चेक करें कि क्या साधारण वजन ड्रॉपडाउन मौजूद है
+    if ($('#variant_select').length > 0) {
+        variantId = $('#variant_select').val();
+        weightText = $('#variant_select option:selected').text().trim();
+    }
+    // वरना अगर जेमस्टोन वाला वैरिएंट है
+    else if ($('#selected_variant_id').length > 0) {
+        variantId = $('#selected_variant_id').val();
+        // जेमस्टोन में वजन की जगह 'Ratti' या 'Type' हो सकता है, आप इसे कस्टमाइज कर सकते हैं
+        weightText = "Gemstone Variant";
+    }
+
+    // 🚀 रिंग साइज निकालें
+    var ringSize = $('#ring_size_selector').val() || null;
+
+    // 2. मोडल के हिडन इनपुट्स में वैल्यूज भरें
+    $('#final_variant_id').val(variantId);
+    $('#final_weight').val(weightText);
+    $('#final_ring_size').val(ringSize);
 
     // 2. Price Calculation
     var priceText = $('#display_price').text().replace(/,/g, '');
@@ -1257,7 +1297,8 @@ function processPayment() {
     let referralCode = $('#referral_code_input').val() || null;
 
     let ringSize = $('#ring_size_input').val() || null;
-
+    let variantID = $('#final_variant_id').val() || null;// 👈 यह ज़रूर भेजें
+    let  variantWeight = $('#final_weight').val() || null;
     let currentMethod = $('input[name="payment_method"]:checked').val();
     if (currentMethod === 'RAZORPAY') {
         prepaidDiscount = 25; // 🛡️ सुरक्षा कवच: पेमेंट के समय पक्का करें कि ₹25 ही कट रहे हैं
@@ -1284,6 +1325,8 @@ function processPayment() {
 
         // ✅ ये कॉलम्स बैकएंड (Controller) में इस्तेमाल होंगे
         ring_size: ringSize,
+        variant_id: variantID,
+        weight: variantWeight,
         coupon_code: appliedCouponCode,
         gaming_coupon_code: appliedGamingCode,
 
