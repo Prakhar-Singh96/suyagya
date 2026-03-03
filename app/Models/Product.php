@@ -23,6 +23,7 @@ class Product extends Model
         'name',
         'slug',
         'description',
+        'product_tabs',
 
         'mrp_price',
         'discount',
@@ -72,6 +73,7 @@ class Product extends Model
         'offer_end_time' => 'datetime', // Date object me convert karega
         'is_siddh_enabled' => 'boolean',
         'faq_content' => 'array', // 👈 Ye line add karein
+        'product_tabs' => 'array',
 
         // 🆕 New Casts
         'emi_available' => 'boolean', // 1 ko true, 0 ko false samjhega

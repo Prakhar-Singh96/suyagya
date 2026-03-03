@@ -76,6 +76,13 @@ class ProductController extends Controller
                 $discount = 0;
             }
 
+            if ($request->has('product_tabs')) {
+                // एरे को क्लीन करके इंडेक्स सही करें
+                $data['product_tabs'] = array_values($request->product_tabs);
+            } else {
+                $data['product_tabs'] = null;
+            }
+
             if ($request->has('faqs')) {
                 $data['faq_content'] = array_values($request->faqs);
             } else {
@@ -249,6 +256,13 @@ class ProductController extends Controller
             } else {
                 $sellingPrice = $mrp;
                 $discount = 0;
+            }
+
+            if ($request->has('product_tabs')) {
+                // एरे को क्लीन करके इंडेक्स सही करें
+                $data['product_tabs'] = array_values($request->product_tabs);
+            } else {
+                $data['product_tabs'] = null;
             }
 
             if ($request->has('faqs')) {

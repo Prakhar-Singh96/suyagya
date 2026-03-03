@@ -46,6 +46,45 @@
                         </div>
                     </div>
 
+                    {{-- 🚀 DYNAMIC PRODUCT TABS SECTION --}}
+                    <div class="card mb-4 border-info">
+                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center py-2">
+                            <h5 class="mb-0 text-white">Product Detail Tabs (AstroTalk Style)</h5>
+                            <button type="button" class="btn btn-white btn-sm" onclick="addTabRow()">
+                                <i class="bx bx-plus"></i> Add New Tab
+                            </button>
+                        </div>
+                        <div class="card-body pt-3">
+                            <div id="tab-repeater-container">
+                                {{-- Edit Mode: Existing Tabs --}}
+                                @if (isset($product) && !empty($product->product_tabs))
+                                    @foreach ($product->product_tabs as $index => $tab)
+                                        <div class="tab-row border rounded p-3 mb-3 position-relative bg-light">
+                                            <button type="button"
+                                                class="btn btn-danger btn-xs position-absolute top-0 end-0 m-2"
+                                                onclick="this.closest('.tab-row').remove()">×</button>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="form-label small fw-bold">Tab Title</label>
+                                                    <input type="text" name="product_tabs[{{ $index }}][title]"
+                                                        class="form-control" value="{{ $tab['title'] }}"
+                                                        placeholder="e.g. Benefits" required>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <label class="form-label small fw-bold">Tab Content</label>
+                                                    <textarea name="product_tabs[{{ $index }}][content]" class="form-control" rows="3" required
+                                                        placeholder="Description here...">{{ $tab['content'] }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <small class="text-muted">These will appear as accordions under the description on
+                                front-end.</small>
+                        </div>
+                    </div>
+
                     {{-- 2. Images --}}
                     <div class="card mb-4">
                         <h5 class="card-header">Images</h5>
@@ -85,8 +124,9 @@
                             class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
                             <h5 class="mb-0 text-white">Product Configuration</h5>
                             <div class="form-check form-switch m-0">
-                                <input class="form-check-input bg-white" type="checkbox" id="is_gemstone" name="is_gemstone"
-                                    value="1" onchange="toggleConfigMode()" style="cursor: pointer;">
+                                <input class="form-check-input bg-white" type="checkbox" id="is_gemstone"
+                                    name="is_gemstone" value="1" onchange="toggleConfigMode()"
+                                    style="cursor: pointer;">
                                 <label class="form-check-label text-white fw-bold ms-2" for="is_gemstone"
                                     style="cursor: pointer;">Gemstone Mode</label>
                             </div>
@@ -837,6 +877,27 @@
         `;
             container.insertAdjacentHTML('beforeend', html);
             faqIndex++;
+        }
+
+        let tabIndex = 2000;
+        function addTabRow() {
+            const container = document.getElementById('tab-repeater-container');
+            const html = `
+                <div class="tab-row border rounded p-3 mb-3 position-relative bg-light shadow-sm">
+                    <button type="button" class="btn btn-danger btn-xs position-absolute top-0 end-0 m-2" onclick="this.closest('.tab-row').remove()">×</button>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label small fw-bold">Tab Title</label>
+                            <input type="text" name="product_tabs[${tabIndex}][title]" class="form-control" placeholder="e.g. How to wear" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold">Tab Content</label>
+                            <textarea name="product_tabs[${tabIndex}][content]" class="form-control" rows="3" required placeholder="Enter content..."></textarea>
+                        </div>
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+            tabIndex++;
         }
     </script>
 @endsection

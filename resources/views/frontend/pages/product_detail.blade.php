@@ -13,12 +13,12 @@
 
         /* 💎 GEMSTONE CONFIGURATOR STYLES (AstroTalk Style) */
         /* .gem-config-container {
-                                                                                                                border: 1px solid #eee;
-                                                                                                                padding: 15px;
-                                                                                                                border-radius: 8px;
-                                                                                                                margin-bottom: 20px;
-                                                                                                                background-color: #f7f1de;
-                                                                                                            } */
+                                                                                                                    border: 1px solid #eee;
+                                                                                                                    padding: 15px;
+                                                                                                                    border-radius: 8px;
+                                                                                                                    margin-bottom: 20px;
+                                                                                                                    background-color: #f7f1de;
+                                                                                                                } */
 
         .gem-option-group {
             margin-bottom: 15px;
@@ -1081,7 +1081,7 @@
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-bold text-dark" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseDescription" aria-expanded="true">
-                                <i class="las la-leaf me-2 fs-5"></i> Description
+                                Description
                             </button>
                         </h2>
 
@@ -1093,28 +1093,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#collapseHowToWear"><i
-                                    class="las la-hand-holding-heart me-2 fs-5"></i> How To Wear & Recharge</button></h2>
-                        <div id="collapseHowToWear" class="accordion-collapse collapse"
-                            data-bs-parent="#productDetailsAccordion">
-                            <div class="accordion-body text-muted small" style="line-height: 1.6;">
-                                <p>Wear on DOMINANT HAND.</p>
+                    {{-- 2. 🔥 Show Dynamic Tabs (Benefits, Wear Info, etc.) --}}
+                    @if (!empty($product->product_tabs))
+                        @foreach ($product->product_tabs as $index => $tab)
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed fw-bold text-dark" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#tabCollapse{{ $index }}">
+                                        {{ $tab['title'] }}
+                                    </button>
+                                </h2>
+                                <div id="tabCollapse{{ $index }}" class="accordion-collapse collapse"
+                                    data-bs-parent="#productTabsAccordion">
+                                    <div class="accordion-body text-muted small" style="line-height: 1.6;">
+                                        {!! nl2br(e($tab['content'])) !!}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#collapseDelivery"><i
-                                    class="las la-truck me-2 fs-5"></i> Delivery</button></h2>
-                        <div id="collapseDelivery" class="accordion-collapse collapse"
-                            data-bs-parent="#productDetailsAccordion">
-                            <div class="accordion-body text-muted small" style="line-height: 1.6;">
-                                <p>Free delivery on orders above ₹299.</p>
-                            </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
 
             </div>
