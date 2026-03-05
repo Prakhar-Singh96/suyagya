@@ -291,7 +291,7 @@
                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: radial-gradient(circle, #ff9800 0%, rgba(255,152,0,0) 70%); border-radius: 50%; z-index: -1; animation: pulse-glow 2s infinite;">
             </div>
 
-            <img src="{{ asset('assets/img/panditnew-icon.png') }}" alt="Astro Pandit"
+            <img src="{{ asset('assets/img/astropandit-icon.webp') }}" alt="Astro Pandit"
                 style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));">
 
             <span
