@@ -83,18 +83,22 @@ class BigShipService
                 // Couriers list ko collect karein
                 $couriers = collect($data['data']);
 
-                // 🔥 Sort by TAT (Time) - Jiska TAT sabse kam ho (Fastest)
-                $fastest = $couriers->sortBy('tat')->first();
+                // 🚀 सभी कूरियर के 'tat' का औसत निकालें और उसे राउंड करें
+                $avgDays = round($couriers->avg('tat'));
 
-                if ($fastest) {
-                    return [
-                        'status' => true,
-                        'days'   => $fastest['tat'], // Return Days (e.g., 3)
-                        'courier' => $fastest['courier_name'],
-                        'price'  => $fastest['total_shipping_charges'],
-                        'message' => 'Available'
-                    ];
-                }
+                // सुरक्षा के लिए 1 दिन एक्स्ट्रा जोड़ दें (Processing Buffer)
+                $finalDays = $avgDays + 1;
+
+                // 🔥 Sort by TAT (Time) - Jiska TAT sabse kam ho (Fastest)
+                $reference = $couriers->sortBy('tat')->first();
+
+                return [
+                    'status' => true,
+                    'days'   => $finalDays,
+                    'courier' => $reference['courier_name'],
+                    'price'  => $reference['total_shipping_charges'],
+                    'message' => 'Available'
+                ];
             }
         }
 
