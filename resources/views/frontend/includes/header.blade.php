@@ -144,11 +144,11 @@
             {{-- 1. LOGO --}}
             <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                 <div class="logo-wrap spiritual-logo">
-                    <img src="{{ asset('assets/img/astralogo.png') }}"
-                        alt="Suyagya"
+                    <img src="{{ asset('assets/img/astrashakti.png') }}"
+                        alt="Astra Shakti"
                         class="logo-img">
                 </div>
-                {{-- <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya"
+                {{-- <img src="{{ asset('assets/img/Astra Shaktilogomobile.webp') }}" alt="Astra Shakti"
                     style="height: 50px; width: auto; object-fit: contain;"> --}}
             </a>
 
@@ -289,7 +289,7 @@
                             {{-- LEFT SIDE: BRANDING --}}
                             <div class="col-md-5 login-left-panel d-none d-md-flex">
                                 <div class="login-logo">
-                                    <img src="{{ asset('assets/img/astralogo.png') }}" alt="Logo">
+                                    <img src="{{ asset('assets/img/astrashakti.png') }}" alt="Logo">
                                 </div>
                                 <h4 class="login-offer-text">Login Now & avail best offers!</h4>
 
@@ -404,10 +404,10 @@
         </div>
         <div class="HeaderCenter">
             <a class="navbar-brand py-2 me-lg-5" href="{{ url('/') }}">
-                {{-- <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya" height="50"> --}}
+                {{-- <img src="{{ asset('assets/img/Astra Shaktilogomobile.webp') }}" alt="Astra Shakti" height="50"> --}}
                 <div class="logo-wrap spiritual-logo">
-                    <img src="{{ asset('assets/img/astralogo.png') }}"
-                        alt="Suyagya"
+                    <img src="{{ asset('assets/img/astrashakti.png') }}"
+                        alt="Astra Shakti"
                         class="logo-img">
                 </div>
             </a>
