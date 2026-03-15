@@ -1,7 +1,7 @@
 {{-- Check if Content Exists (Empty hai to section mat dikhao) --}}
 @if(!empty($storyTitle) && !empty($storyContent))
 
-<section class="py-3 brand-story-section" style="background-color: #f7f1de;">
+<section class="py-3 brand-story-section" style="background-color: var(--light)">
     <div class="container">
 
         <div class="accordion" id="brandStoryAccordion">

@@ -4,7 +4,7 @@
 
     /* 1. Footer Background Color (Deep Maroon/Brown) */
     .footer-main-section {
-        background-color: #6e1d0b !important;
+        background-color: #f46c33 !important;
         color: #FFFFFF;
         /* Default text color is white */
         padding-top: 50px;
@@ -153,7 +153,7 @@
 
 
 {{-- Note: CSS style block should be placed in public/assets/css/custom.css --}}
-<section class="py-4" style="background-color: #f7f1de;"> {{-- Matches your theme BG --}}
+<section class="py-4" style="background-color: var(--light)"> {{-- Matches your theme BG --}}
     <div class="container">
         <div class="row text-center g-4">
 
@@ -209,26 +209,26 @@
                 <div class="d-flex flex-column">
                     <div class="footer-logo mb-3">
                         {{-- Logo Image --}}
-                        <img src="{{ asset('assets/img/footerlogoimage.png') }}"
+                        <img src="{{ asset('assets/img/astralogo.png') }}"
                             alt="Suyagya Logo" style="height: 60px;">
                     </div>
                     <div class="footer-brand-info">
                         {{-- Alignment Fix: Text starts directly below the logo --}}
                         <div class="footer-details mb-3">
-                        <p>Discover authentic spiritual products rooted in ancient traditions at Suyagya.</p>
+                        <p>Discover authentic spiritual products rooted in ancient traditions at Astra Shakti.</p>
                         <address class="mb-1">
-                            J-3/356, DDA, Kalkaji, New Delhi - 110019. India
+                            F 22/5, Harsh Vihar, Hari Nagar, Badarpur, New Delhi - 110044
                         </address>
 
                         <p class="mb-1">
                             <i class="las la-phone me-2" style="font-size:1.1rem;"></i>
-                            +91 7692 005 006
+                            +91 9870 271 533
                         </p>
 
                         <p class="mb-1">
                             <i class="las la-envelope me-2" style="font-size:1.1rem;"></i>
                             <a href="mailto:support@suyagya.com" class="text-white"
-                                style="opacity: 1;">info@suyagya.com</a>
+                                style="opacity: 1;">info@astrashakti.com</a>
                         </p>
 
                         <p class="mt-2">
@@ -280,7 +280,7 @@
                 {{-- ✅ FIX: SOCIAL ICONS USING SVG --}}
                 <div class="footer-social-icons d-flex">
 
-                    <a href="https://www.facebook.com/mysuyagya" target="_blank" aria-label="Facebook"
+                    <a href="#" target="_blank" aria-label="Facebook"
                         class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
@@ -289,7 +289,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://www.instagram.com/mysuyagya/reels/" target="_blank" aria-label="Instagram"
+                    <a href="#" target="_blank" aria-label="Instagram"
                         class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
@@ -298,7 +298,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://x.com/MySuyagya" target="_blank" aria-label="Twitter" class="social-icon-btn">
+                    <a href="#" target="_blank" aria-label="Twitter" class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
                                 d="M22.46,6a8.59,8.59,0,0,1-2.4,0.64,4.3,4.3,0,0,0,1.88-2.31,8.6,8.6,0,0,1-2.65,1A4.27,4.27,0,0,0,12.72,3a4.29,4.29,0,0,0-4.3,4.29,4.29,4.29,0,0,0,.11,1,12.18,12.18,0,0,1-8.8-4.48,4.29,4.29,0,0,0,1.33,5.7A4.28,4.28,0,0,1,2.94,11.5v0.05a4.29,4.29,0,0,0,3.44,4.2A4.28,4.28,0,0,1,4,16.59a4.26,4.26,0,0,1-0.8-0.08,4.3,4.3,0,0,0,4,2.98A8.6,8.6,0,0,1,2,19.75a8.34,8.34,0,0,1-0.81-.05,12.1,12.1,0,0,0,6.56,1.92A12.15,12.15,0,0,0,21.5,8.19V7.83A8.76,8.76,0,0,0,22.46,6Z">
@@ -306,7 +306,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://www.youtube.com/@MySuyagya" target="_blank" aria-label="Youtube" class="social-icon-btn">
+                    <a href="#" target="_blank" aria-label="Youtube" class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
                                 d="M21.5,8.43a2.59,2.59,0,0,0-1.83-1.83C18.66,6,12,6,12,6s-6.66,0-7.67,0.6A2.59,2.59,0,0,0,2.5,8.43,26.43,26.43,0,0,0,2,12a26.43,26.43,0,0,0,0.5,3.57,2.59,2.59,0,0,0,1.83,1.83C5.34,18,12,18,12,18s6.66,0,7.67-0.6a2.59,2.59,0,0,0,1.83-1.83A26.43,26.43,0,0,0,22,12a26.43,26.43,0,0,0-0.5-3.57ZM10,14V10l4,2Z">
@@ -314,7 +314,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://www.linkedin.com/company/suyagya/" target="_blank" aria-label="LinkedIn" class="social-icon-btn">
+                    <a href="#" target="_blank" aria-label="LinkedIn" class="social-icon-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24">
                             <path fill="currentColor"
                                 d="M21.5,2H2.5A0.5,0.5,0,0,0,2,2.5v19A0.5,0.5,0,0,0,2.5,22h19A0.5,0.5,0,0,0,22,21.5V2.5A0.5,0.5,0,0,0,21.5,2ZM8,19H5V10H8ZM6.5,8.2A1.7,1.7,0,1,1,8.2,6.5,1.7,1.7,0,0,1,6.5,8.2ZM19,19H16V14.6c0-1.04-.3-1.74-1.29-1.74A1.33,1.33,0,0,0,13.43,14,1.4,1.4,0,0,0,13.36,15V19H10V10h3V11.2a4.42,4.42,0,0,1,3.95-2.1c2.89,0,5.05,1.72,5.05,5V19Z">
@@ -332,6 +332,6 @@
 {{-- Footer Bottom: Copyright Bar --}}
 <div class="footer-copyright-bar">
     <div class="container text-center">
-        © 2025. Suyagya. All Copyrights Reserved to THE PALAK TRADING COMPANY
+        © 2026. Astra Shakti. All Copyrights Reserved to KAPS Managment LPP.
     </div>
 </div>

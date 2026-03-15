@@ -5,9 +5,9 @@
 /* 🎨 Color Variables (Adjusted for Light Header) */
 :root {
     /* 🔴 FIX 1: PRIMARY COLORS */
-    --primary: #fdfdfd;
+    --primary: #fcf8e5;
     --hov-primary: #852222;
-    --secondary-base: #FFCC66;
+    --secondary-base: #f46c33;
     /* Gold/Ochre for accents */
 
     /* Premium Orange Theme (Divine Hindu Style) */
@@ -18,7 +18,7 @@
     --border-color: #e0e0e0;
 
     /* 🔴 FIX 2: LIGHT BACKGROUND COLOR (CREAM/BEIGE) */
-    --light: #f7f1de;
+    --light: #fcf8e5;
     --soft-light: #000000;
 
     /* 🔴 FIX 3: WHITE COLOR MUST BE #FFFFFF (For icons and main links) */
@@ -763,9 +763,9 @@ main {
 
 /* 5. Action Button (The "Add to cart" / "Choose" button) */
 .btn-earthy {
-    background-color: #BFA070 !important;
+    background-color: #f46c33 !important;
     /* The brownish-gold color */
-    color: #fff !important;
+    color: #000000 !important;
     font-weight: 700;
     border: none;
     border-radius: 6px;
@@ -775,7 +775,7 @@ main {
 }
 
 .btn-earthy:hover {
-    background-color: #A38558 !important;
+    background-color: #f46c33 !important;
     /* Slightly darker on hover */
 }
 
@@ -940,7 +940,7 @@ main {
 
 /* Action Button (Full Width) */
 .btn-earthy {
-    background-color: #C19A6B !important;
+    background-color: #f46c33 !important;
     /* Matches reference button color */
     color: #fff !important;
     font-weight: 600;
@@ -953,7 +953,7 @@ main {
 }
 
 .btn-earthy:hover {
-    background-color: #A67C52 !important;
+    background-color: #f3b87d !important;
 }
 
 /* ======================================= */

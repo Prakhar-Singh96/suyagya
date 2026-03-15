@@ -13,16 +13,16 @@
     {{-- 🔥 DYNAMIC SEO LOGIC START 🔥 --}}
     @php
         // 1. Default Values (Fallback)
-        $metaTitle = 'Suyagya - Authentic Stone Jewelry & Rudraksha';
+        $metaTitle = 'Astra Shakti - Authentic Stone Jewelry & Rudraksha';
         $metaDesc =
-            'Shop genuine Rudraksha, Gemstones, and spiritual jewelry at Suyagya. Certified products with lab reports.';
-        $metaKeys = 'rudraksha, gemstones, spiritual jewelry, mala, suyagya';
+            'Shop genuine Rudraksha, Gemstones, and spiritual jewelry at Astra Shakti. Certified products with lab reports.';
+        $metaKeys = 'rudraksha, gemstones, spiritual jewelry, mala, Astra Shakti';
         $ogImage = asset('img/default-og.jpg');
         $currentUrl = url()->current();
 
         // 2. PRODUCT Detail Page
         if (Route::is('product.detail') && !empty($product)) {
-            $metaTitle = !empty($product->meta_title) ? $product->meta_title : $product->name . ' | Suyagya';
+            $metaTitle = !empty($product->meta_title) ? $product->meta_title : $product->name . ' | Astra Shakti';
             $metaDesc = !empty($product->meta_description)
                 ? $product->meta_description
                 : Str::limit(strip_tags($product->description), 160);
@@ -39,7 +39,7 @@
         elseif (Route::is('products.category') && !empty($category)) {
             $metaTitle = !empty($category->meta_title)
                 ? $category->meta_title
-                : $category->name . ' Collection | Suyagya';
+                : $category->name . ' Collection | Astra Shakti';
             $metaDesc = !empty($category->meta_description)
                 ? $category->meta_description
                 : 'Explore our exclusive collection of ' . $category->name;
@@ -52,7 +52,7 @@
         elseif (Route::is('products.subcategory') && !empty($subCategory)) {
             $metaTitle = !empty($subCategory->meta_title)
                 ? $subCategory->meta_title
-                : $subCategory->name . ' | Suyagya';
+                : $subCategory->name . ' | Astra Shakti';
             $metaDesc = !empty($subCategory->meta_description)
                 ? $subCategory->meta_description
                 : 'Best quality ' . $subCategory->name . ' available online.';
@@ -60,11 +60,11 @@
         }
         // ✅ 5. BLOG PAGES (Dynamic SEO)
         elseif (Route::is('blogs.index')) {
-            $metaTitle = 'Our Blogs - Spiritual Knowledge & Insights | Suyagya';
+            $metaTitle = 'Our Blogs - Spiritual Knowledge & Insights | Astra Shakti';
             $metaDesc =
                 'Read latest articles on Rudraksha, Gemstones, and spirituality. Gain knowledge and insights from our experts.';
         } elseif (Route::is('blogs.show') && !empty($blog)) {
-            $metaTitle = !empty($blog->meta_title) ? $blog->meta_title : $blog->title . ' | Suyagya';
+            $metaTitle = !empty($blog->meta_title) ? $blog->meta_title : $blog->title . ' | Astra Shakti';
             $metaDesc = !empty($blog->meta_description)
                 ? $blog->meta_description
                 : Str::limit(strip_tags($blog->content), 160);
@@ -77,31 +77,31 @@
         }
         // ✅ 6. STATIC PAGES
         elseif (Route::is('terms.conditions')) {
-            $metaTitle = 'Terms & Conditions | Suyagya';
+            $metaTitle = 'Terms & Conditions | Astra Shakti';
             $metaDesc =
-                'Read the Terms and Conditions of Suyagya. Understand our policies regarding usage, orders, and services.';
+                'Read the Terms and Conditions of Astra Shakti. Understand our policies regarding usage, orders, and services.';
         } elseif (Route::is('privacy.policy')) {
-            $metaTitle = 'Privacy Policy | Suyagya';
+            $metaTitle = 'Privacy Policy | Astra Shakti';
             $metaDesc =
-                'Your privacy is important to us. Learn how Suyagya collects, uses, and protects your personal data.';
+                'Your privacy is important to us. Learn how Astra Shakti collects, uses, and protects your personal data.';
         } elseif (Route::is('refund.policy')) {
-            $metaTitle = 'Return & Refund Policy | Suyagya';
+            $metaTitle = 'Return & Refund Policy | Astra Shakti';
             $metaDesc =
                 'Understand our return and refund process. We ensure customer satisfaction with transparent policies.';
         } elseif (Route::is('support.policy')) {
-            $metaTitle = 'Support Policy | Suyagya';
-            $metaDesc = 'Need help? Contact Suyagya support team for assistance with orders, products, and services.';
+            $metaTitle = 'Support Policy | Astra Shakti';
+            $metaDesc = 'Need help? Contact Astra Shakti support team for assistance with orders, products, and services.';
         } elseif (Route::is('frontend.faq')) {
-            $metaTitle = 'Frequently Asked Questions | Suyagya';
+            $metaTitle = 'Frequently Asked Questions | Astra Shakti';
             $metaDesc = 'Find answers to your questions related to products, shipping, and more.';
         } elseif (Route::is('about')) {
-            $metaTitle = 'About us | Suyagya';
-            $metaDesc = 'How Suyagya Was Born.';
+            $metaTitle = 'About us | Astra Shakti';
+            $metaDesc = 'How Astra Shakti Was Born.';
         } elseif (Route::is('contact')) {
-            $metaTitle = 'Contact us | Suyagya';
+            $metaTitle = 'Contact us | Astra Shakti';
             $metaDesc = 'For business related bulk orders or queries, please contact us here.';
         } elseif (Route::is('track.order')) {
-            $metaTitle = 'Track Order | Suyagya';
+            $metaTitle = 'Track Order | Astra Shakti';
             $metaDesc = 'Track Your Order Here.';
         }
         // 7. HOME Page (Corrected logic)
@@ -121,17 +121,17 @@
     {{-- 🔥 PWA: Mobile App Feature (इसे यहाँ जोड़ा गया है) 🔥 --}}
     @pwaHead
     {{-- iPhone के लिए अपना लोगो फिक्स करें --}}
-    <link rel="apple-touch-icon" href="https://suyagya.com/apple-touch-icon-only.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://suyagya.com/icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://suyagya.com/icon-192x192.png">
-    <meta name="apple-mobile-web-app-title" content="Suyagya">
+    <link rel="apple-touch-icon" href="https://Astra Shakti.com/apple-touch-icon-only.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://Astra Shakti.com/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://Astra Shakti.com/icon-192x192.png">
+    <meta name="apple-mobile-web-app-title" content="Astra Shakti">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
     {{-- ✅ PRIMARY META TAGS --}}
     <title>{{ $metaTitle }}</title>
     <meta name="description" content="{{ $metaDesc }}">
     <meta name="keywords" content="{{ $metaKeys }}">
-    <meta name="author" content="Suyagya">
+    <meta name="author" content="Astra Shakti">
     <link rel="canonical" href="{{ $currentUrl }}{{ request()->has('page') ? '?page=' . request()->page : '' }}" />
 
     {{-- ✅ OPEN GRAPH / FACEBOOK / WHATSAPP --}}
@@ -140,7 +140,7 @@
     <meta property="og:description" content="{{ $metaDesc }}" />
     {{-- <meta property="og:image" content="{{ $ogImage }}" /> --}}
     <meta property="og:url" content="{{ $currentUrl }}" />
-    <meta property="og:site_name" content="Suyagya" />
+    <meta property="og:site_name" content="Astra Shakti" />
 
     {{-- 🚀 ये 4 लाइनें WhatsApp के लिए ब्रह्मास्त्र हैं --}}
     <meta property="og:image" content="{{ $ogImage }}" />
@@ -158,10 +158,10 @@
     {{-- ✅ 3. SCHEMA MARKUP --}}
     @include('frontend.includes.schema')
 
-    <meta name="p:domain_verify" content="da11f887c65754b1b5b976de4e3e4fbd" />
+    {{-- <meta name="p:domain_verify" content="da11f887c65754b1b5b976de4e3e4fbd" /> --}}
 
     <!-- Meta Pixel Code -->
-    <script>
+    {{-- <script>
         ! function(f, b, e, v, n, t, s) {
             if (f.fbq) return;
             n = f.fbq = function() {
@@ -184,11 +184,11 @@
         fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1" /></noscript>
+            src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1" /></noscript> --}}
     <!-- End Meta Pixel Code -->
 
     {{-- ✅ FAVICON --}}
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/fav.ico') }}">
 
     {{-- 🔗 CSS Files --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -247,9 +247,9 @@
         <div id="pwa-install-popup" class="pwa-popup-container" style="display: none;">
             <div class="pwa-popup-content">
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('icon-96x96.png') }}" alt="Suyagya Logo" class="pwa-app-icon">
+                    <img src="{{ asset('icon-96x96.png') }}" alt="Astra Shakti Logo" class="pwa-app-icon">
                     <div class="ms-3 flex-grow-1">
-                        <h6 class="mb-0 fw-bold">Suyagya App</h6>
+                        <h6 class="mb-0 fw-bold">Astra Shakti App</h6>
                         <p class="mb-0 small text-muted">Install for better experience</p>
                     </div>
                     <div class="pwa-action-btns">
@@ -306,7 +306,7 @@
 
         <div
             style="background:#673ab7; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-weight:bold;"><i class="las la-stars"></i> Suyagya Astro AI</span>
+            <span style="font-weight:bold;"><i class="las la-stars"></i> Astra Shakti Astro AI</span>
             <span onclick="toggleChat()" style="cursor:pointer; font-size:20px;">&times;</span>
         </div>
 
@@ -463,7 +463,7 @@
     </style>
 
     {{-- ✅ WHATSAPP FLOATING BUTTON START --}}
-    <a href="https://wa.me/917692005006?text=Hi%20Suyagya%20Team,%20I%20need%20help%20with%20a%20product."
+    <a href="https://wa.me/917692005006?text=Hi%20Astra Shakti%20Team,%20I%20need%20help%20with%20a%20product."
         class="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <i class="lab la-whatsapp"></i>
     </a>
@@ -658,18 +658,18 @@
                 // document.body.appendChild(scriptAfford);
 
                 // 3. Load GTM / Analytics (Jo Head se hataya tha)
-                var scriptGTM = document.createElement('script');
-                scriptGTM.async = true;
-                scriptGTM.src = "https://www.googletagmanager.com/gtag/js?id=G-6ECDBEM0VJ";
-                document.head.appendChild(scriptGTM);
+                //var scriptGTM = document.createElement('script');
+                //scriptGTM.async = true;
+                // scriptGTM.src = "https://www.googletagmanager.com/gtag/js?id=G-6ECDBEM0VJ";
+                // document.head.appendChild(scriptGTM);
 
-                window.dataLayer = window.dataLayer || [];
+                // window.dataLayer = window.dataLayer || [];
 
-                function gtag() {
-                    dataLayer.push(arguments);
-                }
-                gtag('js', new Date());
-                gtag('config', 'G-6ECDBEM0VJ');
+                // function gtag() {
+                //     dataLayer.push(arguments);
+                // }
+                // gtag('js', new Date());
+                // gtag('config', 'G-6ECDBEM0VJ');
 
             }, 3000); // 3-4 Second Delay for Speed
         });
@@ -970,7 +970,7 @@
         if ('serviceWorker' in navigator) {
             // यहाँ फाइल का नाम sw.js रखें क्योंकि आपके public फोल्डर में इसी नाम से फाइल है
             navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                console.log('Suyagya PWA ServiceWorker registered! Scope: ', registration.scope);
+                console.log('Astra Shakti PWA ServiceWorker registered! Scope: ', registration.scope);
             }, function(err) {
                 console.log('ServiceWorker registration failed: ', err);
             });
@@ -1011,7 +1011,7 @@
             } else {
                 // iOS के लिए मैसेज (क्योंकि iOS ऑटो-प्रॉम्प्ट सपोर्ट नहीं करता)
                 alert(
-                "Suyagya ऐप इंस्टॉल करने के लिए ब्राउज़र के 'Share' बटन पर क्लिक करें और 'Add to Home Screen' चुनें।");
+                "Astra Shakti ऐप इंस्टॉल करने के लिए ब्राउज़र के 'Share' बटन पर क्लिक करें और 'Add to Home Screen' चुनें।");
             }
         }
 

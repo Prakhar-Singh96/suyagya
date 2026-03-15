@@ -17,7 +17,7 @@
   "sku": @json($product->sku ?? $product->id),
   "brand": {
     "@type": "Brand",
-    "name": "Suyagya"
+    "name": "Astra Shakti"
   },
   "offers": {
     "@type": "Offer",
@@ -66,7 +66,7 @@
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Suyagya",
+    "name": "Astra Shakti",
     "url": "{{ url('/') }}",
     "logo": "{{ asset('assets/images/logo.png') }}",
     "contactPoint": {
@@ -75,14 +75,14 @@
       "contactType": "customer service"
     },
     "sameAs": [
-      "https://www.facebook.com/suyagya",
-      "https://www.instagram.com/suyagya"
+      "https://www.facebook.com/Astra Shakti",
+      "https://www.instagram.com/Astra Shakti"
     ]
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Suyagya",
+    "name": "Astra Shakti",
     "url": "{{ url('/') }}"
   }
 ]
@@ -105,12 +105,12 @@
             "dateModified": "{{ $blog->updated_at->toIso8601String() }}",
             "author": {
                 "@type": "Organization",
-                "name": "Suyagya",
+                "name": "Astra Shakti",
                 "url": "{{ url('/') }}"
             },
             "publisher": {
                 "@type": "Organization",
-                "name": "Suyagya",
+                "name": "Astra Shakti",
                 "logo": {
                     "@type": "ImageObject",
                     "url": "{{ asset('assets/images/logo.png') }}"

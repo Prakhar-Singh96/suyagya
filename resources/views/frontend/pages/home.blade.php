@@ -1,11 +1,11 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Suyagya | Authentic Spiritual Products')
+@section('title', 'Astra Shakti | Authentic Spiritual Products')
 
 @section('content')
 
     {{-- 💎 1. CATEGORY SCROLL SECTION --}}
-    <section class="py-4 bg-white shadow-sm">
+    <section class="py-2 bg-white shadow-sm">
         <div class="container">
 
             {{-- Slider Container --}}
@@ -67,7 +67,7 @@
                         @else
                             {{-- Fallback --}}
                             <div>
-                                <img src="https://placehold.co/1903x700?text=Welcome+to+Suyagya" class="w-100 bnanner-img">
+                                <img src="https://placehold.co/1903x700?text=Welcome+to+Astra Shakti" class="w-100 bnanner-img">
                             </div>
                         @endif
                     </div>
@@ -192,7 +192,7 @@
     </section>
 
     {{-- 🛒 3. Best Selling PRODUCTS (DYNAMIC) --}}
-    <section class="py-3 featured-products-section" style="background-color: #f7f1de;">
+    <section class="py-3 featured-products-section" style="background-color: var(--light)">
         <div class="container">
 
             {{-- Heading --}}
@@ -419,7 +419,7 @@
     </section>
 
     {{-- 🛒 4. video-feed-section (Placeholder for next section) --}}
-    <section class="py-3 video-feed-section" style="background-color: #f7f1de;">
+    <section class="py-3 video-feed-section" style="background-color: var(--light)">
         <div class="container-fluid px-4">
 
             <div class="d-flex justify-content-center mb-4">
@@ -494,13 +494,13 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
     </section>
 
 
-    <section class="py-3 favourites-section" style="background-color: #f7f1de;">
+    <section class="py-3 favourites-section" style="background-color: var(--light)">
         <div class="container">
 
             {{-- 1. Fancy Heading --}}
             <div class="d-flex justify-content-center mb-5">
                 <div class="fancy-heading-box">
-                    <h2 class="m-0">Suyagya Favourites</h2>
+                    <h2 class="m-0">Astra Shakti Favourites</h2>
                 </div>
             </div>
 
@@ -596,7 +596,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                         <div class="fav-card wide">
                             {{-- Using your uploaded image: image_390489.jpg (Collage) as a banner --}}
                             <img src="{{ asset('uploads/home/fav/murti.webp') }}" class="img-fluid"
-                                alt="Suyagya Collection">
+                                alt="Astra Shakti Collection">
                             <div class="fav-content">
                                 <h3>Murti Collection</h3>
                                 <a href="{{ url('category/spritual-idols') }}" class="btn btn-fav-shop">Shop now</a>
@@ -610,7 +610,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
         </div>
     </section>
 
-    <section class="py-3 energy-section" style="background-color: #f7f1de;">
+    <section class="py-3 energy-section" style="background-color: var(--light)">
         <div class="container">
 
             {{-- 1. Fancy Heading --}}
@@ -668,7 +668,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
         @if (isset($showcaseSections) && $showcaseSections->count() > 0)
             @foreach ($showcaseSections as $section)
                 @if ($section->products->count() > 0)
-                    <section class="py-3 category-showcase-section" style="background-color: #f7f1de;">
+                    <section class="py-3 category-showcase-section" style="background-color: var(--light)">
                         <div class="container-fluid px-4">
 
                             {{-- 1. Heading --}}
@@ -806,7 +806,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
             @endforeach
         @endif
     </div>
-    {{-- <section class="ratings-bar-section">
+    <section class="ratings-bar-section">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
@@ -830,9 +830,9 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
                 </div>
             </div>
         </div>
-    </section> --}}
+    </section>
 
-    <section class="py-3 testimonial-section" style="background-color: #f7f1de;">
+    <section class="py-3 testimonial-section" style="background-color: var(--light)">
         <div class="container">
             <div class="d-flex justify-content-center mb-5">
                 <div class="fancy-heading-box">
@@ -907,7 +907,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
         </div>
     </section>
 
-    <section class="py-5 blog-section" style="background-color: #f7f1de;">
+    <section class="py-5 blog-section" style="background-color: var(--light)">
         <div class="container">
 
             {{-- Heading --}}
@@ -986,7 +986,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
     @endphp
 
     @if (count($faqs) > 0)
-        <section class="py-3 faq-section" style="background-color: #f7f1de;">
+        <section class="py-3 faq-section" style="background-color: var(--light)">
             <div class="container">
 
                 {{-- 1. Fancy Heading --}}
@@ -1020,7 +1020,7 @@ if (!Str::startsWith($link, ['http://', 'https://'])) {
     @endif
 
     @include('frontend.includes.brand_story', [
-        'storyTitle' => $homeSettings->story_title ?? 'Suyagya - India\'s Best Spiritual Jewelry Brand',
+        'storyTitle' => $homeSettings->story_title ?? 'Astra Shakti - India\'s Best Spiritual Jewelry Brand',
         'storyContent' => $homeSettings->story_content ?? '',
     ])
 @endsection

@@ -144,7 +144,7 @@
             {{-- 1. LOGO --}}
             <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                 <div class="logo-wrap spiritual-logo">
-                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}"
+                    <img src="{{ asset('assets/img/astralogo.png') }}"
                         alt="Suyagya"
                         class="logo-img">
                 </div>
@@ -289,7 +289,7 @@
                             {{-- LEFT SIDE: BRANDING --}}
                             <div class="col-md-5 login-left-panel d-none d-md-flex">
                                 <div class="login-logo">
-                                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Logo">
+                                    <img src="{{ asset('assets/img/astralogo.png') }}" alt="Logo">
                                 </div>
                                 <h4 class="login-offer-text">Login Now & avail best offers!</h4>
 
@@ -406,7 +406,7 @@
             <a class="navbar-brand py-2 me-lg-5" href="{{ url('/') }}">
                 {{-- <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}" alt="Suyagya" height="50"> --}}
                 <div class="logo-wrap spiritual-logo">
-                    <img src="{{ asset('assets/img/suyagyalogomobile.webp') }}"
+                    <img src="{{ asset('assets/img/astralogo.png') }}"
                         alt="Suyagya"
                         class="logo-img">
                 </div>
