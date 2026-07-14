@@ -492,6 +492,11 @@ function addToCart(productId, quantity, isSiddh, btnElement, variantId = null , 
                     value: parseFloat(productPrice),
                     currency: 'INR'
                 });
+                // 🔥 JioHotstar AddToCart Event
+                hspixel('track', 'AddToCart', {
+                    content_id: String(productId),
+                    value: parseFloat(productPrice)
+                });
 
                 // ✅ Success
                 openSideCart();
@@ -545,6 +550,8 @@ function removeFromSideCart(id) {
 function initiateCartCheckout() {
 
     fbq('track', 'InitiateCheckout');
+    // 🔥 JioHotstar InitiateCheckout Event
+    hspixel('track', 'InitiateCheckout');
     // 1. Close Side Drawer
     var sideCartEl = document.getElementById('sideCart');
     var sideCart = bootstrap.Offcanvas.getInstance(sideCartEl);
@@ -689,6 +696,8 @@ function addToCartFromDetail(btn) {
 function openDirectCheckout(btn) {
 
      fbq('track', 'InitiateCheckout');
+    // 🔥 JioHotstar InitiateCheckout Event
+    hspixel('track', 'InitiateCheckout');
     // 1. Data Collection
     var prodId = $(btn).data('id');
     var qty = $('#qty_input').val() || 1;

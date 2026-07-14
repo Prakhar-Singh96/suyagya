@@ -42,6 +42,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('PURCHASE EVENT FIRED');
 
+    // Hotstar Purchase Event
+    hspixel('track', 'Purchase', {
+        purchase_id: '{{ $order->order_number }}', // Order Number
+        value: {{ $order->total_amount }},        // Total Amount
+        currency: 'INR',
+        content_type: 'product',
+        content_ids: [
+            @foreach($order->items as $item)
+                "{{ $item->product_id }}",
+            @endforeach
+        ]
+    });
+
     fbq('track', 'Purchase', {
         content_ids: [
             @foreach($order->items as $item)

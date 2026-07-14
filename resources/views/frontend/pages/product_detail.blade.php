@@ -2689,5 +2689,12 @@
             value: {{ $product->price }},
             currency: 'INR'
         });
+        hspixel('track', 'ViewContent', {
+            content_id: '{{ $product->id }}',
+            content_name: '{{ addslashes($product->name) }}',
+            content_type: 'product',
+            value: {{ $product->price }},
+            currency: 'INR'
+        });
     </script>
 @endsection
