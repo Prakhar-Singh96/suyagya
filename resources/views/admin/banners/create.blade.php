@@ -34,6 +34,18 @@
                             <div class="form-text">Optional. If not provided, desktop image might be used.</div>
                         </div>
 
+                        {{-- Desktop Video --}}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-danger fw-bold">Desktop Video (MP4) - Optional</label>
+                            <input type="file" name="desktop_video" class="form-control" accept="video/mp4,video/webm">
+                        </div>
+
+                        {{-- Mobile Video --}}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-danger fw-bold">Mobile Video (MP4) - Optional</label>
+                            <input type="file" name="mobile_video" class="form-control" accept="video/mp4,video/webm">
+                        </div>
+
                         {{-- Link --}}
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Link (Optional)</label>

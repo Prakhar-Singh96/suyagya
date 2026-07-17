@@ -261,10 +261,17 @@
             @yield('content')
         </main>
 
-        {{-- 🛒 Side Cart & Modals --}}
-        @include('frontend.includes.side_cart')
-        @include('frontend.modals.checkout_modal')
-        @include('frontend.modals.wishlist_modal')
+        <template id="tpl-side-cart">
+            @include('frontend.includes.side_cart')
+        </template>
+        <template id="tpl-checkout-modal">
+            @include('frontend.modals.checkout_modal')
+        </template>
+        <template id="tpl-wishlist-modal">
+            @include('frontend.modals.wishlist_modal')
+        </template>
+
+        <div id="modals-mount-point"></div>
 
         {{-- ⬇️ Footer --}}
         @include('frontend.includes.footer')

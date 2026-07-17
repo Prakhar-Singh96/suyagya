@@ -25,6 +25,8 @@ class BannerController extends Controller
         $request->validate([
             'desktop_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
             'mobile_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 🟢 Changed to nullable
+            'desktop_video' => 'nullable|mimetypes:video/mp4,video/webm|max:15360', // Max 15MB
+            'mobile_video'  => 'nullable|mimetypes:video/mp4,video/webm|max:15360',
             'link'          => 'nullable|string',
             'sort_order'    => 'nullable|integer',
             'status'        => 'boolean'
@@ -52,6 +54,22 @@ class BannerController extends Controller
             $data['mobile_image'] = null;
         }
 
+        // 🎥 Desktop Video Upload
+        if ($request->hasFile('desktop_video')) {
+            $file = $request->file('desktop_video');
+            $filename = time() . '_desk_vid.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/banners/videos'), $filename);
+            $data['desktop_video'] = 'uploads/banners/videos/' . $filename;
+        }
+
+        // 📱 Mobile Video Upload
+        if ($request->hasFile('mobile_video')) {
+            $file = $request->file('mobile_video');
+            $filename = time() . '_mob_vid.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/banners/videos'), $filename);
+            $data['mobile_video'] = 'uploads/banners/videos/' . $filename;
+        }
+
         $data['status'] = $request->has('status') ? 1 : 0;
 
         Banner::create($data);
@@ -74,12 +92,14 @@ class BannerController extends Controller
         $request->validate([
             'desktop_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // Nullable kyu ki image change karna zaroori nahi
             'mobile_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'desktop_video' => 'nullable|mimetypes:video/mp4,video/webm|max:15360',
+            'mobile_video'  => 'nullable|mimetypes:video/mp4,video/webm|max:15360',
             'link'          => 'nullable|string',
             'sort_order'    => 'nullable|integer',
             // Status check box se aata hai, validation ki khaas zaroorat nahi par boolean rakh sakte hain
         ]);
 
-        $data = $request->except(['desktop_image', 'mobile_image']); // Images ko alag handle karenge
+        $data = $request->except(['desktop_image', 'mobile_image', 'desktop_video', 'mobile_video']); // Images ko alag handle karenge
 
         // 🟢 Desktop Image Update
         if ($request->hasFile('desktop_image')) {
@@ -109,6 +129,28 @@ class BannerController extends Controller
             $data['mobile_image'] = 'uploads/banners/' . $filename;
         }
 
+        // 🎥 Desktop Video Update
+        if ($request->hasFile('desktop_video')) {
+            if (File::exists(public_path($banner->desktop_video))) {
+                File::delete(public_path($banner->desktop_video));
+            }
+            $file = $request->file('desktop_video');
+            $filename = time() . '_desk_vid.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/banners/videos'), $filename);
+            $data['desktop_video'] = 'uploads/banners/videos/' . $filename;
+        }
+
+        // 📱 Mobile Video Update
+        if ($request->hasFile('mobile_video')) {
+            if (File::exists(public_path($banner->mobile_video))) {
+                File::delete(public_path($banner->mobile_video));
+            }
+            $file = $request->file('mobile_video');
+            $filename = time() . '_mob_vid.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/banners/videos'), $filename);
+            $data['mobile_video'] = 'uploads/banners/videos/' . $filename;
+        }
+
         // Status Handling
         $data['status'] = $request->has('status') ? 1 : 0;
 
@@ -121,12 +163,17 @@ class BannerController extends Controller
     {
         $banner = Banner::findOrFail($id);
 
-        // Delete Files
         if(File::exists(public_path($banner->desktop_image))){
             File::delete(public_path($banner->desktop_image));
         }
         if(File::exists(public_path($banner->mobile_image))){
             File::delete(public_path($banner->mobile_image));
+        }
+        if(File::exists(public_path($banner->desktop_video))){
+            File::delete(public_path($banner->desktop_video));
+        }
+        if(File::exists(public_path($banner->mobile_video))){
+            File::delete(public_path($banner->mobile_video));
         }
 
         $banner->delete();

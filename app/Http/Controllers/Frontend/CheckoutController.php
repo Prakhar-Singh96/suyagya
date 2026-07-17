@@ -649,13 +649,20 @@ class CheckoutController extends Controller
                 $applicableTotal = $cartTotal;
             }
         } else {
-            $cartItems = Cart::with('product', 'variant')->where('user_id', $user->id)->get();
-            foreach ($cartItems as $item) {
-                if (empty($coupon->product_ids) || in_array($item->product_id, $coupon->product_ids)) {
-                    $itemPrice = $item->variant ? round($item->variant->selling_price) : round($item->product->price);
-                    $siddhAmt = ($item->is_siddh == 1) ? round($item->product->siddh_price ?? 0) : 0;
-                    $applicableTotal += (($itemPrice + $siddhAmt) * $item->quantity);
+            // Cart mode
+            if ($user) {
+                // Logged-in: DB se verify karo (secure path)
+                $cartItems = Cart::with('product', 'variant')->where('user_id', $user->id)->get();
+                foreach ($cartItems as $item) {
+                    if (empty($coupon->product_ids) || in_array($item->product_id, $coupon->product_ids)) {
+                        $itemPrice = $item->variant ? round($item->variant->selling_price) : round($item->product->price);
+                        $siddhAmt = ($item->is_siddh == 1) ? round($item->product->siddh_price ?? 0) : 0;
+                        $applicableTotal += (($itemPrice + $siddhAmt) * $item->quantity);
+                    }
                 }
+            } else {
+                // Guest: frontend ke cart_total pe bharosa karo (direct mode jaisa hi)
+                $applicableTotal = $cartTotal;
             }
         }
 

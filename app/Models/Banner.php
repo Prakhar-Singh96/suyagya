@@ -12,6 +12,8 @@ class Banner extends Model
     protected $fillable = [
         'desktop_image',
         'mobile_image',
+        'desktop_video',
+        'mobile_video',
         'link',
         'sort_order',
         'status'

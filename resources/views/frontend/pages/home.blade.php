@@ -36,7 +36,7 @@
     <h1 class="seo-h1">Buy Original Rudraksha, Karungali & Gemstone Bracelets Online</h1>
 
 
-    {{-- 🖼️ 2. HERO SLIDER SECTION (OPTIMIZED FOR NO-LAYOUT-SHIFT & SPEED) --}}
+    {{-- 🖼️ 2. HERO SLIDER SECTION (WITH VIDEO SUPPORT) --}}
     <section class="home-banner-area">
         <div class="container-fluid px-0">
             <div class="row g-0">
@@ -47,33 +47,52 @@
                             @foreach ($banners as $index => $banner)
                                 <div>
                                     <a href="{{ $banner->link ?? '#' }}" class="d-block w-100 position-relative"
-                                        style="background: #e0d4c3; min-height: 700px;">
-                                        <picture>
-                                            {{-- 📱 MOBILE IMAGE: 400x400 के हिसाब से width और height सेट कर दी --}}
-                                            @if ($banner->mobile_image)
-                                                <source media="(max-width: 767px)"
-                                                    srcset="{{ asset($banner->mobile_image) }}" width="400"
-                                                    height="400">
+                                        style="background: #e0d4c3;">
+
+                                        {{-- 🟢 VIDEO BANNER LOGIC --}}
+                                        @if ($banner->desktop_video || $banner->mobile_video)
+                                            {{-- 🖥️ Desktop Video --}}
+                                            @if ($banner->desktop_video)
+                                                <video
+                                                    class="bnanner-img w-100 {{ $banner->mobile_video ? 'd-none d-md-block' : '' }}"
+                                                    autoplay loop muted playsinline
+                                                    poster="{{ asset($banner->desktop_image) }}">
+                                                    <source src="{{ asset($banner->desktop_video) }}" type="video/mp4">
+                                                </video>
                                             @endif
 
-                                            {{-- 💻 DESKTOP IMAGE (Default) --}}
-                                            @if ($banner->desktop_image)
-                                                <img class="bnanner-img w-100 img-fluid"
-                                                    src="{{ asset($banner->desktop_image) }}"
-                                                    alt="Suyagya Premium Spiritual Banner" width="1920" height="700"
-                                                    fetchpriority="{{ $index == 0 ? 'high' : 'low' }}"
-                                                    loading="{{ $index == 0 ? 'eager' : 'lazy' }}"
-                                                    decoding="{{ $index == 0 ? 'sync' : 'async' }}">
+                                            {{-- 📱 Mobile Video --}}
+                                            @if ($banner->mobile_video)
+                                                <video
+                                                    class="bnanner-img w-100 {{ $banner->desktop_video ? 'd-block d-md-none' : '' }}"
+                                                    autoplay loop muted playsinline
+                                                    poster="{{ asset($banner->mobile_image ?? $banner->desktop_image) }}">
+                                                    <source src="{{ asset($banner->mobile_video) }}" type="video/mp4">
+                                                </video>
                                             @endif
-                                        </picture>
+                                        @else
+                                            {{-- 🟢 ORIGINAL IMAGE BANNER LOGIC --}}
+                                            <picture>
+                                                @if ($banner->mobile_image)
+                                                    <source media="(max-width: 767px)"
+                                                        srcset="{{ asset($banner->mobile_image) }}">
+                                                @endif
+                                                @if ($banner->desktop_image)
+                                                    <img class="bnanner-img w-100 img-fluid"
+                                                        src="{{ asset($banner->desktop_image) }}"
+                                                        alt="Suyagya Premium Spiritual Banner"
+                                                        loading="{{ $index == 0 ? 'eager' : 'lazy' }}">
+                                                @endif
+                                            </picture>
+                                        @endif
+
                                     </a>
                                 </div>
                             @endforeach
                         @else
                             {{-- Fallback --}}
                             <div>
-                                <img src="https://placehold.co/1920x700?text=Welcome+to+Suyagya" class="w-100 bnanner-img"
-                                    width="1920" height="700">
+                                <img src="https://placehold.co/1920x700?text=Welcome+to+Suyagya" class="w-100 bnanner-img">
                             </div>
                         @endif
                     </div>

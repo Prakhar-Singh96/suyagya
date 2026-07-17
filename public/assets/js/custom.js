@@ -412,6 +412,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+let modalsMounted = false;
+
+function mountModalsOnce() {
+    if (modalsMounted) return;
+    const mountPoint = document.getElementById('modals-mount-point');
+
+    const sideCartTpl = document.getElementById('tpl-side-cart');
+    const checkoutTpl = document.getElementById('tpl-checkout-modal');
+    const wishlistTpl = document.getElementById('tpl-wishlist-modal');
+
+    mountPoint.appendChild(sideCartTpl.content.cloneNode(true));
+    mountPoint.appendChild(checkoutTpl.content.cloneNode(true));
+    mountPoint.appendChild(wishlistTpl.content.cloneNode(true));
+
+    modalsMounted = true;
+    initCheckoutPhoneInput();
+}
+
 // ---------------------------------------------------
 // 🛒 1. SAFE SIDE CART INSTANCE HELPER
 // ---------------------------------------------------
@@ -447,6 +465,7 @@ function refreshSideCartData() {
 // 📂 3. OPEN SIDE CART (AND FETCH DATA)
 // ---------------------------------------------------
 function openSideCart() {
+    mountModalsOnce();
     var sideCart = getSideCartInstance();
     sideCart.show(); // Sirf tab call karein jab kholna ho
     refreshSideCartData(); // Data load karein
@@ -695,6 +714,8 @@ function addToCartFromDetail(btn) {
 // 🛒 1. OPEN DIRECT CHECKOUT (Buy Now Button) - Fixed Calculation
 function openDirectCheckout(btn) {
 
+    mountModalsOnce();
+
      fbq('track', 'InitiateCheckout');
     // 🔥 JioHotstar InitiateCheckout Event
     hspixel('track', 'InitiateCheckout');
@@ -879,14 +900,16 @@ function showStep(step) {
 var itiCheckout;
 
 // 1. Initialize Plugin on Document Ready
-$(document).ready(function () {
+function initCheckoutPhoneInput() {
+    if (itiCheckout) return; // already initialized, dobara mat karo
+
     var inputChk = document.querySelector("#chk_mobile");
 
     if (inputChk) {
         itiCheckout = window.intlTelInput(inputChk, {
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
             initialCountry: "auto",
-            separateDialCode: true, // Flag alag, code alag
+            separateDialCode: true,
             geoIpLookup: function (callback) {
                 $.get('https://ipinfo.io', function () { }, "jsonp").always(function (resp) {
                     var countryCode = (resp && resp.country) ? resp.country : "in";
@@ -896,7 +919,7 @@ $(document).ready(function () {
             preferredCountries: ['in', 'us', 'ae', 'gb']
         });
     }
-});
+}
 
 
 // 🔐 2. LOGIN LOGIC FOR CHECKOUT MODAL (Updated)

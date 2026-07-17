@@ -44,6 +44,36 @@
                         </div>
                     </div>
 
+                    {{-- Desktop Video --}}
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label text-danger fw-bold">Desktop Video (MP4)</label>
+                        <input type="file" name="desktop_video" class="form-control" accept="video/mp4,video/webm">
+                        <div class="mt-2">
+                            @if($banner->desktop_video)
+                                <video height="80" class="rounded border" muted autoplay loop>
+                                    <source src="{{ asset($banner->desktop_video) }}" type="video/mp4">
+                                </video>
+                            @else
+                                <span class="text-muted small">No video uploaded.</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Mobile Video --}}
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label text-danger fw-bold">Mobile Video (MP4)</label>
+                        <input type="file" name="mobile_video" class="form-control" accept="video/mp4,video/webm">
+                        <div class="mt-2">
+                            @if($banner->mobile_video)
+                                <video height="80" class="rounded border" muted autoplay loop>
+                                    <source src="{{ asset($banner->mobile_video) }}" type="video/mp4">
+                                </video>
+                            @else
+                                <span class="text-muted small">No video uploaded.</span>
+                            @endif
+                        </div>
+                    </div>
+
                     {{-- Link --}}
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Link (Optional)</label>
