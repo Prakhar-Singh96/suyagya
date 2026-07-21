@@ -1431,7 +1431,7 @@ function processPayment() {
     var formData = {
         _token: $('meta[name="csrf-token"]').attr('content'),
         payment_method: finalPaymentMethod,
-        partial_amount: (currentMethod === 'PARTIAL') ? 100 : 0,
+        partial_amount: (currentMethod === 'PARTIAL') ? 99 : 0,
         buy_mode: $('#final_buy_mode').val(),
         product_id: $('#final_product_id').val(),
         quantity: $('#final_quantity').val(),
@@ -2390,7 +2390,7 @@ function handlePaymentMethodChange(method) {
     else if (method === 'PARTIAL') {
         $('#rzp_benefits_box').slideUp(); // 👈 बॉक्स छुपाएँ
         prepaidDiscount = 0;
-        let partialHtml = `<div class="d-flex justify-content-between mb-1 small text-primary fw-bold" id="row_partial_info"><span><i class="las la-info-circle"></i> Partial Pay (Advance)</span><span>₹100</span></div>`;
+        let partialHtml = `<div class="d-flex justify-content-between mb-1 small text-primary fw-bold" id="row_partial_info"><span><i class="las la-info-circle"></i> Partial Pay (Advance)</span><span>₹99</span></div>`;
         $(partialHtml).insertAfter('#bill_subtotal');
     }
 
@@ -2443,8 +2443,8 @@ function calculateFinalTotal() {
 
     // 🚀 मास्टर पार्शियल पे कैलकुलेशन फिक्स:
     if (finalOrderTotal > 0 && currentMethod === 'PARTIAL') {
-        finalPayableNow = 100; // अभी सिर्फ ₹100 एडवांस लेगा
-        let balanceCodAmount = finalOrderTotal - 100; // बाकी का कूरियर अमाउंट (699 - 100 = 599)
+        finalPayableNow = 99; // अभी सिर्फ ₹100 एडवांस लेगा
+        let balanceCodAmount = finalOrderTotal - 99; // बाकी का कूरियर अमाउंट (699 - 100 = 599)
         if (balanceCodAmount < 0) balanceCodAmount = 0;
 
         // यूआई पर बाकी का कूरियर बिल दिखाओ
@@ -2464,8 +2464,8 @@ function calculateFinalTotal() {
         btn.removeClass('btn-dark').addClass('btn-success').text('Confirm Order (Paid by Coins)');
     }
     else if (currentMethod === 'PARTIAL') {
-        btn.removeClass('btn-success').addClass('btn-dark').html(`Pay ₹100 Now <span class="small" style="font-size: 10px;">(Balance as COD)</span>`);
-        $('#btn_pay_amount').text('₹100');
+        btn.removeClass('btn-success').addClass('btn-dark').html(`Pay ₹99 Now <span class="small" style="font-size: 10px;">(Balance as COD)</span>`);
+        $('#btn_pay_amount').text('₹99');
     }
     else {
         btn.removeClass('btn-success').addClass('btn-dark').html(`Pay <span id="btn_pay_amount">₹${fmtTotalNow}</span>`);

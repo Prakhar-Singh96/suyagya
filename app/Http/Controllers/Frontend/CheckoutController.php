@@ -333,7 +333,7 @@ class CheckoutController extends Controller
 
         // 🔥 PARTIAL PAYMENT LOGIC (एडजस्ट किया गया)
         if ($request->payment_method == 'PARTIAL') {
-            $payableNow = 100; // या 100, जो भी आप एडवांस लेना चाहते हैं
+            $payableNow = 99; // या 100, जो भी आप एडवांस लेना चाहते हैं
             $balance = $originalTotal - $payableNow;
             $isPartial = true;
 

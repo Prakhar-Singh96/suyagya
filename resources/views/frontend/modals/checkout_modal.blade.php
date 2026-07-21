@@ -533,8 +533,8 @@
                             <input type="radio" class="form-check-input me-3 pay-radio" name="payment_method"
                                 id="partial" value="PARTIAL">
                             <div class="flex-grow-1">
-                                <span class="fw-bold d-block small">Pay ₹100 Now + COD</span>
-                                <small class="text-muted x-small">Pay ₹100 security fee online, rest as COD</small>
+                                <span class="fw-bold d-block small">Pay ₹99 Now + COD</span>
+                                <small class="text-muted x-small">Pay ₹99 security fee online, rest as COD</small>
                             </div>
                             <i class="las la-wallet text-primary fs-4"></i>
                         </label>
