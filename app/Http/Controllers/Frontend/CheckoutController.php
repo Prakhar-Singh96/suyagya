@@ -299,7 +299,20 @@ class CheckoutController extends Controller
             }
         }
 
-        $prepaidDiscount = ($request->payment_method == 'RAZORPAY') ? 25 : 0;
+        //$prepaidDiscount = ($request->payment_method == 'RAZORPAY') ? 25 : 0;
+        $prepaidDiscount = 0;
+        $packingType = 'standard';
+
+        if ($request->payment_method == 'RAZORPAY') {
+            if ($request->prepaid_reward == 'wooden_box') {
+                $prepaidDiscount = 0;
+                $packingType = 'wooden_box';
+            } else {
+                // Default or 'discount' selected
+                $prepaidDiscount = 25;
+                $packingType = 'standard';
+            }
+        }
         $shippingCharge = ($request->payment_method == 'COD') ? 49 : 0;
 
         // 🚀 फाइनल टोटल में प्रीपेड डिस्काउंट भी घटाएं
@@ -354,6 +367,7 @@ class CheckoutController extends Controller
             'payment_method' => ($finalTotal == 0) ? 'WALLET' : $request->payment_method,
             // 'status'           => 'pending',
             // 'payment_status'   => 'pending'
+            'packing_type'     => $packingType,
             'balance_amount' => $balance,
             'is_partial'     => $isPartial,
             'status' => ($finalTotal == 0) ? 'processing' : 'pending',

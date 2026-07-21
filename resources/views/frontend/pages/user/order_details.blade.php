@@ -192,6 +192,23 @@
                             </div>
                         @endif
 
+                        {{-- 🎁 Packing Type Display with Image (नया कोड यहाँ डालना है) --}}
+                        @if(isset($order->packing_type) && $order->packing_type == 'wooden_box')
+                            <div class="d-flex justify-content-between align-items-center mt-3 mb-2 p-2 rounded" style="background-color: #fcf6ec; border: 1px dashed #c49a6c;">
+                                <div>
+                                    <span class="small fw-bold d-block" style="color: #8b5a2b;"><i class="las la-box fs-5"></i> Packing Type</span>
+                                    <span class="badge bg-success mt-1">Premium Wooden Box (FREE)</span>
+                                </div>
+                                {{-- 📸 Wooden Box Image --}}
+                                <img src="{{ asset('assets/img/wooden_box.png') }}" alt="Wooden Box" class="rounded border shadow-sm" style="width: 55px; height: 55px; object-fit: cover;">
+                            </div>
+                        @else
+                            <div class="d-flex justify-content-between mt-3 mb-2 small fw-bold text-muted">
+                                <span><i class="las la-box fs-5"></i> Packing Type</span>
+                                <span>Standard Suyagya Box</span>
+                            </div>
+                        @endif
+
                         <hr class="my-3 border-dark opacity-10">
 
                         {{-- 🔥 Order Grand Total --}}

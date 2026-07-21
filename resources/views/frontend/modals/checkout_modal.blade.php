@@ -470,19 +470,62 @@
 
 
 
-                        {{-- Razorpay Option --}}
-                        <label class="d-flex align-items-center p-3 mb-2 border rounded-3 cursor-pointer bg-white"
-                            onclick="handlePaymentMethodChange('RAZORPAY')"> {{-- 👈 नया फंक्शन --}}
-                            <input type="radio" class="form-check-input me-3 pay-radio" name="payment_method"
-                                id="rzp" value="RAZORPAY" checked>
-                            <div class="flex-grow-1">
-                                <span class="fw-bold d-block small">UPI / Cards / Netbanking</span>
-                                {{-- यह लाइन अब यूजर को दिखेगी और काम भी करेगी --}}
-                                <small class="text-success x-small fw-bold">Prepaid Order: ₹25/- instant
-                                    discount</small>
+                        {{-- Razorpay Option with Sub-Options --}}
+                        <div class="border rounded-3 mb-2 bg-white overflow-hidden">
+                            <label class="d-flex align-items-center p-3 cursor-pointer m-0"
+                                onclick="handlePaymentMethodChange('RAZORPAY')">
+                                <input type="radio" class="form-check-input me-3 pay-radio" name="payment_method"
+                                    id="rzp" value="RAZORPAY" checked>
+                                <div class="flex-grow-1">
+                                    <span class="fw-bold d-block small">UPI / Cards / Netbanking</span>
+                                    <small class="text-success x-small fw-bold">🎁 Special Prepaid Rewards</small>
+                                </div>
+                                <img src="https://cdn.razorpay.com/static/assets/logo/payment.svg" height="16">
+                            </label>
+
+                            {{-- 🔥 NEW: Prepaid Rewards Box (Beautiful UI) --}}
+                            <div id="rzp_benefits_box" class="px-3 pb-3 pt-0"
+                                style="background-color: #fafafa; border-top: 1px dashed #ddd;">
+                                <p class="x-small text-muted fw-bold mb-2 mt-2 text-uppercase">Choose Your Free Reward:
+                                </p>
+
+                                {{-- Option 1: ₹25 Discount --}}
+                                <label
+                                    class="d-flex align-items-center mb-2 cursor-pointer border p-2 rounded bg-white shadow-sm"
+                                    onclick="handlePrepaidReward('discount')">
+                                    <input type="radio" class="form-check-input me-2" name="prepaid_reward"
+                                        id="reward_discount" value="discount" checked>
+                                    <div class="flex-grow-1">
+                                        <span class="small fw-bold text-success">₹25 Loyalty Discount</span>
+                                        <small class="d-block text-muted" style="font-size: 10px;">Instant ₹25 off on
+                                            your payable amount.</small>
+                                    </div>
+                                    <i class="las la-tags text-success fs-2 opacity-50"></i>
+                                </label>
+
+                                {{-- Option 2: Free Wooden Box --}}
+                                <label
+                                    class="d-flex align-items-center cursor-pointer border p-2 rounded bg-white shadow-sm"
+                                    onclick="handlePrepaidReward('wooden_box')">
+                                    <input type="radio" class="form-check-input me-2" name="prepaid_reward"
+                                        id="reward_box" value="wooden_box">
+                                    <div class="flex-grow-1">
+                                        <span class="small fw-bold text-dark d-flex align-items-center">
+                                            Premium Wooden Box
+                                            <span class="badge bg-danger ms-2"
+                                                style="font-size: 9px; padding: 3px 6px;">FREE</span>
+                                        </span>
+                                        <small class="d-block text-muted mt-1" style="font-size: 10px;">
+                                            Worth <del class="text-danger">₹150</del>. Keep your jewelry pure.
+                                        </small>
+                                    </div>
+                                    {{-- 📸 Wooden Box Image (Apni image yahan rakhein) --}}
+                                    <img src="{{ asset('assets/img/wooden_box.png') }}" alt="Premium Wooden Box"
+                                        class="rounded ms-2 border"
+                                        style="width: 55px; height: 55px; object-fit: cover;">
+                                </label>
                             </div>
-                            <img src="https://cdn.razorpay.com/static/assets/logo/payment.svg" height="16">
-                        </label>
+                        </div>
 
                         {{-- 🔥 NEW: Partial COD Option --}}
                         <label class="d-flex align-items-center p-3 mb-2 border rounded-3 cursor-pointer bg-white"

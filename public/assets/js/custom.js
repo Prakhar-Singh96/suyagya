@@ -1415,7 +1415,11 @@ function processPayment() {
     let variantWeight = $('#final_weight').val() || null;
 
     if (currentMethod === 'RAZORPAY') {
-        prepaidDiscount = 25;
+        if (prepaidRewardType === 'discount') {
+            prepaidDiscount = 25;
+        } else {
+            prepaidDiscount = 0; // अगर Wooden Box चुना है तो पैसे कम नहीं होंगे
+        }
     } else {
         prepaidDiscount = 0;
     }
@@ -1440,7 +1444,8 @@ function processPayment() {
         gaming_coupon_code: appliedGamingCode,
         referral_code: referralCode,
         use_coins: $('#final_use_coins').val(),
-        prepaid_discount: prepaidDiscount
+        prepaid_discount: prepaidDiscount,
+        prepaid_reward: prepaidRewardType
     };
 
     // 5. AJAX Post
@@ -2318,6 +2323,12 @@ let prepaidDiscount = 0; // 🚀 सुधार: शुरू में 0 र�
 //     $('#bill_final_total').text('₹' + fmtTotal);
 //     $('#btn_pay_amount').text('₹' + fmtTotal);
 // }
+let prepaidRewardType = 'discount';
+
+function handlePrepaidReward(type) {
+    prepaidRewardType = type;
+    handlePaymentMethodChange('RAZORPAY'); // UI तुरंत अपडेट करने के लिए
+}
 
 function handlePaymentMethodChange(method) {
     let totalToPayStr = $('#bill_final_total').text().replace(/[^\d.]/g, '');
@@ -2364,26 +2375,22 @@ function handlePaymentMethodChange(method) {
     $('#row_partial_info').remove();
 
     if (method === 'RAZORPAY') {
-        prepaidDiscount = 25;
-        let prepaidHtml = `
-            <div class="d-flex justify-content-between mb-1 small text-success fw-bold" id="row_prepaid_discount">
-                <span><i class="las la-check-circle"></i> Prepaid Offer (Online Pay)</span>
-                <span id="bill_prepaid_discount">- ₹25</span>
-            </div>`;
+        $('#rzp_benefits_box').slideDown(); // 👈 बॉक्स दिखाएँ
 
-        if($('#row_coupon_discount').length) {
-            $(prepaidHtml).insertBefore('#row_coupon_discount');
+        if (prepaidRewardType === 'discount') {
+            prepaidDiscount = 25;
+            let prepaidHtml = `<div class="d-flex justify-content-between mb-1 small text-success fw-bold" id="row_prepaid_discount"><span><i class="las la-check-circle"></i> Prepaid Offer</span><span id="bill_prepaid_discount">- ₹25</span></div>`;
+            if($('#row_coupon_discount').length) { $(prepaidHtml).insertBefore('#row_coupon_discount'); } else { $(prepaidHtml).insertAfter('#bill_subtotal'); }
         } else {
-            $(prepaidHtml).insertAfter('#bill_subtotal');
+            prepaidDiscount = 0; // 👈 पैसे कम नहीं होंगे
+            let boxHtml = `<div class="d-flex justify-content-between mb-1 small text-dark fw-bold" id="row_prepaid_discount"><span><i class="las la-box"></i> Wooden Box Packing</span><span class="text-success">FREE</span></div>`;
+            if($('#row_coupon_discount').length) { $(boxHtml).insertBefore('#row_coupon_discount'); } else { $(boxHtml).insertAfter('#bill_subtotal'); }
         }
     }
     else if (method === 'PARTIAL') {
+        $('#rzp_benefits_box').slideUp(); // 👈 बॉक्स छुपाएँ
         prepaidDiscount = 0;
-        let partialHtml = `
-            <div class="d-flex justify-content-between mb-1 small text-primary fw-bold" id="row_partial_info">
-                <span><i class="las la-info-circle"></i> Partial Pay (Advance)</span>
-                <span>₹100</span>
-            </div>`;
+        let partialHtml = `<div class="d-flex justify-content-between mb-1 small text-primary fw-bold" id="row_partial_info"><span><i class="las la-info-circle"></i> Partial Pay (Advance)</span><span>₹100</span></div>`;
         $(partialHtml).insertAfter('#bill_subtotal');
     }
 

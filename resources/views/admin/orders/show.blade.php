@@ -73,6 +73,23 @@
                                 <p class="d-flex justify-content-between text-success"><span>Prepaid Discount:</span>
                                     <strong>- ₹{{ number_format($order->prepaid_discount) }}</strong>
                                 </p>
+                                <hr class="my-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-dark"><i class="las la-box fs-4"></i> Packing Required:</span>
+
+                                    @if(isset($order->packing_type) && $order->packing_type == 'wooden_box')
+                                        <div class="text-end d-flex align-items-center">
+                                            <span class="badge bg-danger fs-6 shadow-sm me-2 animate__animated animate__pulse animate__infinite">
+                                                🪵 PREMIUM WOODEN BOX
+                                            </span>
+                                            {{-- 📸 Wooden Box Image for Admin --}}
+                                            <img src="{{ asset('assets/img/wooden_box.png') }}" alt="Wooden Box" class="rounded border border-danger" style="width: 55px; height: 55px; object-fit: cover;">
+                                        </div>
+                                    @else
+                                        <span class="badge bg-secondary">Standard Box</span>
+                                    @endif
+                                </div>
+                                <hr class="my-2">
                                 @if ($order->wallet_amount > 0)
                                     <p class="d-flex justify-content-between text-info"><span>Wallet Used:</span>
                                         <strong>- ₹{{ number_format($order->wallet_amount) }}</strong>

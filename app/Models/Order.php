@@ -37,6 +37,7 @@ class Order extends Model
         'is_partial',
         'courier_name',
         'tracking_url',
+        'packing_type',
         'expected_delivery_date',
         'shipment_label_url'
     ];
