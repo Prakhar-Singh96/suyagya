@@ -87,7 +87,7 @@ Route::get('/fix-astro-data', function () {
     return "Products Checked & Updated!";
 });
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Product Listing Pages
 // 1. Category Page (e.g. /category/rudraksha)

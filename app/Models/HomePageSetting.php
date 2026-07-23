@@ -16,7 +16,10 @@ class HomePageSetting extends Model
         'meta_description',
         'meta_keywords',
         'og_image',
-        'faq_content'
+        'faq_content',
+        'popup_image',
+        'popup_link',
+        'popup_status'
 
     ];
 

@@ -59,6 +59,36 @@
                         </div>
                     </div>
                 </div>
+                <hr class="my-4">
+                <h5 class="fw-bold text-primary mb-3"><i class="las la-bullhorn"></i> Global Offer Pop-up</h5>
+
+                <div class="row">
+                    {{-- Enable/Disable Toggle --}}
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="popup_status" name="popup_status"
+                                value="1" {{ $setting->popup_status ?? 0 ? 'checked' : '' }}>
+                            <label class="form-check-label fw-bold" for="popup_status">Show Pop-up on Website</label>
+                        </div>
+                    </div>
+
+                    {{-- Pop-up Image Upload --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Pop-up Image (Recommended: 600x600px square)</label>
+                        <input type="file" class="form-control" name="popup_image" accept="image/*">
+                        @if (!empty($setting->popup_image))
+                            <img src="{{ asset($setting->popup_image) }}" width="100" class="mt-2 rounded shadow-sm">
+                        @endif
+                    </div>
+
+                    {{-- Pop-up Link --}}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Pop-up Target Link</label>
+                        <input type="url" class="form-control" name="popup_link"
+                            value="{{ $setting->popup_link ?? '' }}" placeholder="https://suyagya.com/category/spiritual">
+                        <small class="text-muted">When user clicks the image, where should they go?</small>
+                    </div>
+                </div>
 
                 {{-- RIGHT COLUMN: BRAND STORY --}}
                 <div class="col-md-12">

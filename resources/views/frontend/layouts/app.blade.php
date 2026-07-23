@@ -182,7 +182,7 @@
     <meta name="p:domain_verify" content="da11f887c65754b1b5b976de4e3e4fbd" />
 
     {{-- Meta Pixel Code --}}
-    <script>
+    {{-- <script>
         ! function(f, b, e, v, n, t, s) {
             if (f.fbq) return;
             n = f.fbq = function() {
@@ -203,18 +203,27 @@
         fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1" /></noscript>
+            src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1" /></noscript> --}}
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1544821037045329');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1544821037045329&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
-
-    {{-- ⚡ SPEED OPTIMIZATION STEP 2: PRELOAD CRITICAL CSS ASSETS TO ELIMINATE RENDERING DELAYS --}}
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" as="style">
-    <link rel="preload"
-        href="{{ asset('assets/css/custom.css') }}?v={{ filemtime(public_path('assets/css/custom.css')) }}"
-        as="style">
-    <link rel="preload"
-        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap"
-        as="style">
 
     {{-- Google फोंट्स विथ display=swap --}}
     <link
@@ -227,8 +236,6 @@
 
     {{-- 🚀 CRITICAL SLIDER FIX: गैलरी न टूटे, इसके लिए स्लिक की तीनों फाइलें बिना किसी रुकावट के रेंडर होंगी --}}
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
 
@@ -920,6 +927,7 @@
             sessionStorage.setItem('pwa-popup-dismissed', 'true');
         }
     </script>
+    @include('frontend.includes.offer_popup')
 </body>
 
 </html>
