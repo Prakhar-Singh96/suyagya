@@ -96,6 +96,7 @@ class ProductController extends Controller
                 $data['faq_content'] = null;
             }
 
+
             $data['price'] = round($sellingPrice, 2);
             $data['discount'] = round($discount, 2);
 
@@ -134,7 +135,7 @@ class ProductController extends Controller
             $data['is_new_arrival'] = $request->has('is_new_arrival') ? 1 : 0;
             $data['emi_available'] = $request->has('emi_available') ? 1 : 0;
             $data['is_gemstone'] = $request->has('is_gemstone') ? 1 : 0;
-
+            $data['is_wooden_box_eligible'] = $request->has('is_wooden_box_eligible') ? 1 : 0;
             $data['astro_planet'] = $request->astro_planet;
             $data['astro_rashi'] = $request->astro_rashi;
             $data['astro_benefits'] = $request->astro_benefits;
@@ -313,7 +314,7 @@ class ProductController extends Controller
             $data['is_new_arrival'] = $request->has('is_new_arrival') ? 1 : 0;
             $data['emi_available'] = $request->has('emi_available') ? 1 : 0;
             $data['is_gemstone'] = $request->has('is_gemstone') ? 1 : 0;
-
+            $data['is_wooden_box_eligible'] = $request->has('is_wooden_box_eligible') ? 1 : 0;
             $data['astro_planet'] = $request->astro_planet;
             $data['astro_rashi'] = $request->astro_rashi;
             $data['astro_benefits'] = $request->astro_benefits;

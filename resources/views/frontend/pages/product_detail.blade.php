@@ -1068,7 +1068,7 @@
                             Add to Cart
                         </button>
                         <button class="btn btn-dark w-50 py-3 fw-bold text-uppercase shadow-sm fs-6"
-                            data-id="{{ $product->id }}" onclick="openDirectCheckout(this)">Buy Now</button>
+                            data-id="{{ $product->id }}" data-box="{{ $product->is_wooden_box_eligible ?? 0 }}" onclick="openDirectCheckout(this)">Buy Now</button>
                     </div>
                 @else
                     <div class="alert alert-danger border-0 d-flex align-items-center mb-4"

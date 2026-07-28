@@ -207,6 +207,22 @@
     </div>
 @endif
 
+{{-- 🎁 🚀 नया कोड यहाँ डालना है (स्क्रिप्ट टैग से ठीक पहले) --}}
+@php
+    $isCartBoxEligible = 0;
+    if(isset($cartItems) && $cartItems->count() > 0) {
+        foreach($cartItems as $item) {
+            // चेक करो कि कार्ट में क्या कोई भी प्रोडक्ट बॉक्स के लायक है?
+            if(isset($item->product) && $item->product->is_wooden_box_eligible == 1) {
+                $isCartBoxEligible = 1;
+                break; // एक भी मिल गया तो लूप रोक दो
+            }
+        }
+    }
+@endphp
+<input type="hidden" id="cart_box_eligible" value="{{ $isCartBoxEligible }}">
+{{-- 🎁 नया कोड यहाँ ख़त्म --}}
+
 <script>
     // 1. Horizontal Scroll Logic (Arrows ke liye)
     function scrollSection(id, direction) {

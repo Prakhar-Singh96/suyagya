@@ -468,6 +468,11 @@
                                 <label class="form-check-label" for="is_new_arrival">New Arrival</label>
                             </div>
                             <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="is_wooden_box_eligible"
+                                    name="is_wooden_box_eligible" value="1">
+                                <label class="form-check-label" for="is_wooden_box_eligible">Wooden Box Enable</label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
                                 <input class="form-check-input" type="checkbox" id="emi_available" name="emi_available"
                                     value="1">
                                 <label class="form-check-label" for="emi_available">EMI Available</label>

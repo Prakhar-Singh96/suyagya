@@ -467,6 +467,7 @@
                         <input type="hidden" name="variant_id" id="final_variant_id">
                         <input type="hidden" name="weight" id="final_weight"> {{-- 👈 यह भी जोड़ें --}}
                         <input type="hidden" name="ring_size" id="final_ring_size"> {{-- 👈 यह भी जोड़ें --}}
+                        <input type="hidden" id="modal_is_box_eligible" value="0">
 
 
 
@@ -504,7 +505,7 @@
                                 </label>
 
                                 {{-- Option 2: Free Wooden Box --}}
-                                <label
+                                <label id="wooden_box_option_wrapper"
                                     class="d-flex align-items-center cursor-pointer border p-2 rounded bg-white shadow-sm"
                                     onclick="handlePrepaidReward('wooden_box')">
                                     <input type="radio" class="form-check-input me-2" name="prepaid_reward"

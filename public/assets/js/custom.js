@@ -588,8 +588,11 @@ function initiateCartCheckout() {
     // MRP = Selling Price + Savings
     let mrp = subtotal + savings;
 
+    // 🚀 नया: कार्ट की हिडन वैल्यू से बॉक्स एलिजिबिलिटी निकालें
+    let isBoxEligible = $('#cart_box_eligible').val() || 0;
+
     // 4. Call Modal with ALL Data
-    openCheckoutModal(subtotal, mrp, savings);
+    openCheckoutModal(subtotal, mrp, savings, isBoxEligible);
 }
 
 // 🛒 DETAIL PAGE HELPER (Values collect karne ke liye)
@@ -723,6 +726,7 @@ function openDirectCheckout(btn) {
     var prodId = $(btn).data('id');
     var qty = $('#qty_input').val() || 1;
     var isSiddh = $('#input_is_siddh').val();
+    var isBoxEligible = $(btn).data('box') == 1 ? 1 : 0;
 
     // 🚀 वजन (Weight) और वैरिएंट ID निकालें
     var variantId = null;
@@ -747,6 +751,7 @@ function openDirectCheckout(btn) {
     $('#final_variant_id').val(variantId);
     $('#final_weight').val(weightText);
     $('#final_ring_size').val(ringSize);
+    $('#modal_is_box_eligible').val(isBoxEligible);
 
     // 2. Price Calculation
     var priceText = $('#display_price').text().replace(/,/g, '');
@@ -1906,7 +1911,7 @@ function applyCoupon() {
 // }
 
 // 🛒 1. OPEN CHECKOUT MODAL (Updated for Cart + Game Logic)
-function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
+function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0, isBoxEligible = 0) {
     console.log("Opening Cart Checkout...", price, mrpTotal, discountTotal);
 
     // 1. Set Global Total
@@ -1986,6 +1991,9 @@ function openCheckoutModal(price, mrpTotal = 0, discountTotal = 0) {
         $('<input type="hidden" name="gaming_coupon_code" id="final_gaming_coupon_code">').appendTo('#finalPaymentForm');
     }
     $('#final_gaming_coupon_code').val(appliedGamingCode);
+
+    // 🚀 नया: मोडल के हिडन इनपुट में बॉक्स एलिजिबिलिटी सेट करें
+    $('#modal_is_box_eligible').val(isBoxEligible);
 
     // 🚀 सुधार: मोडल खुलते ही प्रीपेड डिस्काउंट हटा दें
     prepaidDiscount = 0;
@@ -2376,6 +2384,20 @@ function handlePaymentMethodChange(method) {
 
     if (method === 'RAZORPAY') {
         $('#rzp_benefits_box').slideDown(); // 👈 बॉक्स दिखाएँ
+
+        // 🚀 SMART LOGIC: चेक करें कि बॉक्स मिलेगा या नहीं
+        let isBoxEligible = $('#modal_is_box_eligible').val() == '1';
+        if(isBoxEligible) {
+            // 👇 FIX: Bootstrap की क्लास हटाकर दिखाओ
+            $('#wooden_box_option_wrapper').removeClass('d-none').addClass('d-flex');
+        } else {
+            // 👇 FIX: Bootstrap की क्लास लगाकर छुपाओ
+            $('#wooden_box_option_wrapper').removeClass('d-flex').addClass('d-none');
+
+            // अगर यूज़र ने पहले बॉक्स चुना था लेकिन अब वो बड़े प्रोडक्ट पर है, तो डिफ़ॉल्ट डिस्काउंट सेट कर दो
+            prepaidRewardType = 'discount';
+            $('#reward_discount').prop('checked', true);
+        }
 
         if (prepaidRewardType === 'discount') {
             prepaidDiscount = 25;

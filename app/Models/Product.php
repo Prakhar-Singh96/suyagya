@@ -61,6 +61,7 @@ class Product extends Model
         'is_featured',    // ✅ New
         'is_best_seller', // ✅ New
         'is_new_arrival',
+        'is_wooden_box_eligible',
 
         'delivery_days',
         'emi_available',
