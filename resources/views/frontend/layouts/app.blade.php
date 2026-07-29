@@ -208,6 +208,15 @@
             src="https://www.facebook.com/tr?id=799436573082052&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6ECDBEM0VJ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6ECDBEM0VJ');
+    </script>
+
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
 
     {{-- Google फोंट्स विथ display=swap --}}
@@ -609,25 +618,10 @@
     <script>
         window.addEventListener('load', function() {
             setTimeout(function() {
-                // 1. Load Razorpay Checkout
                 var scriptRazor = document.createElement('script');
                 scriptRazor.src = "https://checkout.razorpay.com/v1/checkout.js";
                 document.body.appendChild(scriptRazor);
-
-                // 2. Load GTM / Analytics (Jo Head se hataya tha)
-                var scriptGTM = document.createElement('script');
-                scriptGTM.async = true;
-                scriptGTM.src = "https://www.googletagmanager.com/gtag/js?id=G-6ECDBEM0VJ";
-                document.head.appendChild(scriptGTM);
-
-                window.dataLayer = window.dataLayer || [];
-
-                function gtag() {
-                    dataLayer.push(arguments);
-                }
-                gtag('js', new Date());
-                gtag('config', 'G-6ECDBEM0VJ');
-            }, 2500); // 🚀 2.5 Second Delay for Performance Boom!
+            }, 2500);
         });
     </script>
 
